@@ -1364,6 +1364,10 @@ class umil
 		{
 			$sql = $this->create_table_sql($table_name, $table_data, 'mysql_41');
 		}
+		else if ($dbms == 'mssql_odbc')
+		{
+			$sql = $this->create_table_sql($table_name, $table_data, 'mssql');
+		}
 		else if ($dbms == 'mysql')
 		{
 			// $db->mysql_version for <= 3.0.2, $db->sql_server_version for >= 3.0.3
