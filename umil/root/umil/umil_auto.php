@@ -29,20 +29,19 @@ if (!defined('UMIL_AUTO'))
 	exit;
 }
 
-define('IN_PHPBB', true);
-include($phpbb_root_path . 'common.' . $phpEx);
-$user->session_begin();
-$auth->acl($user->data);
-$user->setup($language_file);
+// If IN_PHPBB is already defined, lets assume they already included the common.php file and are done with setup (this allows them to run their own checks on things if they must)
+if (!defined('IN_PHPBB'))
+{
+	define('IN_PHPBB', true);
+	include($phpbb_root_path . 'common.' . $phpEx);
+	$user->session_begin();
+	$auth->acl($user->data);
+	$user->setup($language_file);
+}
 
 if (!$user->data['is_registered'])
 {
 	login_box();
-}
-
-if ($user->data['user_type'] != USER_FOUNDER)
-{
-	trigger_error('FOUNDERS_ONLY');
 }
 
 if (!class_exists('umil_frontend'))
@@ -51,6 +50,12 @@ if (!class_exists('umil_frontend'))
 }
 
 $umil = new umil_frontend($mod_name, true);
+
+// Check after initiating UMIL.
+if ($user->data['user_type'] != USER_FOUNDER)
+{
+	trigger_error('FOUNDERS_ONLY');
+}
 
 // We will sort the actions to prevent issues from mod authors incorrectly listing the version numbers
 uksort($versions, 'version_compare');
@@ -68,8 +73,10 @@ $submit = (isset($_POST['submit'])) ? true : false;
 $action = request_var('action', '');
 $version_select = request_var('version_select', '');
 
+$current_page = (strpos($user->page['page'], '?') !== false) ? substr($user->page['page'], 0, strpos($user->page['page'], '?')) : $user->page['page'];
+
 $stages = array(
-	'CONFIGURE'	=> array('url' => append_sid($phpbb_root_path . $user->page['page_name'])),
+	'CONFIGURE'	=> array('url' => append_sid($phpbb_root_path . $current_page)),
 	'CONFIRM',
 	'ACTION',
 );
@@ -116,7 +123,7 @@ else if ($umil->confirm_box(true))
 }
 
 // Shouldn't get here.
-redirect($phpbb_root_path . $user->page['page_name']);
+redirect($phpbb_root_path . $current_page);
 
 function umil_install_update_uninstall_select($value, $key)
 {
@@ -283,7 +290,7 @@ function umil_run_actions($action, $versions, $current_version, $version_config_
 
 					if (method_exists($umil, $method))
 					{
-						call_user_func(array($umil, $method), array_reverse($params));
+						call_user_func(array($umil, $method), ((is_array($params) ? array_reverse($params) : $params)));
 					}
 				}
 			}

@@ -243,11 +243,14 @@ class umil
 		// Multicall
 		if (is_array($type))
 		{
-			foreach ($type as $params)
+			if (!empty($type)) // Allow an empty array sent for the cache purge.
 			{
-				call_user_func_array(array($this, 'cache_purge'), $params);
+				foreach ($type as $params)
+				{
+					call_user_func_array(array($this, 'cache_purge'), $params);
+				}
+				return;
 			}
-			return;
 		}
 
 		$style_id = (int) $style_id;
@@ -798,6 +801,9 @@ class umil
 		$class = $db->sql_escape($class);
 		$module = $db->sql_escape($module);
 
+		// Allows '' to be sent
+		$parent = (!$parent) ? 0 : $parent;
+
 		$parent_sql = '';
 		if ($parent !== false)
 		{
@@ -867,7 +873,7 @@ class umil
 	* )
 	* 		Optionally you may not send 'modes' and it will insert all of the modules in that info file.
 	*/
-	function module_add($class, $parent = '', $data = array())
+	function module_add($class, $parent = 0, $data = array())
 	{
 		global $cache, $db, $user, $phpbb_root_path, $phpEx;
 
@@ -880,6 +886,9 @@ class umil
 			}
 			return;
 		}
+
+        // Allows '' to be sent
+		$parent = (!$parent) ? 0 : $parent;
 
 		// allow sending the name as a string in $data to create a category
 		if (!is_array($data))
@@ -996,7 +1005,7 @@ class umil
 	* @param int|string|bool $parent The parent module_id|module_langname (0 for no parent).  Use false to ignore the parent check and check class wide.
 	* @param int|string $module The module id|module_langname
 	*/
-	function module_remove($class, $parent = '', $module = '')
+	function module_remove($class, $parent = 0, $module = '')
 	{
 		global $cache, $db, $user, $phpbb_root_path, $phpEx;
 
@@ -1010,10 +1019,13 @@ class umil
 			return;
 		}
 
+        // Allows '' to be sent
+		$parent = (!$parent) ? 0 : $parent;
+
 		// Imitation of module_add's "automatic" and "manual" method so the uninstaller works from the same set of instructions for umil_auto
 		if (is_array($module))
 		{
-			if (!isset($module['module_basename']) || !isset($module['modes']))
+			if (!isset($module['module_basename']))
 			{
 				if (isset($module['module_langname']))
 				{
@@ -1040,11 +1052,11 @@ class umil
 			$module_info = $info->module();
 			unset($info);
 
-			foreach ($module['modes'] as $mode)
+			foreach ($module_info['modes'] as $mode)
 			{
-				if (isset($module_info['modes'][$mode]))
+				if (!isset($module['modes']) || isset($module['modes'][$mode]))
 				{
-					call_user_func(array($this, 'module_remove'), $class, $parent, $module_info['modes'][$mode]['title']);
+					call_user_func(array($this, 'module_remove'), $class, $parent, $mode['title']);
 				}
 			}
 		}
