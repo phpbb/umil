@@ -1372,32 +1372,7 @@ class umil
 			return $this->umil_end();
 		}
 
-		if ($dbms == 'mysqli')
-		{
-			$sql = $this->create_table_sql($table_name, $table_data, 'mysql_41');
-		}
-		else if ($dbms == 'mssql_odbc')
-		{
-			$sql = $this->create_table_sql($table_name, $table_data, 'mssql');
-		}
-		else if ($dbms == 'mysql')
-		{
-			// $db->mysql_version for <= 3.0.2, $db->sql_server_version for >= 3.0.3
-			$db_version = (isset($db->sql_server_version)) ? $db->sql_server_version : $db->mysql_version;
-			if (version_compare($db_version, '4.1.3', '>='))
-			{
-				$sql = $this->create_table_sql($table_name, $table_data, 'mysql_41');
-			}
-			else
-			{
-				$sql = $this->create_table_sql($table_name, $table_data, 'mysql_40');
-			}
-		}
-		else
-		{
-			$sql = $this->create_table_sql($table_name, $table_data, $dbms);
-		}
-
+		$sql = $this->create_table_sql($table_name, $table_data);
 		$db->sql_query($sql);
 
 		return $this->umil_end();
@@ -1710,223 +1685,22 @@ class umil
 	*
 	* @param string $table_name The name of the table
 	* @param array $table_data The table data (formatted in the array format used by create_schema_files)
-	* @param string $dbms The dbms this will be built for
+	* @param string $dbms The dbms this will be built for (for testing only, leave blank to use the current DBMS)
 	*
 	* @return The sql query to run for the submitted dbms to insert the table
 	*/
-	function create_table_sql($table_name, $table_data, $dbms)
+	function create_table_sql($table_name, $table_data, $dbms = '')
 	{
-		$dbms_type_map = array(
-			'mysql_41'	=> array(
-				'INT:'		=> 'int(%d)',
-				'BINT'		=> 'bigint(20)',
-				'UINT'		=> 'mediumint(8) UNSIGNED',
-				'UINT:'		=> 'int(%d) UNSIGNED',
-				'TINT:'		=> 'tinyint(%d)',
-				'USINT'		=> 'smallint(4) UNSIGNED',
-				'BOOL'		=> 'tinyint(1) UNSIGNED',
-				'VCHAR'		=> 'varchar(255)',
-				'VCHAR:'	=> 'varchar(%d)',
-				'CHAR:'		=> 'char(%d)',
-				'XSTEXT'	=> 'text',
-				'XSTEXT_UNI'=> 'varchar(100)',
-				'STEXT'		=> 'text',
-				'STEXT_UNI'	=> 'varchar(255)',
-				'TEXT'		=> 'text',
-				'TEXT_UNI'	=> 'text',
-				'MTEXT'		=> 'mediumtext',
-				'MTEXT_UNI'	=> 'mediumtext',
-				'TIMESTAMP'	=> 'int(11) UNSIGNED',
-				'DECIMAL'	=> 'decimal(5,2)',
-				'DECIMAL:'	=> 'decimal(%d,2)',
-				'PDECIMAL'	=> 'decimal(6,3)',
-				'PDECIMAL:'	=> 'decimal(%d,3)',
-				'VCHAR_UNI'	=> 'varchar(255)',
-				'VCHAR_UNI:'=> 'varchar(%d)',
-				'VCHAR_CI'	=> 'varchar(255)',
-				'VARBINARY'	=> 'varbinary(255)',
-			),
+		global $db;
+		if (!class_exists('phpbb_db_tools'))
+		{
+			global $phpbb_root_path, $phpEx;
+			include($phpbb_root_path . 'includes/db/db_tools.' . $phpEx);
+		}
+		$db_tools = new phpbb_db_tools($db);
 
-			'mysql_40'	=> array(
-				'INT:'		=> 'int(%d)',
-				'BINT'		=> 'bigint(20)',
-				'UINT'		=> 'mediumint(8) UNSIGNED',
-				'UINT:'		=> 'int(%d) UNSIGNED',
-				'TINT:'		=> 'tinyint(%d)',
-				'USINT'		=> 'smallint(4) UNSIGNED',
-				'BOOL'		=> 'tinyint(1) UNSIGNED',
-				'VCHAR'		=> 'varbinary(255)',
-				'VCHAR:'	=> 'varbinary(%d)',
-				'CHAR:'		=> 'binary(%d)',
-				'XSTEXT'	=> 'blob',
-				'XSTEXT_UNI'=> 'blob',
-				'STEXT'		=> 'blob',
-				'STEXT_UNI'	=> 'blob',
-				'TEXT'		=> 'blob',
-				'TEXT_UNI'	=> 'blob',
-				'MTEXT'		=> 'mediumblob',
-				'MTEXT_UNI'	=> 'mediumblob',
-				'TIMESTAMP'	=> 'int(11) UNSIGNED',
-				'DECIMAL'	=> 'decimal(5,2)',
-				'DECIMAL:'	=> 'decimal(%d,2)',
-				'PDECIMAL'	=> 'decimal(6,3)',
-				'PDECIMAL:'	=> 'decimal(%d,3)',
-				'VCHAR_UNI'	=> 'blob',
-				'VCHAR_UNI:'=> array('varbinary(%d)', 'limit' => array('mult', 3, 255, 'blob')),
-				'VCHAR_CI'	=> 'blob',
-				'VARBINARY'	=> 'varbinary(255)',
-			),
-
-			'firebird'	=> array(
-				'INT:'		=> 'INTEGER',
-				'BINT'		=> 'DOUBLE PRECISION',
-				'UINT'		=> 'INTEGER',
-				'UINT:'		=> 'INTEGER',
-				'TINT:'		=> 'INTEGER',
-				'USINT'		=> 'INTEGER',
-				'BOOL'		=> 'INTEGER',
-				'VCHAR'		=> 'VARCHAR(255) CHARACTER SET NONE',
-				'VCHAR:'	=> 'VARCHAR(%d) CHARACTER SET NONE',
-				'CHAR:'		=> 'CHAR(%d) CHARACTER SET NONE',
-				'XSTEXT'	=> 'BLOB SUB_TYPE TEXT CHARACTER SET NONE',
-				'STEXT'		=> 'BLOB SUB_TYPE TEXT CHARACTER SET NONE',
-				'TEXT'		=> 'BLOB SUB_TYPE TEXT CHARACTER SET NONE',
-				'MTEXT'		=> 'BLOB SUB_TYPE TEXT CHARACTER SET NONE',
-				'XSTEXT_UNI'=> 'VARCHAR(100) CHARACTER SET UTF8',
-				'STEXT_UNI'	=> 'VARCHAR(255) CHARACTER SET UTF8',
-				'TEXT_UNI'	=> 'BLOB SUB_TYPE TEXT CHARACTER SET UTF8',
-				'MTEXT_UNI'	=> 'BLOB SUB_TYPE TEXT CHARACTER SET UTF8',
-				'TIMESTAMP'	=> 'INTEGER',
-				'DECIMAL'	=> 'DOUBLE PRECISION',
-				'DECIMAL:'	=> 'DOUBLE PRECISION',
-				'PDECIMAL'	=> 'DOUBLE PRECISION',
-				'PDECIMAL:'	=> 'DOUBLE PRECISION',
-				'VCHAR_UNI'	=> 'VARCHAR(255) CHARACTER SET UTF8',
-				'VCHAR_UNI:'=> 'VARCHAR(%d) CHARACTER SET UTF8',
-				'VCHAR_CI'	=> 'VARCHAR(255) CHARACTER SET UTF8',
-				'VARBINARY'	=> 'CHAR(255) CHARACTER SET NONE',
-			),
-
-			'mssql'		=> array(
-				'INT:'		=> '[int]',
-				'BINT'		=> '[float]',
-				'UINT'		=> '[int]',
-				'UINT:'		=> '[int]',
-				'TINT:'		=> '[int]',
-				'USINT'		=> '[int]',
-				'BOOL'		=> '[int]',
-				'VCHAR'		=> '[varchar] (255)',
-				'VCHAR:'	=> '[varchar] (%d)',
-				'CHAR:'		=> '[char] (%d)',
-				'XSTEXT'	=> '[varchar] (1000)',
-				'STEXT'		=> '[varchar] (3000)',
-				'TEXT'		=> '[varchar] (8000)',
-				'MTEXT'		=> '[text]',
-				'XSTEXT_UNI'=> '[varchar] (100)',
-				'STEXT_UNI'	=> '[varchar] (255)',
-				'TEXT_UNI'	=> '[varchar] (4000)',
-				'MTEXT_UNI'	=> '[text]',
-				'TIMESTAMP'	=> '[int]',
-				'DECIMAL'	=> '[float]',
-				'DECIMAL:'	=> '[float]',
-				'PDECIMAL'	=> '[float]',
-				'PDECIMAL:'	=> '[float]',
-				'VCHAR_UNI'	=> '[varchar] (255)',
-				'VCHAR_UNI:'=> '[varchar] (%d)',
-				'VCHAR_CI'	=> '[varchar] (255)',
-				'VARBINARY'	=> '[varchar] (255)',
-			),
-
-			'oracle'	=> array(
-				'INT:'		=> 'number(%d)',
-				'BINT'		=> 'number(20)',
-				'UINT'		=> 'number(8)',
-				'UINT:'		=> 'number(%d)',
-				'TINT:'		=> 'number(%d)',
-				'USINT'		=> 'number(4)',
-				'BOOL'		=> 'number(1)',
-				'VCHAR'		=> 'varchar2(255)',
-				'VCHAR:'	=> 'varchar2(%d)',
-				'CHAR:'		=> 'char(%d)',
-				'XSTEXT'	=> 'varchar2(1000)',
-				'STEXT'		=> 'varchar2(3000)',
-				'TEXT'		=> 'clob',
-				'MTEXT'		=> 'clob',
-				'XSTEXT_UNI'=> 'varchar2(300)',
-				'STEXT_UNI'	=> 'varchar2(765)',
-				'TEXT_UNI'	=> 'clob',
-				'MTEXT_UNI'	=> 'clob',
-				'TIMESTAMP'	=> 'number(11)',
-				'DECIMAL'	=> 'number(5, 2)',
-				'DECIMAL:'	=> 'number(%d, 2)',
-				'PDECIMAL'	=> 'number(6, 3)',
-				'PDECIMAL:'	=> 'number(%d, 3)',
-				'VCHAR_UNI'	=> 'varchar2(765)',
-				'VCHAR_UNI:'=> array('varchar2(%d)', 'limit' => array('mult', 3, 765, 'clob')),
-				'VCHAR_CI'	=> 'varchar2(255)',
-				'VARBINARY'	=> 'raw(255)',
-			),
-
-			'sqlite'	=> array(
-				'INT:'		=> 'int(%d)',
-				'BINT'		=> 'bigint(20)',
-				'UINT'		=> 'INTEGER UNSIGNED', //'mediumint(8) UNSIGNED',
-				'UINT:'		=> 'INTEGER UNSIGNED', // 'int(%d) UNSIGNED',
-				'TINT:'		=> 'tinyint(%d)',
-				'USINT'		=> 'INTEGER UNSIGNED', //'mediumint(4) UNSIGNED',
-				'BOOL'		=> 'INTEGER UNSIGNED', //'tinyint(1) UNSIGNED',
-				'VCHAR'		=> 'varchar(255)',
-				'VCHAR:'	=> 'varchar(%d)',
-				'CHAR:'		=> 'char(%d)',
-				'XSTEXT'	=> 'text(65535)',
-				'STEXT'		=> 'text(65535)',
-				'TEXT'		=> 'text(65535)',
-				'MTEXT'		=> 'mediumtext(16777215)',
-				'XSTEXT_UNI'=> 'text(65535)',
-				'STEXT_UNI'	=> 'text(65535)',
-				'TEXT_UNI'	=> 'text(65535)',
-				'MTEXT_UNI'	=> 'mediumtext(16777215)',
-				'TIMESTAMP'	=> 'INTEGER UNSIGNED', //'int(11) UNSIGNED',
-				'DECIMAL'	=> 'decimal(5,2)',
-				'DECIMAL:'	=> 'decimal(%d,2)',
-				'PDECIMAL'	=> 'decimal(6,3)',
-				'PDECIMAL:'	=> 'decimal(%d,3)',
-				'VCHAR_UNI'	=> 'varchar(255)',
-				'VCHAR_UNI:'=> 'varchar(%d)',
-				'VCHAR_CI'	=> 'varchar(255)',
-				'VARBINARY'	=> 'blob',
-			),
-
-			'postgres'	=> array(
-				'INT:'		=> 'INT4',
-				'BINT'		=> 'INT8',
-				'UINT'		=> 'INT4', // unsigned
-				'UINT:'		=> 'INT4', // unsigned
-				'USINT'		=> 'INT2', // unsigned
-				'BOOL'		=> 'INT2', // unsigned
-				'TINT:'		=> 'INT2',
-				'VCHAR'		=> 'varchar(255)',
-				'VCHAR:'	=> 'varchar(%d)',
-				'CHAR:'		=> 'char(%d)',
-				'XSTEXT'	=> 'varchar(1000)',
-				'STEXT'		=> 'varchar(3000)',
-				'TEXT'		=> 'varchar(8000)',
-				'MTEXT'		=> 'TEXT',
-				'XSTEXT_UNI'=> 'varchar(100)',
-				'STEXT_UNI'	=> 'varchar(255)',
-				'TEXT_UNI'	=> 'varchar(4000)',
-				'MTEXT_UNI'	=> 'TEXT',
-				'TIMESTAMP'	=> 'INT4', // unsigned
-				'DECIMAL'	=> 'decimal(5,2)',
-				'DECIMAL:'	=> 'decimal(%d,2)',
-				'PDECIMAL'	=> 'decimal(6,3)',
-				'PDECIMAL:'	=> 'decimal(%d,3)',
-				'VCHAR_UNI'	=> 'varchar(255)',
-				'VCHAR_UNI:'=> 'varchar(%d)',
-				'VCHAR_CI'	=> 'varchar_ci',
-				'VARBINARY'	=> 'bytea',
-			),
-		);
+		// To allow testing
+		$dbms = ($dbms) ? $dbms : $db_tools->sql_layer;
 
 		// A list of types being unsigned for better reference in some db's
 		$unsigned_types = array('UINT', 'UINT:', 'USINT', 'BOOL', 'TIMESTAMP');
@@ -1963,38 +1737,38 @@ class umil
 			if (strpos($column_data[0], ':') !== false)
 			{
 				list($orig_column_type, $column_length) = explode(':', $column_data[0]);
-				if (!is_array($dbms_type_map[$dbms][$orig_column_type . ':']))
+				if (!is_array($db_tools->dbms_type_map[$dbms][$orig_column_type . ':']))
 				{
-					$column_type = sprintf($dbms_type_map[$dbms][$orig_column_type . ':'], $column_length);
+					$column_type = sprintf($db_tools->dbms_type_map[$dbms][$orig_column_type . ':'], $column_length);
 				}
 				else
 				{
-					if (isset($dbms_type_map[$dbms][$orig_column_type . ':']['rule']))
+					if (isset($db_tools->dbms_type_map[$dbms][$orig_column_type . ':']['rule']))
 					{
-						switch ($dbms_type_map[$dbms][$orig_column_type . ':']['rule'][0])
+						switch ($db_tools->dbms_type_map[$dbms][$orig_column_type . ':']['rule'][0])
 						{
 							case 'div':
-								$column_length /= $dbms_type_map[$dbms][$orig_column_type . ':']['rule'][1];
+								$column_length /= $db_tools->dbms_type_map[$dbms][$orig_column_type . ':']['rule'][1];
 								$column_length = ceil($column_length);
-								$column_type = sprintf($dbms_type_map[$dbms][$orig_column_type . ':'][0], $column_length);
+								$column_type = sprintf($db_tools->dbms_type_map[$dbms][$orig_column_type . ':'][0], $column_length);
 							break;
 						}
 					}
 
-					if (isset($dbms_type_map[$dbms][$orig_column_type . ':']['limit']))
+					if (isset($db_tools->dbms_type_map[$dbms][$orig_column_type . ':']['limit']))
 					{
-						switch ($dbms_type_map[$dbms][$orig_column_type . ':']['limit'][0])
+						switch ($db_tools->dbms_type_map[$dbms][$orig_column_type . ':']['limit'][0])
 						{
 							case 'mult':
-								$column_length *= $dbms_type_map[$dbms][$orig_column_type . ':']['limit'][1];
-								if ($column_length > $dbms_type_map[$dbms][$orig_column_type . ':']['limit'][2])
+								$column_length *= $db_tools->dbms_type_map[$dbms][$orig_column_type . ':']['limit'][1];
+								if ($column_length > $db_tools->dbms_type_map[$dbms][$orig_column_type . ':']['limit'][2])
 								{
-									$column_type = $dbms_type_map[$dbms][$orig_column_type . ':']['limit'][3];
+									$column_type = $db_tools->dbms_type_map[$dbms][$orig_column_type . ':']['limit'][3];
 									$modded_array[$column_name] = $column_type;
 								}
 								else
 								{
-									$column_type = sprintf($dbms_type_map[$dbms][$orig_column_type . ':'][0], $column_length);
+									$column_type = sprintf($db_tools->dbms_type_map[$dbms][$orig_column_type . ':'][0], $column_length);
 								}
 							break;
 						}
@@ -2005,7 +1779,7 @@ class umil
 			else
 			{
 				$orig_column_type = $column_data[0];
-				$column_type = $dbms_type_map[$dbms][$column_data[0]];
+				$column_type = $db_tools->dbms_type_map[$dbms][$column_data[0]];
 				if ($column_type == 'text' || $column_type == 'blob')
 				{
 					$modded_array[$column_name] = $column_type;
