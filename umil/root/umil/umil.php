@@ -231,6 +231,130 @@ class umil
 	}
 
 	/**
+	* Run Actions
+	*
+	* Do-It-All function that can do everything required for installing/updating/uninstalling a mod based on an array of actions and the versions.
+	*
+	* @param string $action The action. install|update|uninstall
+	* @param array $versions The array of versions and the actions for each
+	* @param string $current_version The current version to install/update to
+	* @param string|bool $db_version The current version installed to update to/remove from
+	*/
+	function run_actions($action, $versions, $current_version, $version_config_name, $version_select = '')
+	{
+		$db_version = '';
+		if ($this->config_exists($version_config_name))
+		{
+			global $config;
+			$db_version = $config[$version_config_name];
+		}
+
+		if ($action == 'install' || ($action == 'update' && $db_version))
+		{
+			$version_installed = $db_version;
+			foreach ($versions as $version => $version_actions)
+			{
+				// If we are updating
+				if ($db_version && version_compare($version, $db_version, '<='))
+				{
+					continue;
+				}
+
+				if ($version_select && version_compare($version, $version_select, '>'))
+				{
+					break;
+				}
+
+				foreach ($version_actions as $method => $params)
+				{
+					if ($method == 'custom')
+					{
+						if (function_exists($params))
+						{
+							call_user_func($params, $action, $version);
+						}
+					}
+					else
+					{
+						if (method_exists($this, $method))
+						{
+							call_user_func(array($this, $method), $params);
+						}
+					}
+				}
+
+				$version_installed = $version;
+			}
+
+			// update the version number or add it
+			if ($this->config_exists($version_config_name))
+			{
+				$this->config_update($version_config_name, $version_installed);
+			}
+			else
+			{
+				$this->config_add($version_config_name, $version_installed);
+			}
+		}
+		else if ($action == 'uninstall' && $db_version)
+		{
+			// reverse version list
+			$versions = array_reverse($versions);
+
+			foreach ($versions as $version => $version_actions)
+			{
+				// Uninstalling and this listed version is newer than installed
+				if (version_compare($version, $db_version, '>'))
+				{
+					continue;
+				}
+
+				// Version selection stuff
+				if ($version_select && version_compare($version, $version_select, '<='))
+				{
+					// update the version number
+					$this->config_update($version_config_name, $version);
+					break;
+				}
+
+				$version_actions = array_reverse($version_actions);
+				foreach ($version_actions as $method => $params)
+				{
+					if ($method == 'custom')
+					{
+						if (function_exists($params))
+						{
+							call_user_func($params, $action, $version);
+						}
+					}
+					else
+					{
+						// update mode (reversing an action) isn't possible for uninstallations
+						if (strpos($method, 'update'))
+						{
+							continue;
+						}
+
+						// reverse function call
+						$method = str_replace(array('add', 'remove', 'temp'), array('temp', 'add', 'remove'), $method);
+
+						if (method_exists($this, $method))
+						{
+							call_user_func(array($this, $method), ((is_array($params) ? array_reverse($params) : $params)));
+						}
+					}
+				}
+			}
+
+			if (!$version_select)
+			{
+				// Unset the version number
+				$this->config_remove($version_config_name);
+			}
+		}
+	}
+
+	/**
 	* Cache Purge
 	*
 	* @param string $type The type of cache you want purged.  Available types: auth, imageset, template, theme.  Anything else sent will purge the forum's cache.
