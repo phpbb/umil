@@ -999,8 +999,13 @@ class umil
 				return $this->umil_end();
 			}
 
-			include($info_file);
 			$classname = "{$class}_{$basename}_info";
+
+			if (!class_exists($classname))
+			{
+				include($info_file);
+			}
+
 			$info = new $classname;
 			$module = $info->module();
 			unset($info);
@@ -1112,14 +1117,16 @@ class umil
 		// Imitation of module_add's "automatic" and "manual" method so the uninstaller works from the same set of instructions for umil_auto
 		if (is_array($module))
 		{
+			if (isset($module['module_langname']))
+			{
+				// Manual Method
+				call_user_func(array($this, 'module_remove'), $class, $parent, $module['module_langname']);
+				return;
+			}
+
+			// Failed.
 			if (!isset($module['module_basename']))
 			{
-				if (isset($module['module_langname']))
-				{
-					// Manual Method
-					call_user_func(array($this, 'module_remove'), $class, $parent, $module['module_langname']);
-				}
-
 				return;
 			}
 
@@ -1133,17 +1140,22 @@ class umil
 				return;
 			}
 
-			include($info_file);
 			$classname = "{$class}_{$basename}_info";
+
+			if (!class_exists($classname))
+			{
+				include($info_file);
+			}
+
 			$info = new $classname;
 			$module_info = $info->module();
 			unset($info);
 
-			foreach ($module_info['modes'] as $mode)
+			foreach ($module_info['modes'] as $mode => $info)
 			{
-				if (!isset($module['modes']) || isset($module['modes'][$mode]))
+				if (!isset($module['modes']) || in_array($mode, $module['modes']))
 				{
-					call_user_func(array($this, 'module_remove'), $class, $parent, $mode['title']);
+					call_user_func(array($this, 'module_remove'), $class, $parent, $info['title']);
 				}
 			}
 		}
