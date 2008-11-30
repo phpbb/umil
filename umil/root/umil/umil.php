@@ -239,11 +239,20 @@ class umil
 	*
 	* @param string $action The action. install|update|uninstall
 	* @param array $versions The array of versions and the actions for each
-	* @param string $current_version The current version to install/update to
 	* @param string|bool $db_version The current version installed to update to/remove from
 	*/
-	function run_actions($action, $versions, $current_version, $version_config_name, $version_select = '')
+	function run_actions($action, $versions, $version_config_name, $version_select = '')
 	{
+		// We will sort the actions to prevent issues from mod authors incorrectly listing the version numbers
+		uksort($versions, 'version_compare');
+
+		// Find the current version to install
+		$current_version = '0.0.0';
+		foreach ($versions as $version => $actions)
+		{
+			$current_version = $version;
+		}
+
 		$db_version = '';
 		if ($this->config_exists($version_config_name))
 		{
@@ -251,7 +260,12 @@ class umil
 			$db_version = $config[$version_config_name];
 		}
 
-		if ($action == 'install' || ($action == 'update' && $db_version))
+		if ($action == 'update' && !$db_version)
+		{
+			$action = 'install';
+		}
+
+		if ($action == 'install' || $action == 'update')
 		{
 			$version_installed = $db_version;
 			foreach ($versions as $version => $version_actions)
@@ -1485,10 +1499,10 @@ class umil
 		}
 
 		$db_tools = new phpbb_db_tools($db);
-		$available_dbms = get_available_dbms($db_tools->sql_layer);
+		$available_dbms = get_available_dbms($dbms);
 
 		$sql_query = $this->create_table_sql($table_name, $table_data);
-		$sql_query = split_sql_file($sql_query, $available_dbms[$db_tools->sql_layer]['DELIM']);
+		$sql_query = split_sql_file($sql_query, $available_dbms[$dbms]['DELIM']);
 
 		foreach ($sql_query as $sql)
 		{

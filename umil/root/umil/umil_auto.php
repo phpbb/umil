@@ -118,7 +118,7 @@ else if ($umil->confirm_box(true))
 {
 	$umil->display_stages($stages, 3);
 
-	$umil->run_actions($action, $versions, $current_version, $version_config_name, $version_select);
+	$umil->run_actions($action, $versions, $version_config_name, $version_select);
 	$umil->done();
 }
 
