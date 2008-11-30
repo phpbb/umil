@@ -398,7 +398,7 @@ class umil
 					$result = $db->sql_query($sql);
 					while ($row = $db->sql_fetchrow($result))
 					{
-						$return[] = $this->purge_cache('imageset', $row['imageset_id']);
+						$return[] = $this->cache_purge('imageset', $row['imageset_id']);
 					}
 					$db->sql_freeresult($result);
 
@@ -422,40 +422,8 @@ class umil
 
 					$this->umil_start('IMAGESET_CACHE_PURGE', $imageset_row['imageset_name']);
 
-					// The following is from includes/acp/acp_styles.php
+					// The following is from includes/acp/acp_styles.php (edited)
 					$sql_ary = array();
-
-					$imageset_definitions = array();
-					$imageset_keys = array(
-						'logos' => array(
-							'site_logo',
-						),
-						'buttons'	=> array(
-							'icon_back_top', 'icon_contact_aim', 'icon_contact_email', 'icon_contact_icq', 'icon_contact_jabber', 'icon_contact_msnm', 'icon_contact_pm', 'icon_contact_yahoo', 'icon_contact_www', 'icon_post_delete', 'icon_post_edit', 'icon_post_info', 'icon_post_quote', 'icon_post_report', 'icon_user_online', 'icon_user_offline', 'icon_user_profile', 'icon_user_search', 'icon_user_warn', 'button_pm_forward', 'button_pm_new', 'button_pm_reply', 'button_topic_locked', 'button_topic_new', 'button_topic_reply',
-						),
-						'icons'		=> array(
-							'icon_post_target', 'icon_post_target_unread', 'icon_topic_attach', 'icon_topic_latest', 'icon_topic_newest', 'icon_topic_reported', 'icon_topic_unapproved', 'icon_friend', 'icon_foe',
-						),
-						'forums'	=> array(
-							'forum_link', 'forum_read', 'forum_read_locked', 'forum_read_subforum', 'forum_unread', 'forum_unread_locked', 'forum_unread_subforum', 'subforum_read', 'subforum_unread'
-						),
-						'folders'	=> array(
-							'topic_moved', 'topic_read', 'topic_read_mine', 'topic_read_hot', 'topic_read_hot_mine', 'topic_read_locked', 'topic_read_locked_mine', 'topic_unread', 'topic_unread_mine', 'topic_unread_hot', 'topic_unread_hot_mine', 'topic_unread_locked', 'topic_unread_locked_mine', 'sticky_read', 'sticky_read_mine', 'sticky_read_locked', 'sticky_read_locked_mine', 'sticky_unread', 'sticky_unread_mine', 'sticky_unread_locked', 'sticky_unread_locked_mine', 'announce_read', 'announce_read_mine', 'announce_read_locked', 'announce_read_locked_mine', 'announce_unread', 'announce_unread_mine', 'announce_unread_locked', 'announce_unread_locked_mine', 'global_read', 'global_read_mine', 'global_read_locked', 'global_read_locked_mine', 'global_unread', 'global_unread_mine', 'global_unread_locked', 'global_unread_locked_mine', 'pm_read', 'pm_unread',
-						),
-						'polls'		=> array(
-							'poll_left', 'poll_center', 'poll_right',
-						),
-						'ui'		=> array(
-							'upload_bar',
-						),
-						'user'		=> array(
-							'user_icon1', 'user_icon2', 'user_icon3', 'user_icon4', 'user_icon5', 'user_icon6', 'user_icon7', 'user_icon8', 'user_icon9', 'user_icon10',
-						),
-					);
-					foreach ($imageset_keys as $topic => $key_array)
-					{
-						$imageset_definitions = array_merge($imageset_definitions, $key_array);
-					}
 
 					$cfg_data_imageset = parse_cfg_file("{$phpbb_root_path}styles/{$imageset_row['imageset_path']}/imageset/imageset.cfg");
 
@@ -486,17 +454,15 @@ class umil
 						if (strpos($image_name, 'img_') === 0 && $image_filename)
 						{
 							$image_name = substr($image_name, 4);
-							if (in_array($image_name, $imageset_definitions))
-							{
-								$sql_ary[] = array(
-									'image_name'		=> (string) $image_name,
-									'image_filename'	=> (string) $image_filename,
-									'image_height'		=> (int) $image_height,
-									'image_width'		=> (int) $image_width,
-									'imageset_id'		=> (int) $style_id,
-									'image_lang'		=> '',
-								);
-							}
+
+							$sql_ary[] = array(
+								'image_name'		=> (string) $image_name,
+								'image_filename'	=> (string) $image_filename,
+								'image_height'		=> (int) $image_height,
+								'image_width'		=> (int) $image_width,
+								'imageset_id'		=> (int) $style_id,
+								'image_lang'		=> '',
+							);
 						}
 					}
 
@@ -532,17 +498,14 @@ class umil
 								if (strpos($image_name, 'img_') === 0 && $image_filename)
 								{
 									$image_name = substr($image_name, 4);
-									if (in_array($image_name, $imageset_definitions))
-									{
-										$sql_ary[] = array(
-											'image_name'		=> (string) $image_name,
-											'image_filename'	=> (string) $image_filename,
-											'image_height'		=> (int) $image_height,
-											'image_width'		=> (int) $image_width,
-											'imageset_id'		=> (int) $style_id,
-											'image_lang'		=> (string) $row['lang_dir'],
-										);
-									}
+									$sql_ary[] = array(
+										'image_name'		=> (string) $image_name,
+										'image_filename'	=> (string) $image_filename,
+										'image_height'		=> (int) $image_height,
+										'image_width'		=> (int) $image_width,
+										'imageset_id'		=> (int) $style_id,
+										'image_lang'		=> (string) $row['lang_dir'],
+									);
 								}
 							}
 						}
@@ -567,7 +530,7 @@ class umil
 					$result = $db->sql_query($sql);
 					while ($row = $db->sql_fetchrow($result))
 					{
-						$return[] = $this->purge_cache('template', $row['template_id']);
+						$return[] = $this->cache_purge('template', $row['template_id']);
 					}
 					$db->sql_freeresult($result);
 
@@ -684,7 +647,7 @@ class umil
 					$result = $db->sql_query($sql);
 					while ($row = $db->sql_fetchrow($result))
 					{
-						$return[] = $this->purge_cache('theme', $row['theme_id']);
+						$return[] = $this->cache_purge('theme', $row['theme_id']);
 					}
 					$db->sql_freeresult($result);
 
@@ -1718,7 +1681,7 @@ class umil
 	*
 	* Add a new key/index to a table
 	*/
-	function table_index_add($table_name, $index_name = '', $column = '')
+	function table_index_add($table_name, $index_name = '', $column = array())
 	{
 		global $db, $table_prefix;
 
@@ -1746,6 +1709,11 @@ class umil
 		if (!is_array($column))
 		{
 			$column = array($column);
+		}
+
+		if (empty($column))
+		{
+			$column = array($index_name);
 		}
 
 		if (!class_exists('phpbb_db_tools'))
