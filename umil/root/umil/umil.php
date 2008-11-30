@@ -213,6 +213,8 @@ class umil
 			{
 				$this->result .= '<br /><br />SQL ERROR ' . $db->sql_error_returned['message'];
 			}
+
+			//$db->sql_transaction('rollback');
 		}
 		else
 		{
@@ -1471,8 +1473,27 @@ class umil
 			return $this->umil_end();
 		}
 
-		$sql = $this->create_table_sql($table_name, $table_data);
-		$db->sql_query($sql);
+		if (!function_exists('get_available_dbms'))
+		{
+			global $phpbb_root_path, $phpEx;
+			include("{$phpbb_root_path}includes/functions_install.$phpEx");
+		}
+		if (!class_exists('phpbb_db_tools'))
+		{
+			global $phpbb_root_path, $phpEx;
+			include($phpbb_root_path . 'includes/db/db_tools.' . $phpEx);
+		}
+
+		$db_tools = new phpbb_db_tools($db);
+		$available_dbms = get_available_dbms($db_tools->sql_layer);
+
+		$sql_query = $this->create_table_sql($table_name, $table_data);
+		$sql_query = split_sql_file($sql_query, $available_dbms[$db_tools->sql_layer]['DELIM']);
+
+		foreach ($sql_query as $sql)
+		{
+			$db->sql_query($sql);
+		}
 
 		return $this->umil_end();
 	}
