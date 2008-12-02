@@ -19,6 +19,11 @@ if (!class_exists('umil'))
 	include($phpbb_root_path . 'umil/umil.' . $phpEx);
 }
 
+if (class_exists('umil_frontend'))
+{
+	return;
+}
+
 /**
 * UMIL - Unified MOD Installation File class Front End
 */

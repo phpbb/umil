@@ -14,8 +14,10 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-if (!class_exists('umil'))
+if (class_exists('umil'))
 {
+	return;
+}
 
 /**
 * Multicall instructions
@@ -2287,7 +2289,5 @@ class umil
 		return $sql;
 	}
 }
-
-} //if (!class_exists('umil'))
 
 ?>
