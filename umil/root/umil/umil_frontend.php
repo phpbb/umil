@@ -38,10 +38,13 @@ class umil_frontend extends umil
 	// The file we will record any errors in
 	var $error_file = '';
 
+	// Force displaying of the results?
+	var $force_display_results = false;
+
 	/**
 	* Constructor
 	*/
-	function umil_frontend($title = '', $auto_display_results = false)
+	function umil_frontend($title = '', $auto_display_results = false, $force_display_results = false)
 	{
 		global $db, $phpbb_root_path, $phpEx, $template, $user;
 
@@ -51,6 +54,7 @@ class umil_frontend extends umil
 		// we must call the main constructor
 		$this->umil();
 		$this->auto_display_results = $auto_display_results;
+		$this->force_display_results = $force_display_results;
 
 		$user->add_lang('install');
 
@@ -207,7 +211,7 @@ class umil_frontend extends umil
 	* @param string $command The command you would like shown (leave blank to use the last command saved in $this->command)
 	* @param string $result The result you would like shown (leave blank to use the last result saved in $this->result)
 	*/
-	function display_results($command = '', $result = '', $force_display = false)
+	function display_results($command = '', $result = '')
 	{
 		global $template, $user;
 
@@ -241,7 +245,7 @@ class umil_frontend extends umil
 			phpbb_chmod($this->error_file, CHMOD_ALL);
 		}
 
-		if ($result != $user->lang['SUCCESS'] || $force_display == true || defined('DEBUG'))
+		if ($result != $user->lang['SUCCESS'] || $this->force_display_results == true)// || defined('DEBUG'))
 		{
 			$template->assign_block_vars('results', array(
 				'COMMAND'	=> $command,

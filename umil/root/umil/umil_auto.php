@@ -49,7 +49,8 @@ if (!class_exists('umil_frontend'))
 	include($phpbb_root_path . 'umil/umil_frontend.' . $phpEx);
 }
 
-$umil = new umil_frontend($mod_name, true);
+$force_display_results = request_var('display_results', (defined('DEBUG') ? true : false));
+$umil = new umil_frontend($mod_name, true, $force_display_results);
 
 // Check after initiating UMIL.
 if ($user->data['user_type'] != USER_FOUNDER)
@@ -89,6 +90,7 @@ if (!$submit && !$umil->confirm_box(true))
 		'legend1'			=> 'OPTIONS',
 		'action'			=> array('lang' => 'ACTION', 'type' => 'custom', 'function' => 'umil_install_update_uninstall_select', 'explain' => false),
 		'version_select'	=> array('lang' => 'VERSION_SELECT', 'type' => 'custom', 'function' => 'umil_version_select', 'explain' => true),
+		'display_results'	=> array('lang' => 'DISPLAY_RESULTS', 'type' => 'radio:yes_no', 'explain' => true, 'default' => $force_display_results),
 	);
 
 	$umil->display_options($options);
@@ -98,7 +100,7 @@ else if (!$umil->confirm_box(true))
 {
 	$umil->display_stages($stages, 2);
 
-	$hidden = array('action' => $action, 'version_select' => $version_select);
+	$hidden = array('action' => $action, 'version_select' => $version_select, 'display_results' => $force_display_results);
 	switch ($action)
 	{
 		case 'install' :
