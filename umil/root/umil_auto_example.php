@@ -165,9 +165,6 @@ function umil_auto_example($action, $version)
 		case 'update' :
 			// Run this when installing/updating
 
-			// First, tell UMIL we will be starting a new command.
-			$umil->umil_start('INSERT_TEST_ROW');
-
 			$sql_ary = array(
 				'test_text'		=> 'This is a test message.',
 				'test_bool'		=> 1,
@@ -176,23 +173,20 @@ function umil_auto_example($action, $version)
 			$sql = 'INSERT INTO ' . $table_prefix . 'test ' . $db->sql_build_array('INSERT', $sql_ary);
 			$db->sql_query($sql);
 
-			// Tell UMIL that we are finished with this command
-			$umil->umil_end();
+			// Method 1 of displaying the command (and Success for the result)
+			return 'INSERT_TEST_ROW';
 		break;
 
 		case 'uninstall' :
 			// Run this when uninstalling
-
-			// First, tell UMIL we will be starting a new command.
-			$umil->umil_start('REMOVE_TEST_ROW');
 
 			$sql = 'DELETE FROM ' . $table_prefix . "test
 				WHERE test_text = 'This is a test message.'
 				AND test_bool = 1";
 			$db->sql_query($sql);
 
-            // Tell UMIL that we are finished with this command
-			$umil->umil_end();
+			// Method 2 of displaying the command/results
+            return array('command' => 'REMOVE_TEST_ROW', 'result' => 'SUCCESS');
 		break;
 	}
 }
