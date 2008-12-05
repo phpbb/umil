@@ -61,13 +61,28 @@
 	</form>
 <!-- ENDIF -->
 
-<!-- IF .results -->
+<!-- IF S_RESULTS -->
 	<h1>{L_TITLE} - <font style="color: <!-- IF S_SUCCESS -->green<!-- ELSE -->red<!-- ENDIF -->;">{L_RESULTS}</font></h1>
 
 	<br />
 
 	<p>{L_DATABASE_TYPE} :: <strong>{SQL_LAYER}</strong></p>
 
+	<!-- IF not S_SUCCESS -->
+		<div class="errorbox">
+			<h3>{L_WARNING}</h3>
+			<p>{L_ERROR_NOTICE}</p>
+		</div>
+	<!-- ENDIF -->
+
+	<!-- IF S_PERMISSIONS -->
+		<div class="errorbox">
+			<h3>{L_WARNING}</h3>
+			<p>{L_PERMISSIONS_WARNING}</p>
+		</div>
+	<!-- ENDIF -->
+
+	<!-- IF .results -->
 	<fieldset>
 		<legend></legend>
 		<!-- BEGIN results -->
@@ -76,6 +91,9 @@
 				<!-- IF not results.S_LAST_ROW --><hr /><!-- ENDIF -->
 		<!-- END results -->
 	</fieldset>
+	<!-- ENDIF -->
+
+
 <!-- ENDIF -->
 
 

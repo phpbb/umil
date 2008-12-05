@@ -39,6 +39,8 @@ $lang = array_merge($lang, array(
 	'CONFIG_REMOVE'					=> 'Removing config variable: %s',
 	'CONFIG_UPDATE'					=> 'Updating config variable: %s',
 
+	'ERROR_NOTICE'					=> 'One or more errors occured during the requested action.  Please download <a href="%s">this file</a> with the errors listed in it and ask the mod author for assistance.',
+
 	'FAIL'							=> 'Fail',
 	'FOUNDERS_ONLY'					=> 'You must be a board founder to access this page.',
 
@@ -56,6 +58,7 @@ $lang = array_merge($lang, array(
 	'PERMISSION_ALREADY_EXISTS'		=> 'ERROR: Permission option %s already exists.',
 	'PERMISSION_NOT_EXIST'			=> 'ERROR: Permission option %s does not exist.',
 	'PERMISSION_REMOVE'				=> 'Removing permission option: %s',
+	'PERMISSIONS_WARNING'			=> 'New permission settings have been added.  Be sure to check your permission settings and see that they are as you would like them.',
 
 	'SUCCESS'						=> 'Success',
 

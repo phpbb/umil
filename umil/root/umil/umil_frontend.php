@@ -32,6 +32,12 @@ class umil_frontend extends umil
 	// Were there any errors so far (used when displaying results)?
 	var $errors = false;
 
+	// Was anything done at all (used when displaying results)?
+	var $results = false;
+
+	// The file we will record any errors in
+	var $error_file = '';
+
 	/**
 	* Constructor
 	*/
@@ -201,7 +207,7 @@ class umil_frontend extends umil
 	* @param string $command The command you would like shown (leave blank to use the last command saved in $this->command)
 	* @param string $result The result you would like shown (leave blank to use the last result saved in $this->result)
 	*/
-	function display_results($command = '', $result = '')
+	function display_results($command = '', $result = '', $force_display = false)
 	{
 		global $template, $user;
 
@@ -210,16 +216,39 @@ class umil_frontend extends umil
 		$result = ($result) ? $result : $this->result;
 		$result = (isset($user->lang[$result])) ? $user->lang[$result] : $result;
 
+		$this->results = true;
+
 		if ($result != $user->lang['SUCCESS'])
 		{
-			$this->errors = true;
+			if ($this->errors == false)
+			{
+				$this->errors = true;
+
+				global $phpbb_root_path;
+				// Setting up an error recording file
+				$append = 0;
+				do
+				{
+					$this->error_file = "{$phpbb_root_path}umil/error_files/error_{$append}.txt";
+					$append++;
+				}
+				while (file_exists($this->error_file));
+			}
+
+			$fp = fopen($this->error_file, 'wb');
+			fwrite($fp, ((filesize($this->error_file)) ? fread($fp, filesize($this->error_file)) : '') . "{$command}\n{$result}\n\n");
+			fclose($fp);
+			phpbb_chmod($this->error_file, CHMOD_ALL);
 		}
 
-		$template->assign_block_vars('results', array(
-			'COMMAND'	=> $command,
-			'RESULT'	=> $result,
-			'S_SUCCESS'	=> ($result == $user->lang['SUCCESS']) ? true : false,
-		));
+		if ($result != $user->lang['SUCCESS'] || $force_display == true || defined('DEBUG'))
+		{
+			$template->assign_block_vars('results', array(
+				'COMMAND'	=> $command,
+				'RESULT'	=> $result,
+				'S_SUCCESS'	=> ($result == $user->lang['SUCCESS']) ? true : false,
+			));
+		}
 	}
 
 	/**
@@ -232,8 +261,14 @@ class umil_frontend extends umil
 		global $template, $user;
 
 		$template->assign_vars(array(
-			'L_RESULTS'		=> ($this->errors) ? $user->lang['FAIL'] : $user->lang['SUCCESS'],
-			'S_SUCCESS'		=> ($this->errors) ? false : true,
+			'U_ERROR_FILE'		=> $this->error_file,
+
+			'L_RESULTS'			=> ($this->errors) ? $user->lang['FAIL'] : $user->lang['SUCCESS'],
+			'L_ERROR_NOTICE'	=> sprintf($user->lang['ERROR_NOTICE'], $this->error_file),
+
+			'S_RESULTS'			=> $this->results,
+			'S_SUCCESS'			=> ($this->errors) ? false : true,
+			'S_PERMISSIONS'		=> $this->permissions_added,
 		));
 
 		page_footer();

@@ -100,6 +100,11 @@ class umil
 	*/
 	var $stand_alone = false;
 
+    /**
+	* Were any new permissions added (used in umil_frontend)?
+	*/
+	var $permissions_added = false;
+
 	/**
 	* Constructor
 	*/
@@ -120,20 +125,24 @@ class umil
 			else
 			{*/
 				// Include the umil language file.  First we check if the language file for the user's language is available, if not we check if the board's default language is available, if not we use the english file.
-				$path = './../../umil/language/';
+				$path = false;
 				if (isset($user->data['user_lang']) && file_exists("{$phpbb_root_path}umil/language/{$user->data['user_lang']}/umil.$phpEx"))
 				{
-					$path .= $user->data['user_lang'];
+					$path = $user->data['user_lang'];
 				}
 				else if (file_exists("{$phpbb_root_path}umil/language/" . basename($config['default_lang']) . "/umil.$phpEx"))
 				{
-					$path .= basename($config['default_lang']);
+					$path = basename($config['default_lang']);
 				}
 				else if (file_exists("{$phpbb_root_path}umil/language/en/umil.$phpEx"))
 				{
-					$path .= 'en';
+					$path = 'en';
 				}
-				$user->add_lang($path . '/umil');
+
+				if ($path)
+				{
+					$user->add_lang('./../../umil/language/' . $path . '/umil');
+				}
 			//}
 		}
 	}
@@ -289,7 +298,30 @@ class umil
 					{
 						if (function_exists($params))
 						{
-							call_user_func($params, $action, $version);
+							$return = call_user_func($params, $action, $version);
+							if (is_string($return))
+							{
+								$this->umil_start($return);
+								$this->umil_end();
+							}
+							else if (is_array($return) && isset($return['command']))
+							{
+								if (is_array($return['command']))
+								{
+									call_user_func_array(array($this, 'umil_start'), $return['command']);
+								}
+								else
+								{
+									$this->umil_start($return['command']);
+								}
+
+								if (isset($return['result']))
+								{
+									$this->result($return['result']);
+								}
+
+								$this->umil_end();
+							}
 						}
 					}
 					else
@@ -342,7 +374,30 @@ class umil
 					{
 						if (function_exists($params))
 						{
-							call_user_func($params, $action, $version);
+							$return = call_user_func($params, $action, $version);
+							if (is_string($return))
+							{
+								$this->umil_start($return);
+								$this->umil_end();
+							}
+							else if (is_array($return) && isset($return['command']))
+							{
+								if (is_array($return['command']))
+								{
+									call_user_func_array(array($this, 'umil_start'), $return['command']);
+								}
+								else
+								{
+									$this->umil_start($return['command']);
+								}
+
+								if (isset($return['result']))
+								{
+									$this->result($return['result']);
+								}
+
+								$this->umil_end();
+							}
 						}
 					}
 					else
@@ -1346,6 +1401,9 @@ class umil
 			$this->result('PERMISSION_ALREADY_EXISTS', $auth_option);
 			return $this->umil_end();
 		}
+
+		// We've added permissions, so set to true to notify the user.
+		$this->permissions_added = true;
 
 		if (!class_exists('auth_admin'))
 		{
