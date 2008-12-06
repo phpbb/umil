@@ -214,6 +214,13 @@ class umil
 	{
 		global $db, $user;
 
+		// Set up the result.  This will get the arguments sent to the function.
+		$args = func_get_args();
+		if (sizeof($args))
+		{
+			call_user_func_array(array($this, 'result'), $args);
+		}
+
 		if ($db->sql_error_triggered)
 		{
 			if ($this->result == ((isset($user->lang['SUCCESS'])) ? $user->lang['SUCCESS'] : 'SUCCESS'))
@@ -409,7 +416,7 @@ class umil
 						}
 
 						// reverse function call
-						$method = str_replace(array('add', 'remove', 'temp'), array('temp', 'add', 'remove'), $method);
+						$method = str_replace(array('add', 'remove', 'temp', 'set', 'unset', 'temp'), array('temp', 'add', 'remove', 'temp', 'unset', 'set'), $method);
 
 						if (method_exists($this, $method))
 						{
@@ -489,8 +496,7 @@ class umil
 					if (!$imageset_row)
 					{
 						$this->umil_start('IMAGESET_CACHE_PURGE', 'UNKNOWN');
-						$this->result('FAIL');
-						return $this->umil_end();
+						return $this->umil_end('FAIL');
 					}
 
 					$this->umil_start('IMAGESET_CACHE_PURGE', $imageset_row['imageset_name']);
@@ -621,8 +627,7 @@ class umil
 					if (!$template_row)
 					{
 						$this->umil_start('TEMPLATE_CACHE_PURGE', 'UNKNOWN');
-						$this->result('FAIL');
-						return $this->umil_end();
+						return $this->umil_end('FAIL');
 					}
 
 					$this->umil_start('TEMPLATE_CACHE_PURGE', $template_row['template_name']);
@@ -661,8 +666,7 @@ class umil
 							{
 								if (!($fp = @fopen("{$phpbb_root_path}styles/{$template_row['template_path']}$pathfile$file", 'r')))
 								{
-									$this->result('FAIL');
-									return $this->umil_end();
+									return $this->umil_end('FAIL');
 								}
 								$template_data = fread($fp, filesize("{$phpbb_root_path}styles/{$template_row['template_path']}$pathfile$file"));
 								fclose($fp);
@@ -738,8 +742,7 @@ class umil
 					if (!$theme_row)
 					{
 						$this->umil_start('THEME_CACHE_PURGE', 'UNKNOWN');
-						$this->result('FAIL');
-						return $this->umil_end();
+						return $this->umil_end('FAIL');
 					}
 
 					$this->umil_start('THEME_CACHE_PURGE', $theme_row['theme_name']);
@@ -861,9 +864,7 @@ class umil
 
 		if ($this->config_exists($config_name))
 		{
-			global $user;
-			$this->result('CONFIG_ALREADY_EXISTS', $config_name);
-			return $this->umil_end();
+			return $this->umil_end('CONFIG_ALREADY_EXISTS', $config_name);
 		}
 
 		set_config($config_name, $config_value, $is_dynamic);
@@ -896,9 +897,7 @@ class umil
 
 		if (!$this->config_exists($config_name))
 		{
-			global $user;
-			$this->result('CONFIG_NOT_EXIST', $config_name);
-			return $this->umil_end();
+			return $this->umil_end('CONFIG_NOT_EXIST', $config_name);
 		}
 
 		set_config($config_name, $config_value, $is_dynamic);
@@ -931,9 +930,7 @@ class umil
 
 		if (!$this->config_exists($config_name))
 		{
-			global $user;
-			$this->result('CONFIG_NOT_EXIST', $config_name);
-			return $this->umil_end();
+			return $this->umil_end('CONFIG_NOT_EXIST', $config_name);
 		}
 
 		$sql = 'DELETE FROM ' . CONFIG_TABLE . " WHERE config_name = '" . $db->sql_escape($config_name) . "'";
@@ -1068,8 +1065,7 @@ class umil
 			if (!file_exists($info_file))
 			{
 				$this->umil_start('MODULE_ADD', $class, 'UNKNOWN');
-				$this->result('FAIL');
-				return $this->umil_end();
+				return $this->umil_end('FAIL');
 			}
 
 			$classname = "{$class}_{$basename}_info";
@@ -1119,8 +1115,7 @@ class umil
 
 			if (!$row)
 			{
-				$this->result('FAIL');
-				return $this->umil_end();
+				return $this->umil_end('FAIL');
 			}
 
 			$data['parent_id'] = $row['module_id'];
@@ -1239,8 +1234,7 @@ class umil
 			if (!$this->module_exists($class, $parent, $module))
 			{
 				$this->umil_start('MODULE_REMOVE', $class, ((isset($user->lang[$module])) ? $user->lang[$module] : $module));
-				$this->result('MODULE_NOT_EXIST');
-				return $this->umil_end();
+				return $this->umil_end('MODULE_NOT_EXIST');
 			}
 
 			$parent_sql = '';
@@ -1397,9 +1391,7 @@ class umil
 
 		if ($this->permission_exists($auth_option, $global))
 		{
-			global $user;
-			$this->result('PERMISSION_ALREADY_EXISTS', $auth_option);
-			return $this->umil_end();
+			return $this->umil_end('PERMISSION_ALREADY_EXISTS', $auth_option);
 		}
 
 		// We've added permissions, so set to true to notify the user.
@@ -1454,9 +1446,7 @@ class umil
 
 		if (!$this->permission_exists($auth_option, $global))
 		{
-			global $user;
-			$this->result('PERMISSION_NOT_EXIST', $auth_option);
-			return $this->umil_end();
+			return $this->umil_end('PERMISSION_NOT_EXIST', $auth_option);
 		}
 
 		$sql = 'SELECT auth_option_id FROM ' . ACL_OPTIONS_TABLE . "
@@ -1537,14 +1527,12 @@ class umil
 
 		if ($this->table_exists($table_name))
 		{
-			$this->result('TABLE_ALREADY_EXISTS', $table_name);
-			return $this->umil_end();
+			return $this->umil_end('TABLE_ALREADY_EXISTS', $table_name);
 		}
 
 		if (!is_array($table_data))
 		{
-			$this->result('FAIL');
-			return $this->umil_end();
+			return $this->umil_end('FAIL');
 		}
 
 		if (!function_exists('get_available_dbms'))
@@ -1597,9 +1585,7 @@ class umil
 
 		if (!$this->table_exists($table_name))
 		{
-			global $user;
-			$this->result('TABLE_NOT_EXIST', $table_name);
-			return $this->umil_end();
+			return $this->umil_end('TABLE_NOT_EXIST', $table_name);
 		}
 
 		$db->sql_query('DROP TABLE ' . $table_name);
@@ -1653,9 +1639,7 @@ class umil
 
 		if ($this->table_column_exists($table_name, $column_name))
 		{
-			global $user;
-			$this->result('TABLE_COLUMN_ALREADY_EXISTS', $table_name, $column_name);
-			return $this->umil_end();
+			return $this->umil_end('TABLE_COLUMN_ALREADY_EXISTS', $table_name, $column_name);
 		}
 
 		if (!class_exists('phpbb_db_tools'))
@@ -1695,9 +1679,7 @@ class umil
 
 		if (!$this->table_column_exists($table_name, $column_name))
 		{
-			global $user;
-			$this->result('TABLE_COLUMN_NOT_EXIST', $table_name, $column_name);
-			return $this->umil_end();
+			return $this->umil_end('TABLE_COLUMN_NOT_EXIST', $table_name, $column_name);
 		}
 
 		if (!class_exists('phpbb_db_tools'))
@@ -1737,9 +1719,7 @@ class umil
 
 		if (!$this->table_column_exists($table_name, $column_name))
 		{
-			global $user;
-			$this->result('TABLE_COLUMN_NOT_EXIST', $table_name, $column_name);
-			return $this->umil_end();
+			return $this->umil_end('TABLE_COLUMN_NOT_EXIST', $table_name, $column_name);
 		}
 
 		if (!class_exists('phpbb_db_tools'))
@@ -1808,9 +1788,7 @@ class umil
 
 		if ($this->table_index_exists($table_name, $index_name))
 		{
-			global $user;
-			$this->result('TABLE_KEY_ALREADY_EXIST', $table_name, $index_name);
-			return $this->umil_end();
+			return $this->umil_end('TABLE_KEY_ALREADY_EXIST', $table_name, $index_name);
 		}
 
 		if (!is_array($column))
@@ -1860,9 +1838,7 @@ class umil
 
 		if (!$this->table_index_exists($table_name, $index_name))
 		{
-			global $user;
-			$this->result('TABLE_KEY_NOT_EXIST', $table_name, $index_name);
-			return $this->umil_end();
+			return $this->umil_end('TABLE_KEY_NOT_EXIST', $table_name, $index_name);
 		}
 
 		if (!class_exists('phpbb_db_tools'))
