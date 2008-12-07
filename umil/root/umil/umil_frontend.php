@@ -16,6 +16,11 @@ if (!defined('IN_PHPBB'))
 
 if (!class_exists('umil'))
 {
+    if (!file_exists($phpbb_root_path . 'umil/umil.' . $phpEx))
+	{
+		trigger_error('Please download the latest UMIL (Unified MOD Install Library) from: <a href="http://www.phpbb.com/mods/umil/">phpBB.com/mods/umil</a>', E_USER_ERROR);
+	}
+
 	include($phpbb_root_path . 'umil/umil.' . $phpEx);
 }
 
