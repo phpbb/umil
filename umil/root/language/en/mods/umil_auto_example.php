@@ -22,17 +22,18 @@ if (empty($lang) || !is_array($lang))
 // in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
 
 $lang = array_merge($lang, array(
-	'TEST_MOD'						=> 'Test Mod',
-
+	'INSERT_TEST_ROW'				=> 'Insert test row into the phpbb_test table.',
 	'INSTALL_TEST_MOD'				=> 'Install Test Mod',
 	'INSTALL_TEST_MOD_CONFIRM'		=> 'Are you ready to install the Test Mod?',
-	'UPDATE_TEST_MOD'				=> 'Update Test Mod',
-	'UPDATE_TEST_MOD_CONFIRM'		=> 'Are you ready to update the Test Mod?',
+
+	'REMOVE_TEST_ROW'				=> 'Remove test row into the phpbb_test table.',
+
+	'TEST_MOD'						=> 'Test Mod',
+
 	'UNINSTALL_TEST_MOD'			=> 'Uninstall Test Mod',
 	'UNINSTALL_TEST_MOD_CONFIRM'	=> 'Are you ready to uninstall the Test Mod?  All settings and data saved by this mod will be removed!',
-
-	'INSERT_TEST_ROW'				=> 'Insert test row into the phpbb_test table.',
-	'REMOVE_TEST_ROW'				=> 'Remove test row into the phpbb_test table.',
+	'UPDATE_TEST_MOD'				=> 'Update Test Mod',
+	'UPDATE_TEST_MOD_CONFIRM'		=> 'Are you ready to update the Test Mod?',
 ));
 
 ?>
