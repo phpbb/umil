@@ -244,8 +244,19 @@ class umil_frontend extends umil
 				while (file_exists($this->error_file));
 			}
 
+			$contents = '';
+			if (file_exists($this->error_file) && filesize($this->error_file))
+			{
+				$fp = fopen($this->error_file, 'rb');
+				$contents = fread($fp, filesize($this->error_file));
+				fclose($fp);
+				phpbb_chmod($this->error_file, CHMOD_ALL);
+			}
+
+			$contents .= "{$command}\n{$result}\n\n";
+
 			$fp = fopen($this->error_file, 'wb');
-			fwrite($fp, ((filesize($this->error_file)) ? fread($fp, filesize($this->error_file)) : '') . "{$command}\n{$result}\n\n");
+			fwrite($fp, $contents);
 			fclose($fp);
 			phpbb_chmod($this->error_file, CHMOD_ALL);
 		}
