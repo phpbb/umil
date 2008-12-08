@@ -72,6 +72,22 @@ if (confirm_box(true))
 				array('u_test_mod', true),
 			));
 
+			// How about we give some default permissions then as well?
+			$umil->permission_set(array(
+				// Global Role permissions
+				array('ROLE_ADMIN_FULL', 'a_test_mod'),
+				array('ROLE_USER_FULL', 'u_test_mod'),
+
+				// Global Group permissions
+				array('GUESTS', 'u_test_mod', 'group'),
+
+				// Local Permissions
+				array('ROLE_FORUM_STANDARD', 'f_test_mod', 'role', false),
+				array('GUESTS', 'f_test_mod', 'group', false),
+			));
+
+		// No breaks
+
 		// Update to 0.7.0
 		case '0.3.1' :
 			// Lets change our test_enable to false

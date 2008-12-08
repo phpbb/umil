@@ -64,6 +64,19 @@ $versions = array(
 			array('f_test_mod', false),
 			array('u_test_mod', true),
 		),
+
+		// How about we give some default permissions then as well?
+		'permission_set' => array(
+			// Global Role permissions
+			array('ROLE_ADMIN_FULL', 'a_test_mod'),
+			array('ROLE_USER_FULL', 'u_test_mod'),
+
+			// Global Group permissions
+			array('GUESTS', 'u_test_mod', 'group'),
+
+			// Local Permissions (local permissions can not be set for groups)
+			array('ROLE_FORUM_STANDARD', 'f_test_mod', 'role', false),
+		),
 	),
 
 	// Version 0.7.0
@@ -165,28 +178,34 @@ function umil_auto_example($action, $version)
 		case 'update' :
 			// Run this when installing/updating
 
-			$sql_ary = array(
-				'test_text'		=> 'This is a test message.',
-				'test_bool'		=> 1,
-				'test_time'		=> time(),
-			);
-			$sql = 'INSERT INTO ' . $table_prefix . 'test ' . $db->sql_build_array('INSERT', $sql_ary);
-			$db->sql_query($sql);
+			if ($umil->table_exists('phpbb_test'))
+			{
+				$sql_ary = array(
+					'test_text'		=> 'This is a test message.',
+					'test_bool'		=> 1,
+					'test_time'		=> time(),
+				);
+				$sql = 'INSERT INTO ' . $table_prefix . 'test ' . $db->sql_build_array('INSERT', $sql_ary);
+				$db->sql_query($sql);
 
-			// Method 1 of displaying the command (and Success for the result)
-			return 'INSERT_TEST_ROW';
+				// Method 1 of displaying the command (and Success for the result)
+				return 'INSERT_TEST_ROW';
+			}
 		break;
 
 		case 'uninstall' :
 			// Run this when uninstalling
 
-			$sql = 'DELETE FROM ' . $table_prefix . "test
-				WHERE test_text = 'This is a test message.'
-				AND test_bool = 1";
-			$db->sql_query($sql);
+			if ($umil->table_exists('phpbb_test'))
+			{
+				$sql = 'DELETE FROM ' . $table_prefix . "test
+					WHERE test_text = 'This is a test message.'
+					AND test_bool = 1";
+				$db->sql_query($sql);
 
-			// Method 2 of displaying the command/results
-            return array('command' => 'REMOVE_TEST_ROW', 'result' => 'SUCCESS');
+				// Method 2 of displaying the command/results
+	            return array('command' => 'REMOVE_TEST_ROW', 'result' => 'SUCCESS');
+			}
 		break;
 	}
 }

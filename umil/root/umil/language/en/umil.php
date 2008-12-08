@@ -55,12 +55,18 @@ $lang = array_merge($lang, array(
 	'MODULE_NOT_EXIST'				=> 'ERROR: Module does not exist.',
 	'MODULE_REMOVE'					=> 'Removing %1$s module: %2$s',
 
+	'GROUP_NOT_EXIST'						=> 'Group does not exist',
+	'ROLE_NOT_EXIST'						=> 'Role does not exist',
 	'NONE'							=> 'None',
 
 	'PERMISSION_ADD'				=> 'Adding new permission option: %s',
 	'PERMISSION_ALREADY_EXISTS'		=> 'ERROR: Permission option %s already exists.',
 	'PERMISSION_NOT_EXIST'			=> 'ERROR: Permission option %s does not exist.',
 	'PERMISSION_REMOVE'				=> 'Removing permission option: %s',
+	'PERMISSION_SET_GROUP'			=> 'Setting permissions for the %s group.',
+	'PERMISSION_UNSET_GROUP'		=> 'Unsetting permissions for the %s group.',
+	'PERMISSION_SET_ROLE'			=> 'Setting permissions for the %s role.',
+	'PERMISSION_UNSET_ROLE'			=> 'Unsetting permissions for the %s role.',
 	'PERMISSIONS_WARNING'			=> 'New permission settings have been added.  Be sure to check your permission settings and see that they are as you would like them.',
 
 	'SUCCESS'						=> 'Success',

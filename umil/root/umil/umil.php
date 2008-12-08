@@ -56,6 +56,8 @@ if (class_exists('umil'))
 *	permission_exists($auth_option, $global = true)
 *	permission_add($auth_option, $global = true)
 *	permission_remove($auth_option, $global = true)
+*	permission_set($name, $auth_option = array(), $type = 'role', $global = true, $has_permission = true)
+*	permission_unset($name, $auth_option = array(), $type = 'role', $global = true)
 *
 * Table Functions
 *	table_exists($table_name)
@@ -144,6 +146,8 @@ class umil
 					$user->add_lang('./../../umil/language/' . $path . '/umil');
 				}
 			//}
+
+			$user->add_lang(array('acp/common', 'acp/permissions'));
 		}
 	}
 
@@ -165,7 +169,13 @@ class umil
 
 			if (sizeof($args))
 			{
-				$this->command = @vsprintf(((isset($user->lang[$lang_key])) ? $user->lang[$lang_key] : $lang_key), $args);
+				$lang_args = array();
+				foreach ($args as $arg)
+				{
+					$lang_args[] = (isset($user->lang[$arg])) ? $user->lang[$arg] : $arg;
+				}
+
+				$this->command = @vsprintf(((isset($user->lang[$lang_key])) ? $user->lang[$lang_key] : $lang_key), $lang_args);
 			}
 			else
 			{
@@ -196,7 +206,13 @@ class umil
 
 			if (sizeof($args))
 			{
-				$this->result = @vsprintf(((isset($user->lang[$lang_key])) ? $user->lang[$lang_key] : $lang_key), $args);
+				$lang_args = array();
+				foreach ($args as $arg)
+				{
+					$lang_args[] = (isset($user->lang[$arg])) ? $user->lang[$arg] : $arg;
+				}
+
+				$this->result = @vsprintf(((isset($user->lang[$lang_key])) ? $user->lang[$lang_key] : $lang_key), $lang_args);
 			}
 			else
 			{
@@ -416,7 +432,8 @@ class umil
 						}
 
 						// reverse function call
-						$method = str_replace(array('add', 'remove', 'temp', 'set', 'unset', 'temp'), array('temp', 'add', 'remove', 'temp', 'unset', 'set'), $method);
+						$method = str_replace(array('add', 'remove', 'temp'), array('temp', 'add', 'remove'), $method);
+						$method = str_replace(array('set', 'unset', 'temp'), array('temp', 'set', 'unset'), $method);
 
 						if (method_exists($this, $method))
 						{
@@ -1463,6 +1480,271 @@ class umil
 
 		// Purge the auth cache
 		$cache->destroy('_acl_options');
+		$auth->acl_clear_prefetch();
+
+		return $this->umil_end();
+	}
+
+	/**
+	* Permission Set
+	*
+	* Allows you to set permissions for a certain group/role
+	*
+	* @param string $name The name of the role/group
+	* @param string|array $auth_option The auth_option or array of auth_options you would like to set
+	* @param string $type The type (role|group)
+	* @param bool $global True for global permissions, false for local (forum) permissions.  Local permissions can not be set for groups.
+	* @param bool $has_permission True if you want to give them permission, false if you want to deny them permission
+	*/
+	function permission_set($name, $auth_option = array(), $type = 'role', $global = true, $has_permission = true)
+	{
+		global $auth, $db;
+
+		// Multicall
+		if (is_array($name))
+		{
+			foreach ($name as $params)
+			{
+				call_user_func_array(array($this, 'permission_set'), $params);
+			}
+			return;
+		}
+
+		if (!is_array($auth_option))
+		{
+			$auth_option = array($auth_option);
+		}
+
+		$new_auth = array();
+		$sql = 'SELECT auth_option_id FROM ' . ACL_OPTIONS_TABLE . '
+			WHERE ' . $db->sql_in_set('auth_option', $auth_option) . '
+			AND ' . (($global) ? 'is_global = 1' : 'is_local = 1');
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$new_auth[] = $row['auth_option_id'];
+		}
+		$db->sql_freeresult($result);
+
+		if (!sizeof($new_auth))
+		{
+			return false;
+		}
+
+		$current_auth = array();
+		switch ($type)
+		{
+			case 'role' :
+				$this->umil_start('PERMISSION_SET_ROLE', $name);
+
+				$sql = 'SELECT role_id FROM ' . ACL_ROLES_TABLE . '
+					WHERE role_name = \'' . $db->sql_escape($name) . '\'';
+				$db->sql_query($sql);
+				$role_id = $db->sql_fetchfield('role_id');
+
+				if (!$role_id)
+				{
+					return $this->umil_end('ROLE_NOT_EXIST');
+				}
+
+				$sql = 'SELECT auth_option_id, auth_setting FROM ' . ACL_ROLES_DATA_TABLE . '
+					WHERE role_id = ' . $role_id;
+				$result = $db->sql_query($sql);
+				while ($row = $db->sql_fetchrow($result))
+				{
+					$current_auth[$row['auth_option_id']] = $row['auth_setting'];
+				}
+				$db->sql_freeresult($result);
+			break;
+
+			case 'group' :
+				if (!$global)
+				{
+					// We can not set local permissions for a group.
+					return;
+				}
+
+				$sql = 'SELECT group_id FROM ' . GROUPS_TABLE . ' WHERE group_name = \'' . $db->sql_escape($name) . '\'';
+				$db->sql_query($sql);
+				$group_id = $db->sql_fetchfield('group_id');
+
+				if (!$group_id)
+				{
+					$this->umil_start('PERMISSION_SET_GROUP', $name);
+					return $this->umil_end('GROUP_NOT_EXIST');
+				}
+
+				// If the group has a role set for them we will add the requested permissions to that role.
+				$sql = 'SELECT auth_role_id FROM ' . ACL_GROUPS_TABLE . '
+					WHERE group_id = ' . $group_id . '
+					AND auth_role_id <> 0
+					AND forum_id = 0';
+				$db->sql_query($sql);
+				$role_id = $db->sql_fetchfield('auth_role_id');
+				if ($role_id)
+				{
+					$sql = 'SELECT role_name FROM ' . ACL_ROLES_TABLE . '
+						WHERE role_id = ' . $role_id;
+					$db->sql_query($sql);
+					$role_name = $db->sql_fetchfield('role_name');
+
+					return $this->permission_set($role_name, $auth_option, 'role', $has_permission);
+				}
+
+				$this->umil_start('PERMISSION_SET_GROUP', $name);
+
+				$sql = 'SELECT auth_option_id, auth_setting FROM ' . ACL_GROUPS_TABLE . '
+					WHERE group_id = ' . $group_id;
+				$result = $db->sql_query($sql);
+				while ($row = $db->sql_fetchrow($result))
+				{
+					$current_auth[$row['auth_option_id']] = $row['auth_setting'];
+				}
+				$db->sql_freeresult($result);
+			break;
+		}
+
+		$sql_ary = array();
+		switch ($type)
+		{
+			case 'role' :
+				foreach ($new_auth as $auth_option_id)
+				{
+					if (!isset($current_auth[$auth_option_id]))
+					{
+						$sql_ary[] = array(
+							'role_id'			=> $role_id,
+							'auth_option_id'	=> $auth_option_id,
+							'auth_setting'		=> $has_permission,
+				        );
+					}
+				}
+
+				$db->sql_multi_insert(ACL_ROLES_DATA_TABLE, $sql_ary);
+			break;
+
+			case 'group' :
+				foreach ($new_auth as $auth_option_id)
+				{
+					if (!isset($current_auth[$auth_option_id]))
+					{
+						$sql_ary[] = array(
+							'group_id'			=> $group_id,
+							'auth_option_id'	=> $auth_option_id,
+							'auth_setting'		=> $has_permission,
+				        );
+					}
+				}
+
+				$db->sql_multi_insert(ACL_GROUPS_TABLE, $sql_ary);
+			break;
+		}
+
+		$auth->acl_clear_prefetch();
+
+		return $this->umil_end();
+	}
+
+	/**
+	* Permission Unset
+	*
+	* Allows you to unset (remove) permissions for a certain group/role
+	*
+	* @param string $name The name of the role/group
+	* @param string|array $auth_option The auth_option or array of auth_options you would like to set
+	* @param string $type The type (role|group)
+	* @param bool $global True for global permissions, false for local (forum) permissions.  Local permissions can not be set for groups.
+	*/
+	function permission_unset($name, $auth_option = array(), $type = 'role', $global = true)
+	{
+		global $auth, $db;
+
+		// Multicall
+		if (is_array($name))
+		{
+			foreach ($name as $params)
+			{
+				call_user_func_array(array($this, 'permission_unset'), $params);
+			}
+			return;
+		}
+
+		if (!is_array($auth_option))
+		{
+			$auth_option = array($auth_option);
+		}
+
+		$to_remove = array();
+		$sql = 'SELECT auth_option_id FROM ' . ACL_OPTIONS_TABLE . '
+			WHERE ' . $db->sql_in_set('auth_option', $auth_option) . '
+			AND ' . (($global) ? 'is_global = 1' : 'is_local = 1');
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$to_remove[] = $row['auth_option_id'];
+		}
+		$db->sql_freeresult($result);
+
+		if (!sizeof($to_remove))
+		{
+			return false;
+		}
+
+		switch ($type)
+		{
+			case 'role' :
+				$this->umil_start('PERMISSION_UNSET_ROLE', $name);
+
+				$sql = 'SELECT role_id FROM ' . ACL_ROLES_TABLE . '
+					WHERE role_name = \'' . $db->sql_escape($name) . '\'';
+				$db->sql_query($sql);
+				$role_id = $db->sql_fetchfield('role_id');
+
+				if (!$role_id)
+				{
+					return $this->umil_end('ROLE_NOT_EXIST');
+				}
+
+				$sql = 'DELETE FROM ' . ACL_ROLES_DATA_TABLE . '
+					WHERE ' . $db->sql_in_set('auth_option_id', $to_remove);
+				$db->sql_query($sql);
+			break;
+
+			case 'group' :
+				$sql = 'SELECT group_id FROM ' . GROUPS_TABLE . ' WHERE group_name = \'' . $db->sql_escape($name) . '\'';
+				$db->sql_query($sql);
+				$group_id = $db->sql_fetchfield('group_id');
+
+				if (!$group_id)
+				{
+					$this->umil_start('PERMISSION_UNSET_GROUP', $name);
+					return $this->umil_end('GROUP_NOT_EXIST');
+				}
+
+				// If the group has a role set for them we will remove the requested permissions from that role.
+				$sql = 'SELECT auth_role_id FROM ' . ACL_GROUPS_TABLE . '
+					WHERE group_id = ' . $group_id . '
+					AND auth_role_id <> 0';
+				$db->sql_query($sql);
+				$role_id = $db->sql_fetchfield('auth_role_id');
+				if ($role_id)
+				{
+					$sql = 'SELECT role_name FROM ' . ACL_ROLES_TABLE . '
+						WHERE role_id = ' . $role_id;
+					$db->sql_query($sql);
+					$role_name = $db->sql_fetchfield('role_name');
+
+					return $this->permission_unset($role_name, $auth_option, 'role');
+				}
+
+				$this->umil_start('PERMISSION_UNSET_GROUP', $name);
+
+				$sql = 'DELETE FROM ' . ACL_GROUPS_TABLE . '
+					WHERE ' . $db->sql_in_set('auth_option_id', $to_remove);
+				$db->sql_query($sql);
+			break;
+		}
+
 		$auth->acl_clear_prefetch();
 
 		return $this->umil_end();
