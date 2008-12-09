@@ -34,6 +34,9 @@ if (class_exists('umil_frontend'))
 */
 class umil_frontend extends umil
 {
+	// The title of the mod
+	var $title = '';
+
 	// Were there any errors so far (used when displaying results)?
 	var $errors = false;
 
@@ -52,6 +55,8 @@ class umil_frontend extends umil
 	function umil_frontend($title = '', $auto_display_results = false, $force_display_results = false)
 	{
 		global $db, $phpbb_root_path, $phpEx, $template, $user;
+
+		$this->title = $title;
 
 		// Need some ACP language items.
 		$user->add_lang('acp/common');
@@ -236,21 +241,24 @@ class umil_frontend extends umil
 				global $phpbb_root_path;
 				// Setting up an error recording file
 				$append = 0;
-				do
+				$this->error_file = "{$phpbb_root_path}umil/error_files/" . strtolower($this->title) . '.txt';
+				while (file_exists($this->error_file))
 				{
-					$this->error_file = "{$phpbb_root_path}umil/error_files/error_{$append}.txt";
+					$this->error_file = "{$phpbb_root_path}umil/error_files/" . strtolower($this->title) . $append . '.txt';
 					$append++;
 				}
-				while (file_exists($this->error_file));
 			}
 
-			$contents = '';
 			if (file_exists($this->error_file) && filesize($this->error_file))
 			{
 				$fp = fopen($this->error_file, 'rb');
 				$contents = fread($fp, filesize($this->error_file));
 				fclose($fp);
 				phpbb_chmod($this->error_file, CHMOD_ALL);
+			}
+			else
+			{
+				$contents = ((isset($user->lang[$this->title])) ? $user->lang[$this->title] : $this->title) . "\n\n";
 			}
 
 			$contents .= "{$command}\n{$result}\n\n";
