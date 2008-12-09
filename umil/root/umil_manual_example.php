@@ -22,6 +22,8 @@ define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 include($phpbb_root_path . 'common.' . $phpEx);
+
+// Start session management
 $user->session_begin();
 $auth->acl($user->data);
 $user->setup('mods/umil_auto_example');
@@ -31,14 +33,15 @@ if (!file_exists($phpbb_root_path . 'umil/umil.' . $phpEx))
 	trigger_error('Please download the latest UMIL (Unified MOD Install Library) from: <a href="http://www.phpbb.com/mods/umil/">phpBB.com/mods/umil</a>', E_USER_ERROR);
 }
 
-if (!$user->data['is_registered'])
-{
-	login_box();
-}
-
+// We only allow a founder install this MOD
 if ($user->data['user_type'] != USER_FOUNDER)
 {
-	trigger_error('FOUNDERS_ONLY');
+    if ($user->data['user_id'] == ANONYMOUS)
+    {
+        login_box('', 'LOGIN');
+    }
+
+    trigger_error('NOT_AUTHORISED');
 }
 
 if (!class_exists('umil'))
