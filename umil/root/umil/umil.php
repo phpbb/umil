@@ -1074,8 +1074,8 @@ class umil
 		{
 			// The "automatic" way
 			$basename = (isset($data['module_basename'])) ? $data['module_basename'] : '';
-			$basename = preg_replace('#([^a-zA-Z0-9])#', '', $basename);
-			$class = preg_replace('#([^a-zA-Z0-9])#', '', $class);
+			$basename = str_replace(array('/', '\\'), '', $basename);
+			$class = str_replace(array('/', '\\'), '', $class);
 			$info_file = "{$phpbb_root_path}includes/$class/info/{$class}_$basename.$phpEx";
 
 			// The manual and automatic ways both failed...
@@ -1216,8 +1216,8 @@ class umil
 			}
 
 			// Automatic method
-			$basename = preg_replace('#([^a-zA-Z0-9])#', '', $module['module_basename']);
-			$class = preg_replace('#([^a-zA-Z0-9])#', '', $class);
+			$basename = str_replace(array('/', '\\'), '', $module['module_basename']);
+			$class = str_replace(array('/', '\\'), '', $class);
 			$info_file = "{$phpbb_root_path}includes/$class/info/{$class}_$basename.$phpEx";
 
 			if (!file_exists($info_file))
