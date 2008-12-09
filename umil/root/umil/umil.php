@@ -36,21 +36,21 @@ if (class_exists('umil'))
 */
 
 /**
-* UMIL - Unified MOD Installation File class
+* UMIL - Unified MOD Installation Library class
 *
 * Cache Functions
 *	cache_purge($type = '', $style_id = 0)
 *
 * Config Functions:
 *	config_exists($config_name, $return_result = false)
-*	config_add($config_name, $config_value, $is_dynamic = false)
+*	config_add($config_name, $config_value = '', $is_dynamic = false)
 *	config_update($config_name, $config_value, $is_dynamic = false)
 *	config_remove($config_name)
 *
 * Module Functions
 *	module_exists($class, $parent, $module)
-*	module_add($class, $parent, $module)
-*	module_remove($class, $parent, $module)
+*	module_add($class, $parent = 0, $data = array())
+*	module_remove($class, $parent = 0, $module = '')
 *
 * Permissions/Auth Functions
 *	permission_exists($auth_option, $global = true)
@@ -61,19 +61,19 @@ if (class_exists('umil'))
 *
 * Table Functions
 *	table_exists($table_name)
-*	table_add($table_name, $table_data)
+*	table_add($table_name, $table_data = array())
 *	table_remove($table_name)
 *
 * Table Column Functions
 *	table_column_exists($table_name, $column_name)
-*	table_column_add($table_name, $column_name, $column_data)
-*	table_column_update($table_name, $column_name, $column_data)
-*	table_column_remove($table_name, $column_name)
+*	table_column_add($table_name, $column_name = '', $column_data = array())
+*	table_column_update($table_name, $column_name = '', $column_data = array())
+*	table_column_remove($table_name, $column_name = '')
 *
 * Table Key/Index Functions
 *	table_index_exists($table_name, $index_name)
-*	table_index_add($table_name, $index_name, $column)
-*	table_index_remove($table_name, $index_name)
+*	table_index_add($table_name, $index_name = '', $column = array())
+*	table_index_remove($table_name, $index_name = '')
 *
 */
 class umil
