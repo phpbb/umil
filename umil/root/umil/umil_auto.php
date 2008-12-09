@@ -73,7 +73,7 @@ foreach ($versions as $version => $actions)
 	$current_version = $version;
 }
 
-$template->assign_var('L_TITLE_EXPLAIN', sprintf($user->lang['VERSIONS'], $current_version, ((isset($config[$version_config_name])) ? $config[$version_config_name] : $user->lang['NONE'])));
+$template->assign_var('L_TITLE_EXPLAIN', ((isset($user->lang[$mod_name . '_EXPLAIN'])) ? $user->lang[$mod_name . '_EXPLAIN'] . '<br /><br />' : '') . sprintf($user->lang['VERSIONS'], $current_version, ((isset($config[$version_config_name])) ? $config[$version_config_name] : $user->lang['NONE'])));
 
 $submit = (isset($_POST['submit'])) ? true : false;
 $action = request_var('action', '');

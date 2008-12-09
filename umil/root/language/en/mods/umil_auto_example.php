@@ -29,6 +29,7 @@ $lang = array_merge($lang, array(
 	'REMOVE_TEST_ROW'				=> 'Remove test row into the phpbb_test table.',
 
 	'TEST_MOD'						=> 'Test Mod',
+	'TEST_MOD_EXPLAIN'				=> 'This is an example on how to use the Automatic UMIL method.  Mod authors interested in using this should open it with a text editor (like Notepad++) to see how it can be used.<br /><br /><strong>This is not a real mod.</strong>',
 
 	'UNINSTALL_TEST_MOD'			=> 'Uninstall Test Mod',
 	'UNINSTALL_TEST_MOD_CONFIRM'	=> 'Are you ready to uninstall the Test Mod?  All settings and data saved by this mod will be removed!',
