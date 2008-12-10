@@ -14,27 +14,7 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-if (class_exists('umil'))
-{
-	return;
-}
-
 define('UMIL_VERSION', '1.0.0-RC1');
-if (!function_exists('get_remote_file'))
-{
-	include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
-}
-$errstr = $errno = '';
-$umil_info = get_remote_file('www.phpbb.com', '/mods/umil', ((defined('PHPBB_QA')) ? 'update_qa.txt' : 'update.txt'), $errstr, $errno);
-if ($umil_info !== false)
-{
-	$umil_info = explode("\n", $umil_info);
-	if (version_compare(UMIL_VERSION, $umil_info[0], '<'))
-	{
-		trigger_error('Please download the latest UMIL (Unified MOD Install Library) from: <a href="http://www.phpbb.com/mods/umil/">phpBB.com/mods/umil</a>', E_USER_ERROR);
-	}
-}
-unset($umil_info, $errstr, $errno);
 
 /**
 * Multicall instructions
@@ -134,6 +114,22 @@ class umil
 		$this->stand_alone = $stand_alone;
 		if (!$stand_alone)
 		{
+			// Check to see if a newer version is available.
+			if (!function_exists('get_remote_file'))
+			{
+				include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+			}
+			$errstr = $errno = '';
+			$umil_info = get_remote_file('www.phpbb.com', '/mods/umil', ((defined('PHPBB_QA')) ? 'update_qa.txt' : 'update.txt'), $errstr, $errno);
+			if ($umil_info !== false)
+			{
+				$umil_info = explode("\n", $umil_info);
+				if (version_compare(UMIL_VERSION, $umil_info[0], '<'))
+				{
+					trigger_error('Please download the latest UMIL (Unified MOD Install Library) from: <a href="http://www.phpbb.com/mods/umil/">phpBB.com/mods/umil</a>', E_USER_ERROR);
+				}
+			}
+
 			/* Does not have the fall back option to use en/ if the user's language file does not exist, so we will not use it...unless that is changed.
 			if (method_exists('user', 'set_custom_lang_path'))
 			{
