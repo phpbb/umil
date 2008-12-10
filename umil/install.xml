@@ -24,7 +24,7 @@
 		</author>
 	</author-group>
 
-	<mod-version>0.7.0</mod-version>
+	<mod-version>1.0.0-RC1</mod-version>
 
 	<installation>
 		<level>easy</level>
@@ -35,7 +35,7 @@
 	<history>
 		<entry>
 			<date>2008-12-00</date>
-			<rev-version>0.7.0</rev-version>
+			<rev-version>1.0.0-RC1</rev-version>
 			<changelog lang="en">
 				<change>Initial Public Preview Release</change>
 			</changelog>
