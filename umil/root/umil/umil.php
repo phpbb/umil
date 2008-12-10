@@ -19,6 +19,23 @@ if (class_exists('umil'))
 	return;
 }
 
+define('UMIL_VERSION', '1.0.0-RC1');
+if (!function_exists('get_remote_file'))
+{
+	include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+}
+$errstr = $errno = '';
+$umil_info = get_remote_file('www.phpbb.com', '/mods/umil', ((defined('PHPBB_QA')) ? 'update_qa.txt' : 'update.txt'), $errstr, $errno);
+if ($umil_info !== false)
+{
+	$umil_info = explode("\n", $umil_info);
+	if (version_compare(UMIL_VERSION, $umil_info[0], '<'))
+	{
+		trigger_error('Please download the latest UMIL (Unified MOD Install Library) from: <a href="http://www.phpbb.com/mods/umil/">phpBB.com/mods/umil</a>', E_USER_ERROR);
+	}
+}
+unset($umil_info, $errstr, $errno);
+
 /**
 * Multicall instructions
 *
