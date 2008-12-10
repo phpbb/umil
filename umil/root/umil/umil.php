@@ -72,6 +72,8 @@ define('UMIL_VERSION', '1.0.0-RC1');
 *	table_index_add($table_name, $index_name = '', $column = array())
 *	table_index_remove($table_name, $index_name = '')
 *
+* Version Check Function
+* 	version_check($url, $path, $file)
 */
 class umil
 {
@@ -115,16 +117,10 @@ class umil
 		if (!$stand_alone)
 		{
 			// Check to see if a newer version is available.
-			if (!function_exists('get_remote_file'))
+			$info = $this->version_check('www.phpbb.com', '/mods/umil', ((defined('PHPBB_QA')) ? 'update_qa.txt' : 'update.txt'));
+			if (is_array($info) && isset($info[0]))
 			{
-				include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
-			}
-			$errstr = $errno = '';
-			$umil_info = get_remote_file('www.phpbb.com', '/mods/umil', ((defined('PHPBB_QA')) ? 'update_qa.txt' : 'update.txt'), $errstr, $errno);
-			if ($umil_info !== false)
-			{
-				$umil_info = explode("\n", $umil_info);
-				if (version_compare(UMIL_VERSION, $umil_info[0], '<'))
+				if (version_compare(UMIL_VERSION, $info[0], '<'))
 				{
 					trigger_error('Please download the latest UMIL (Unified MOD Install Library) from: <a href="http://www.phpbb.com/mods/umil/">phpBB.com/mods/umil</a>', E_USER_ERROR);
 				}
@@ -140,7 +136,6 @@ class umil
 			else
 			{*/
 				// Include the umil language file.  First we check if the language file for the user's language is available, if not we check if the board's default language is available, if not we use the english file.
-				$path = false;
 				if (isset($user->data['user_lang']) && file_exists("{$phpbb_root_path}umil/language/{$user->data['user_lang']}/umil.$phpEx"))
 				{
 					$path = $user->data['user_lang'];
@@ -153,11 +148,12 @@ class umil
 				{
 					$path = 'en';
 				}
-
-				if ($path)
+				else
 				{
-					$user->add_lang('./../../umil/language/' . $path . '/umil');
+					trigger_error('Language Files Missing.<br /><br />Please download the latest UMIL (Unified MOD Install Library) from: <a href="http://www.phpbb.com/mods/umil/">phpBB.com/mods/umil</a>', E_USER_ERROR);
 				}
+
+				$user->add_lang('./../../umil/language/' . $path . '/umil');
 			//}
 
 			$user->add_lang(array('acp/common', 'acp/permissions'));
@@ -2146,6 +2142,41 @@ class umil
 		$db_tools->sql_index_drop($table_name, $index_name);
 
 		return $this->umil_end();
+	}
+
+	/**
+	* Version Checker
+	*
+	* Format the file like the following:
+	* http://www.phpbb.com/updatecheck/30x.txt
+	*
+	* @param string $url The url to access (ex: www.phpbb.com)
+	* @param string $path The path to access (ex: /updatecheck)
+	* @param string $file The name of the file to access (ex: 30x.txt)
+	*
+	* @return array|bool False if there was any error, or an array (each line in the file as a value)
+	*/
+	function version_check($url, $path, $file)
+	{
+		if (!function_exists('get_remote_file'))
+		{
+			global $phpbb_root_path, $phpEx;
+
+			include($phpbb_root_path . 'includes/functions_admin.' . $phpEx);
+		}
+
+		$errstr = $errno = '';
+		$info = get_remote_file($url, $path, $file, $errstr, $errno);
+
+		if ($info === false)
+		{
+			return false;
+		}
+
+		$info = str_replace("\r\n", "\n", $info);
+		$info = explode("\n", $info);
+
+		return $info;
 	}
 
 	/**
