@@ -463,6 +463,8 @@ class umil
 	/**
 	* Cache Purge
 	*
+	* This function is for purging either phpBB3’s data cache, authorization cache, or the styles cache.
+	*
 	* @param string $type The type of cache you want purged.  Available types: auth, imageset, template, theme.  Anything else sent will purge the forum's cache.
 	* @param int $style_id The id of the item you want purged (if the type selected is imageset/template/theme, 0 for all items in that section)
 	*/
@@ -822,9 +824,11 @@ class umil
 	}
 
 	/**
-	* Check if a config setting exists
+	* Config Exists
 	*
-	* @param string $config_name
+	* This function is to check to see if a config variable exists or if it does not.
+	*
+	* @param string $config_name The name of the config setting you wish to check for.
 	* @param bool $return_result - return the config value/default if true : default false.
 	*
 	* @return bool true/false if config exists
@@ -866,11 +870,13 @@ class umil
 	}
 
 	/**
-	* Add a config setting.
+	* Config Add
 	*
-	* @param string $config_name
-	* @param mixed $config_value
-	* @param bool $is_dynamic
+	* This function allows you to add a config setting.
+	*
+	* @param string $config_name The name of the config setting you would like to add
+	* @param mixed $config_value The value of the config setting
+	* @param bool $is_dynamic True if it is dynamic (changes very often) and should not be stored in the cache, false if not.
 	*
 	* @return result
 	*/
@@ -899,11 +905,13 @@ class umil
 	}
 
 	/**
-	* Update a config setting.
+	* Config Update
 	*
-	* @param string $config_name
-	* @param mixed $config_value
-	* @param bool $is_dynamic
+	* This function allows you to update an existing config setting.
+	*
+	* @param string $config_name The name of the config setting you would like to update
+	* @param mixed $config_value The value of the config setting
+	* @param bool $is_dynamic True if it is dynamic (changes very often) and should not be stored in the cache, false if not.
 	*
 	* @return result
 	*/
@@ -932,9 +940,11 @@ class umil
 	}
 
 	/**
-	* Remove a config setting
+	* Config Remove
 	*
-	* @param string $config_name
+	* This function allows you to remove an existing config setting.
+	*
+	* @param string $config_name The name of the config setting you would like to remove
 	*
 	* @return result
 	*/
@@ -1354,7 +1364,7 @@ class umil
 	*
 	* Check if a permission (auth) setting exists
 	*
-	* @param string $auth_option
+	* @param string $auth_option The name of the permission (auth) option
 	* @param bool $global True for checking a global permission setting, False for a local permission setting
 	*
 	* @return bool true if it exists, false if not
@@ -1394,7 +1404,7 @@ class umil
 	*
 	* Add a permission (auth) option
 	*
-	* @param string $auth_option
+	* @param string $auth_option The name of the permission (auth) option
 	* @param bool $global True for checking a global permission setting, False for a local permission setting
 	*
 	* @return result
@@ -1449,7 +1459,7 @@ class umil
 	*
 	* Remove a permission (auth) option
 	*
-	* @param string $auth_option
+	* @param string $auth_option The name of the permission (auth) option
 	* @param bool $global True for checking a global permission setting, False for a local permission setting
 	*
 	* @return result
