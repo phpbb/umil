@@ -399,6 +399,7 @@ class umil
 					break;
 				}
 
+				$cache_purge = false;
 				$version_actions = array_reverse($version_actions);
 				foreach ($version_actions as $method => $params)
 				{
@@ -434,6 +435,13 @@ class umil
 					}
 					else
 					{
+						// This way we always run the cache purge at the end of the version (done for the uninstall because the instructions are reversed, which would cause the cache purge to be run at the beginning if it was meant to run at the end).
+						if ($method == 'cache_purge')
+						{
+							$cache_purge = $params;
+							continue;
+						}
+
 						// update mode (reversing an action) isn't possible for uninstallations
 						if (strpos($method, 'update'))
 						{
@@ -449,6 +457,11 @@ class umil
 							call_user_func(array($this, $method), ((is_array($params) ? array_reverse($params) : $params)));
 						}
 					}
+				}
+
+				if ($cache_purge !== false)
+				{
+					$this->cache_purge($cache_purge);
 				}
 			}
 
