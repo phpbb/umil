@@ -282,7 +282,8 @@ class umil
 	*
 	* @param string $action The action. install|update|uninstall
 	* @param array $versions The array of versions and the actions for each
-	* @param string|bool $db_version The current version installed to update to/remove from
+	* @param string $version_config_name The name of the config setting which holds/will hold the currently installed version
+	* @param string $version_select Added for the UMIL Auto system to allow you to select the version you want to install/update/uninstall to.
 	*/
 	function run_actions($action, $versions, $version_config_name, $version_select = '')
 	{
@@ -303,6 +304,7 @@ class umil
 			$db_version = $config[$version_config_name];
 		}
 
+		// Set the action to install from update if nothing is currently installed
 		if ($action == 'update' && !$db_version)
 		{
 			$action = 'install';
