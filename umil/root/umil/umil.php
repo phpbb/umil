@@ -1512,10 +1512,9 @@ class umil
 	* @param string $name The name of the role/group
 	* @param string|array $auth_option The auth_option or array of auth_options you would like to set
 	* @param string $type The type (role|group)
-	* @param bool $global True for global permissions, false for local (forum) permissions.  Local permissions can not be set for groups.
 	* @param bool $has_permission True if you want to give them permission, false if you want to deny them permission
 	*/
-	function permission_set($name, $auth_option = array(), $type = 'role', $global = true, $has_permission = true)
+	function permission_set($name, $auth_option = array(), $type = 'role', $has_permission = true)
 	{
 		global $auth, $db;
 
@@ -1536,8 +1535,7 @@ class umil
 
 		$new_auth = array();
 		$sql = 'SELECT auth_option_id FROM ' . ACL_OPTIONS_TABLE . '
-			WHERE ' . $db->sql_in_set('auth_option', $auth_option) . '
-			AND ' . (($global) ? 'is_global = 1' : 'is_local = 1');
+			WHERE ' . $db->sql_in_set('auth_option', $auth_option);
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
@@ -1577,12 +1575,6 @@ class umil
 			break;
 
 			case 'group' :
-				if (!$global)
-				{
-					// We can not set local permissions for a group.
-					return;
-				}
-
 				$sql = 'SELECT group_id FROM ' . GROUPS_TABLE . ' WHERE group_name = \'' . $db->sql_escape($name) . '\'';
 				$db->sql_query($sql);
 				$group_id = $db->sql_fetchfield('group_id');
@@ -1672,9 +1664,8 @@ class umil
 	* @param string $name The name of the role/group
 	* @param string|array $auth_option The auth_option or array of auth_options you would like to set
 	* @param string $type The type (role|group)
-	* @param bool $global True for global permissions, false for local (forum) permissions.  Local permissions can not be set for groups.
 	*/
-	function permission_unset($name, $auth_option = array(), $type = 'role', $global = true)
+	function permission_unset($name, $auth_option = array(), $type = 'role')
 	{
 		global $auth, $db;
 
@@ -1695,8 +1686,7 @@ class umil
 
 		$to_remove = array();
 		$sql = 'SELECT auth_option_id FROM ' . ACL_OPTIONS_TABLE . '
-			WHERE ' . $db->sql_in_set('auth_option', $auth_option) . '
-			AND ' . (($global) ? 'is_global = 1' : 'is_local = 1');
+			WHERE ' . $db->sql_in_set('auth_option', $auth_option);
 		$result = $db->sql_query($sql);
 		while ($row = $db->sql_fetchrow($result))
 		{
