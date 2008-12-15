@@ -85,8 +85,7 @@ if (confirm_box(true))
 				array('GUESTS', 'u_test_mod', 'group'),
 
 				// Local Permissions
-				array('ROLE_FORUM_STANDARD', 'f_test_mod', 'role', false),
-				array('GUESTS', 'f_test_mod', 'group', false),
+				array('ROLE_FORUM_STANDARD', 'f_test_mod'),
 			));
 
 		// No breaks

@@ -76,7 +76,7 @@ $versions = array(
 			array('GUESTS', 'u_test_mod', 'group'),
 
 			// Local Permissions (local permissions can not be set for groups)
-			array('ROLE_FORUM_STANDARD', 'f_test_mod', 'role', false),
+			array('ROLE_FORUM_STANDARD', 'f_test_mod'),
 		),
 	),
 
