@@ -117,7 +117,7 @@ class umil
 		if (!$stand_alone)
 		{
 			// Check to see if a newer version is available.
-			$info = $this->version_check('www.phpbb.com', '/versioncheck', ((defined('PHPBB_QA')) ? 'umil_qa.txt' : 'umil.txt'));
+			$info = $this->version_check('www.phpbb.com', '/updatecheck', ((defined('PHPBB_QA')) ? 'umil_qa.txt' : 'umil.txt'));
 			if (is_array($info) && isset($info[0]))
 			{
 				if (version_compare(UMIL_VERSION, $info[0], '<'))
