@@ -1,9 +1,13 @@
 <?php
 /**
+ *
  * @author Nathan Guse (EXreaction) http://lithiumstudios.org
  * @author David Lewis (Highway of Life) highwayoflife@gmail.com
- * @package phpBB3 UMIL - Unified MOD Install Library
+ * @package umil
+ * @version $Id$
+ * @copyright (c) 2008 phpBB Group
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ *
  */
 
 /**

@@ -1,29 +1,38 @@
 <?php
 /**
-* @author Nathan Guse (EXreaction) http://lithiumstudios.org
-* @author David Lewis (Highway of Life) highwayoflife@gmail.com
-* @package phpBB3 UMIL - Unified MOD Install Library
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License
-*/
+ *
+ * @author Nathan Guse (EXreaction) http://lithiumstudios.org
+ * @author David Lewis (Highway of Life) highwayoflife@gmail.com
+ * @package umil
+ * @version $Id$
+ * @copyright (c) 2008 phpBB Group
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ *
+ */
 
-/* Parameters which should be setup before calling this file:
-* @param string $mod_name The name of the mod to be displayed during installation.
-* @param string $language_file The language file which will be included when installing (should contain the $mod_name)
-* @param string $version_config_name The name of the config variable which will hold the currently installed version
-* @param array $versions The array of versions and actions within each.
-*/
+/**
+ * Parameters which should be setup before calling this file:
+ * @param string $mod_name The name of the mod to be displayed during installation.
+ * @param string $language_file The language file which will be included when installing (should contain the $mod_name)
+ * @param string $version_config_name The name of the config variable which will hold the currently installed version
+ * @param array $versions The array of versions and actions within each.
+ */
 
-/* Language entries that should exist in the $language_file that will be included:
-* $mod_name
-* 'INSTALL_' . $mod_name
-* 'INSTALL_' . $mod_name . '_CONFIRM'
-* 'UPDATE_' . $mod_name
-* 'UPDATE_' . $mod_name . '_CONFIRM'
-* 'UNINSTALL_' . $mod_name
-* 'UNINSTALL_' . $mod_name . '_CONFIRM'
-*/
+/**
+ * Language entries that should exist in the $language_file that will be included:
+ * $mod_name
+ * 'INSTALL_' . $mod_name
+ * 'INSTALL_' . $mod_name . '_CONFIRM'
+ * 'UPDATE_' . $mod_name
+ * 'UPDATE_' . $mod_name . '_CONFIRM'
+ * 'UNINSTALL_' . $mod_name
+ * 'UNINSTALL_' . $mod_name . '_CONFIRM'
+ */
 
 // You must run define('UMIL_AUTO', true) before calling this file.
+/**
+ * @ignore
+ */
 if (!defined('UMIL_AUTO'))
 {
 	exit;

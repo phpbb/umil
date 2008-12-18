@@ -1,14 +1,17 @@
 <?php
 /**
-* @author Nathan Guse (EXreaction) http://lithiumstudios.org
-* @author David Lewis (Highway of Life) highwayoflife@gmail.com
-* @package phpBB3 UMIL - Unified MOD Install Library
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License
-*/
+ *
+ * @author Nathan Guse (EXreaction) http://lithiumstudios.org
+ * @author David Lewis (Highway of Life) highwayoflife@gmail.com
+ * @package umil
+ * @version $Id$
+ * @copyright (c) 2008 phpBB Group
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ */
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -25,8 +28,8 @@ if (!class_exists('umil'))
 }
 
 /**
-* UMIL - Unified MOD Installation File class Front End
-*/
+ * UMIL - Unified MOD Installation File class Front End
+ */
 class umil_frontend extends umil
 {
 	// The title of the mod
