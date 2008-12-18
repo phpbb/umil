@@ -47,16 +47,13 @@ $permissions_add = $config_add = $permission_set = $module_add = $column_add = $
 
 if ($submit || (isset($_POST['add_fields'])))
 {
-	$permissions_add	= request_var('permissions', array(0 => array('name' => 0, 'global' => 0)));
-	$config_add			= request_var('config_add', array(0 => array('name' => '', 'value' => '', 'dynamic' => 0)));
-	$permission_set		= request_var('permission_set', array(0 => array('name' => '', 'role' => '')));
-	$column_add			= request_var('columns', array(0 => array('table' => '', 'name' => '', 'type' => '', 'num' => 0, 'default' => '', 'option' => 0)));
-	$index_add			= request_var('index_add', array());
-	$module_add			= request_var('module_add', array());
-	$table_add			= request_var('table_add', array());
-
-	var_dump($column_add);
-	var_dump($_POST);
+	$permissions_add	= request_var('permissions', array(0 => array('' => '')));
+	$config_add			= request_var('config_add', array(0 => array('' => '')));
+	$permission_set		= request_var('permission_set', array(0 => array('' => '')));
+	$column_add			= request_var('columns', array(0 => array('' => '')));
+	$index_add			= request_var('index_add', array(0 => array('' => '')));
+	$module_add			= request_var('module_add', array(0 => array('' => '')));
+	$table_add			= request_var('table_add', array(0 => array('' => '')));
 
 	add_fields($permissions_add, 'permission_fields');
 	add_fields($config_add, 'config_fields');
@@ -66,7 +63,7 @@ if ($submit || (isset($_POST['add_fields'])))
 	add_fields($index_add, 'index_fields');
 }
 
-if (0)
+if ($submit)
 {
 	$error = validate_data($mod, array(
 		'username'		=> array('string', false, MIN_FULLNAME_CHARS, MAX_FULLNAME_CHARS),
