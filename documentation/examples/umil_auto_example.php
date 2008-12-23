@@ -12,8 +12,13 @@
 * @ignore
 */
 define('UMIL_AUTO', true);
+define('IN_PHPBB', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
+include($phpbb_root_path . 'common.' . $phpEx);
+$user->session_begin();
+$auth->acl($user->data);
+$user->setup();
 
 if (!file_exists($phpbb_root_path . 'umil/umil_auto.' . $phpEx))
 {
@@ -46,7 +51,7 @@ $language_file = 'mods/umil_auto_example';
 * The array of versions and actions within each.
 * You do not need to order it a specific way (it will be sorted automatically), however, you must enter every version, even if no actions are done for it.
 *
-* You may not use words for the versions (like Alpha, Beta, Etc).  Only X.X.X (replacing X with a number).
+* You must use .  Only X.X.X (replacing X with a number).
 */
 $versions = array(
 	// Version 0.3.0
