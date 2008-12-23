@@ -1084,8 +1084,9 @@ class umil
 	* 		'modes'				=> array('settings', 'log', 'flag'),
 	* )
 	* 		Optionally you may not send 'modes' and it will insert all of the modules in that info file.
+	*  @param string|bool $include_path If you would like to use a custom include path, specify that here
 	*/
-	function module_add($class, $parent = 0, $data = array())
+	function module_add($class, $parent = 0, $data = array(), $include_path = false)
 	{
 		global $cache, $db, $user, $phpbb_root_path, $phpEx;
 
@@ -1114,10 +1115,11 @@ class umil
 			$basename = (isset($data['module_basename'])) ? $data['module_basename'] : '';
 			$basename = str_replace(array('/', '\\'), '', $basename);
 			$class = str_replace(array('/', '\\'), '', $class);
-			$info_file = "includes/$class/info/{$class}_$basename.$phpEx";
+			$include_path = ($include_path === false) ? $phpbb_root_path . 'includes/' : $include_path;
+			$info_file = "$class/info/{$class}_$basename.$phpEx";
 
 			// The manual and automatic ways both failed...
-			if (!file_exists($phpbb_root_path . $info_file))
+			if (!file_exists($include_path . $info_file))
 			{
 				$this->umil_start('MODULE_ADD', $class, 'UNKNOWN');
 				return $this->umil_end('FAIL');
@@ -1127,7 +1129,7 @@ class umil
 
 			if (!class_exists($classname))
 			{
-				include($phpbb_root_path . $info_file);
+				include($include_path . $info_file);
 			}
 
 			$info = new $classname;
@@ -1219,8 +1221,9 @@ class umil
 	* @param string $class The module class(acp|mcp|ucp)
 	* @param int|string|bool $parent The parent module_id|module_langname (0 for no parent).  Use false to ignore the parent check and check class wide.
 	* @param int|string $module The module id|module_langname
+	* @param string|bool $include_path If you would like to use a custom include path, specify that here
 	*/
-	function module_remove($class, $parent = 0, $module = '')
+	function module_remove($class, $parent = 0, $module = '', $include_path = false)
 	{
 		global $cache, $db, $user, $phpbb_root_path, $phpEx;
 
@@ -1256,9 +1259,10 @@ class umil
 			// Automatic method
 			$basename = str_replace(array('/', '\\'), '', $module['module_basename']);
 			$class = str_replace(array('/', '\\'), '', $class);
-			$info_file = "includes/$class/info/{$class}_$basename.$phpEx";
+			$include_path = ($include_path === false) ? $phpbb_root_path . 'includes/' : $include_path;
+			$info_file = "$class/info/{$class}_$basename.$phpEx";
 
-			if (!file_exists($phpbb_root_path . $info_file))
+			if (!file_exists($include_path . $info_file))
 			{
 				return;
 			}
@@ -1267,7 +1271,7 @@ class umil
 
 			if (!class_exists($classname))
 			{
-				include($phpbb_root_path . $info_file);
+				include($include_path . $info_file);
 			}
 
 			$info = new $classname;

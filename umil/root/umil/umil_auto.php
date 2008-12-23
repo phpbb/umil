@@ -38,14 +38,24 @@ if (!defined('UMIL_AUTO'))
 	exit;
 }
 
-// If IN_PHPBB is already defined, lets assume they already included the common.php file and are done with setup (this allows them to run their own checks on things if they must)
+/*
+* If IN_PHPBB is already defined, lets assume they already included the common.php file and are done with setup
+*
+* NOTE: If you do not setup the common.php file YOU WILL NOT BE ABLE TO USE ANY CONSTANTS!
+*/
 if (!defined('IN_PHPBB'))
 {
 	define('IN_PHPBB', true);
 	include($phpbb_root_path . 'common.' . $phpEx);
 	$user->session_begin();
 	$auth->acl($user->data);
-	$user->setup($language_file);
+	$user->setup();
+}
+
+// Add the language file if one was specified
+if (isset($language_file))
+{
+	$user->add_lang($language_file);
 }
 
 if (!$user->data['is_registered'])
