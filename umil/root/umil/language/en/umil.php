@@ -52,6 +52,8 @@ $lang = array_merge($lang, array(
 	'IGNORE'						=> 'Ignore',
 	'IMAGESET_CACHE_PURGE'			=> 'Refreshing the %s imageset',
 	'INSTALL'						=> 'Install',
+	'INSTALL_MOD'					=> 'Install %s',
+	'INSTALL_MOD_CONFIRM'			=> 'Are you ready to install the %s?',
 
 	'MODULE_ADD'					=> 'Adding %1$s module: %2$s',
 	'MODULE_NOT_EXIST'				=> 'ERROR: Module does not exist.',
@@ -90,7 +92,11 @@ $lang = array_merge($lang, array(
 	'THEME_CACHE_PURGE'				=> 'Refreshing the %s theme',
 
 	'UNINSTALL'						=> 'Uninstall',
+	'UNINSTALL_MOD'					=> 'Uninstall %s',
+	'UNINSTALL_MOD_CONFIRM'			=> 'Are you ready to uninstall the %s?  All settings and data saved by this mod will be removed!',
 	'UNKNOWN'						=> 'Unknown',
+	'UPDATE_MOD'					=> 'Update Test Mod',
+	'UPDATE_MOD_CONFIRM'			=> 'Are you ready to update the %s?',
 
 	'VERSIONS'						=> 'Mod Version: <strong>%1$s</strong><br />Currently Installed: <strong>%2$s</strong>',
 	'VERSION_SELECT'				=> 'Version Select',
