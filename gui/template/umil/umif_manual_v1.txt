@@ -66,7 +66,7 @@ if (confirm_box(true))
 <!-- IF .permissions -->
 		$umil->permission_add(array(
 <!-- BEGIN permissions -->
-			array('{permissions.VALUE}', {permissions.GLOBAL}),
+			array('{permissions.VALUE}', {permissions.S_GLOBAL}),
 <!-- END permissions -->
 		));
 <!-- ENDIF -->
@@ -115,7 +115,7 @@ if (confirm_box(true))
 
 <!-- BEGIN configs -->
 
-		$umil->config_add('{configs.NAME}', '{configs.VALUE}', '{configs.DYNAMIC}');
+		$umil->config_add('{configs.NAME}', '{configs.VALUE}', '{configs.S_DYNAMIC}');
 <!-- END configs -->
 	
 <!-- IF .modules -->

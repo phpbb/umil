@@ -123,6 +123,7 @@ foreach ($permissions_add as $key => $value)
 		'VALUE'		=> (isset($value['name'])) ? $value['name'] : '',
 		'ITEM'		=> $key + 1,
 		'GLOBAL'	=> (isset($value['global'])) ? ' checked="checked"' : '',
+		'S_GLOBAL'	=> (isset($value['global'])) ? 1 : 0,
 	));
 }
 
@@ -152,6 +153,7 @@ foreach ($config_add as $key => $value)
 		'ITEM'		=> $key + 1,
 		'VALUE'		=> (isset($value['value'])) ? $value['value'] : '',
 		'DYNAMIC'	=> (isset($value['dynamic'])) ? ' checked="checked"' : '',
+		'S_DYNAMIC' => (isset($value['dynamic'])) ? 1 : 0,
 	));
 }
 
