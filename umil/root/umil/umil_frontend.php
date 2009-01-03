@@ -181,11 +181,11 @@ class umil_frontend extends umil
 			$type = explode(':', $vars['type']);
 
 			$l_explain = '';
-			if ($vars['explain'] && isset($vars['lang_explain']))
+			if (isset($vars['explain']) && $vars['explain'] && isset($vars['lang_explain']))
 			{
 				$l_explain = (isset($user->lang[$vars['lang_explain']])) ? $user->lang[$vars['lang_explain']] : $vars['lang_explain'];
 			}
-			else if ($vars['explain'])
+			else if (isset($vars['explain']) && $vars['explain'])
 			{
 				$l_explain = (isset($user->lang[$vars['lang'] . '_EXPLAIN'])) ? $user->lang[$vars['lang'] . '_EXPLAIN'] : '';
 			}
@@ -200,13 +200,13 @@ class umil_frontend extends umil
 			$template->assign_block_vars('options', array(
 				'KEY'			=> $name,
 				'TITLE'			=> (isset($user->lang[$vars['lang']])) ? $user->lang[$vars['lang']] : $vars['lang'],
-				'S_EXPLAIN'		=> $vars['explain'],
+				'S_EXPLAIN'		=> (isset($vars['explain'])) ? $vars['explain'] : false,
 				'TITLE_EXPLAIN'	=> $l_explain,
 				'CONTENT'		=> $content['tpl'],
 
 				// Find user link
 				'S_FIND_USER'	=> (isset($content['find_user'])) ? true : false,
-				'U_FIND_USER'	=> (isset($content['find_user'])) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", array('mode' => 'searchuser', 'form' => 'select_user', 'field' => 'username', 'select_single' => 'true', 'form' => 'admin_tool_kit', 'field' => $content['find_user_field'])) : '',
+				'U_FIND_USER'	=> (isset($content['find_user'])) ? append_sid("{$phpbb_root_path}memberlist.$phpEx", array('mode' => 'searchuser', 'form' => 'select_user', 'field' => 'username', 'select_single' => 'true', 'form' => 'umil', 'field' => $content['find_user_field'])) : '',
 			));
 		}
 	}

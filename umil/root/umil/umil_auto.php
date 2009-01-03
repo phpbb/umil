@@ -106,16 +106,21 @@ $stages = array(
 	'ACTION',
 );
 
+if (!isset($options) || !is_array($options))
+{
+	$options = array();
+}
+
+$options = array(
+	'legend1'			=> 'OPTIONS',
+	'action'			=> array('lang' => 'ACTION', 'type' => 'custom', 'function' => 'umil_install_update_uninstall_select', 'explain' => false),
+	'version_select'	=> array('lang' => 'VERSION_SELECT', 'type' => 'custom', 'function' => 'umil_version_select', 'explain' => true),
+	'display_results'	=> array('lang' => 'DISPLAY_RESULTS', 'type' => 'radio:yes_no', 'explain' => true, 'default' => $force_display_results),
+) + $options;
+
 if (!$submit && !$umil->confirm_box(true))
 {
 	$umil->display_stages($stages);
-
-	$options = array(
-		'legend1'			=> 'OPTIONS',
-		'action'			=> array('lang' => 'ACTION', 'type' => 'custom', 'function' => 'umil_install_update_uninstall_select', 'explain' => false),
-		'version_select'	=> array('lang' => 'VERSION_SELECT', 'type' => 'custom', 'function' => 'umil_version_select', 'explain' => true),
-		'display_results'	=> array('lang' => 'DISPLAY_RESULTS', 'type' => 'radio:yes_no', 'explain' => true, 'default' => $force_display_results),
-	);
 
 	$umil->display_options($options);
 	$umil->done();
@@ -124,7 +129,12 @@ else if (!$umil->confirm_box(true))
 {
 	$umil->display_stages($stages, 2);
 
-	$hidden = array('action' => $action, 'version_select' => $version_select, 'display_results' => $force_display_results);
+	$hidden = array();
+	foreach ($options as $key => $data)
+	{
+		$hidden[$key] = request_var($key, '', true);
+	}
+
 	switch ($action)
 	{
 		case 'install' :

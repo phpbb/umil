@@ -15,6 +15,29 @@
 // <![CDATA[
 
 /**
+* Find a member
+*/
+function find_username(url)
+{
+	popup(url, 760, 570, '_usersearch');
+	return false;
+}
+
+/**
+* Window popup
+*/
+function popup(url, width, height, name)
+{
+	if (!name)
+	{
+		name = '_popup';
+	}
+
+	window.open(url.replace(/&amp;/g, '&'), name, 'height=' + height + ',resizable=yes,scrollbars=yes, width=' + width);
+	return false;
+}
+
+/**
 * Set display of page element
 * s[-1,0,1] = hide,toggle display,show
 */
