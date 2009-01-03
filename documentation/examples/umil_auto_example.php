@@ -48,6 +48,15 @@ $version_config_name = 'test_version';
 $language_file = 'mods/umil_auto_example';
 
 /*
+* Options to display to the user (this is purely optional, if you do not need the options you do not have to set up this variable at all)
+* Uses the acp_board style of outputting information, with some extras (such as the 'default' and 'select_user' options)
+*/
+$options = array(
+	'test_username'	=> array('lang' => 'TEST_USERNAME', 'type' => 'text:40:255', 'explain' => true, 'default' => $user->data['username'], 'select_user' => true),
+	'test_boolean'	=> array('lang' => 'TEST_BOOLEAN', 'type' => 'radio:yes_no', 'default' => true),
+);
+
+/*
 * The array of versions and actions within each.
 * You do not need to order it a specific way (it will be sorted automatically), however, you must enter every version, even if no actions are done for it.
 *
@@ -60,6 +69,10 @@ $versions = array(
 		// Lets add a config setting named test_enable and set it to true
 		'config_add' => array(
 			array('test_enable', true),
+
+			// This uses the options we specified earlier.
+			array('test_username', request_var('test_username', $user->data['username'], true)),
+			array('test_boolean', request_var('test_boolean', true)),
 		),
 	),
 
