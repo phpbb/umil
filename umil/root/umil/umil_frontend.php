@@ -75,7 +75,7 @@ class umil_frontend extends umil
 		$title_explain = (isset($user->lang[$title . '_EXPLAIN'])) ? $user->lang[$title . '_EXPLAIN'] : '';
 		$title = (isset($user->lang[$title])) ? $user->lang[$title] : $title;
 
-		page_header($title);
+		page_header($title, false);
 
 		$template->assign_vars(array(
 			'SQL_LAYER'			=> $db->sql_layer,
