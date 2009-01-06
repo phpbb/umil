@@ -84,6 +84,7 @@ class umil_frontend extends umil
 			'U_ADM_INDEX'		=> append_sid("{$phpbb_root_path}adm/index.$phpEx", false, true, $user->session_id),
 			'U_INDEX'			=> append_sid("{$phpbb_root_path}index.$phpEx"),
 
+			'PAGE_TITLE'		=> $title,
 			'L_TITLE'			=> $title,
 			'L_TITLE_EXPLAIN'	=> $title_explain,
 		));

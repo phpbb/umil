@@ -1625,3 +1625,48 @@ fieldset.permissions .padding {
 .phpinfo td, .phpinfo th, .phpinfo h2, .phpinfo h1 {
 	text-align: left;
 }
+
+.rules span.corners-top {
+	margin: 0 -10px 5px -10px;
+}
+
+.rules span.corners-bottom {
+	margin: 5px -10px 0 -10px;
+}
+
+div.rules {
+	background-color: #ececec;
+	color: #bcbcbc;
+	padding: 0 10px;
+	margin: 10px 0;
+	font-size: 1.1em;
+}
+
+div.rules ul {
+	margin-left: 20px;
+}
+
+p.rules {
+	background-color: #ececec;
+	background-image: none;
+	padding: 5px;
+}
+
+p.rules img {
+	vertical-align: middle;
+}
+
+p.rules a {
+	vertical-align: middle;
+	clear: both;
+}
+
+div.rules {
+	background-color: #ECD5D8;
+	color: #BC2A4D;
+}
+
+p.rules {
+	background-color: #ECD5D8;
+	background-image: none;
+}

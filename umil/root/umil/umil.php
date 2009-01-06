@@ -115,20 +115,11 @@ class umil
 	*/
 	function umil($stand_alone = false)
 	{
-		global $config, $user, $phpbb_root_path, $phpEx;
-
 		$this->stand_alone = $stand_alone;
+
 		if (!$stand_alone)
 		{
-			// Check to see if a newer version is available.
-			$info = $this->version_check('www.phpbb.com', '/updatecheck', ((defined('PHPBB_QA')) ? 'umil_qa.txt' : 'umil.txt'));
-			if (is_array($info) && isset($info[0]))
-			{
-				if (version_compare(UMIL_VERSION, $info[0], '<'))
-				{
-					trigger_error('Please download the latest UMIL (Unified MOD Install Library) from: <a href="http://www.phpbb.com/mods/umil/">phpBB.com/mods/umil</a>', E_USER_ERROR);
-				}
-			}
+			global $config, $user, $phpbb_root_path, $phpEx;
 
 			/* Does not have the fall back option to use en/ if the user's language file does not exist, so we will not use it...unless that is changed.
 			if (method_exists('user', 'set_custom_lang_path'))
@@ -161,6 +152,25 @@ class umil
 			//}
 
 			$user->add_lang(array('acp/common', 'acp/permissions'));
+		}
+
+		// Check to see if a newer version is available.
+		$info = $this->version_check('www.phpbb.com', '/updatecheck', ((defined('PHPBB_QA')) ? 'umil_qa.txt' : 'umil.txt'));
+		if (is_array($info) && isset($info[0]) && isset($info[1]))
+		{
+			if (version_compare(UMIL_VERSION, $info[0], '<'))
+			{
+				global $template, $user, $phpbb_root_path;
+
+				page_header('', false);
+
+				$this_file = str_replace(array(phpbb_realpath($phpbb_root_path), '\\'), array('', '/'), __FILE__);
+				$user->lang['UPDATE_UMIL'] = (isset($user->lang['UPDATE_UMIL'])) ? $user->lang['UPDATE_UMIL'] : 'Please download the latest UMIL (Unified MOD Install Library) from: <a href="%1$s">%1$s</a>';
+				$template->assign_vars(array(
+					'S_BOARD_DISABLED'		=> true,
+					'L_BOARD_DISABLED'		=> (!$stand_alone) ? sprintf($user->lang['UPDATE_UMIL'], $info[1]) : sprintf('Please download the latest UMIL (Unified MOD Install Library) from: <a href="%1$s">%1$s</a>, then replace the file %2$s with the root/umil/umil.php file included in the downloaded package.', $info[1], $this_file),
+				));
+			}
 		}
 	}
 
