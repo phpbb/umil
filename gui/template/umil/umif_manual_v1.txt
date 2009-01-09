@@ -1,0 +1,147 @@
+{PHP_START}
+/**
+*
+* @author {AUTHOR_USERNAME} ({AUTHOR_FULLNAME}) {AUTHOR_EMAIL} 
+* @package umil
+* @version $Id {GENERATION_TIMESTAMP} $
+* @copyright (c) {COPYRIGHT_YEAR} {COPYRIGHT_AUTHOR} 
+* @license http://opensource.org/licenses/gpl-license.php GNU Public License
+*
+*/
+
+/**
+* @ignore
+*/
+define('IN_PHPBB', true);
+$phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './';
+$phpEx = substr(strrchr(__FILE__, '.'), 1);
+include($phpbb_root_path . 'common.' . $phpEx);
+
+// Start session management
+$user->session_begin();
+$auth->acl($user->data);
+$user->setup('{LANG_FILE}');
+
+if (!file_exists($phpbb_root_path . 'umil/umil.' . $phpEx))
+{
+	trigger_error('Please download the latest UMIL (Unified MOD Install Library) from: <a href="http://www.phpbb.com/mods/umil/">phpBB.com/mods/umil</a>', E_USER_ERROR);
+}
+
+// We only allow a founder to install this MOD
+if ($user->data['user_type'] != USER_FOUNDER)
+{
+    if ($user->data['user_id'] == ANONYMOUS)
+    {
+        login_box('', 'LOGIN');
+    }
+
+    trigger_error('NOT_AUTHORISED');
+}
+
+if (!class_exists('umil'))
+{
+	include($phpbb_root_path . 'umil/umil.' . $phpEx);
+}
+
+$umil = new umil(true);
+
+$mod = array(
+	'name'		=> '{MOD_NAME}',
+	'version'	=> '{MOD_VERSION}',
+	'config'	=> '{MOD_CONFIG}',
+	'enable'	=> '{MOD_ENABLE}',
+);
+
+if (confirm_box(true))
+{
+	// Install the base {MOD_VERSION} version
+	if (!$umil->config_exists($mod['config']))
+	{
+		// Lets add a config setting for enabling/disabling the MOD and set it to true
+		$umil->config_add($mod['enable'], true);
+
+		// We must handle the version number ourselves.
+		$umil->config_add($mod['config'], $mod['version']);
+
+<!-- IF .permissions -->
+		$umil->permission_add(array(
+<!-- BEGIN permissions -->
+			array('{permissions.VALUE}', {permissions.S_GLOBAL}),
+<!-- END permissions -->
+		));
+<!-- ENDIF -->
+
+<!-- IF .set_perms -->
+
+		$umil->permission_set(array(
+<!-- BEGIN set_perms -->
+			array('{set_perms.ROLE}', '{set_perms.NAME}'),
+<!-- END set_perms -->
+		));
+<!-- ENDIF -->
+
+<!-- IF .table -->
+
+		$umil->table_add({TABLE_NAME}, array(
+			'COLUMNS'	=> array(
+<!-- BEGIN table -->
+				'{table.NAME}'		=> array('{table.TYPE}', {table.DEFAULT}<!-- IF table.OPTION -->, 'auto_increment'<!-- ENDIF -->),
+<!-- END table -->
+			),
+<!-- IF .primary_keys -->
+<!-- BEGIN primary_keys -->
+			'PRIMARY_KEY'	=> <!-- IF primary_keys.MULTIPLE_KEYS -->array('{primary_keys.KEY}', '{primary_keys.KEY2}'),<!-- ELSE -->'{primary_keys.KEY}',<!-- ENDIF -->
+<!-- END primary_keys -->
+<!-- ENDIF -->
+<!-- IF .table_keys -->
+			'KEYS'		=> array(
+<!-- BEGIN table_keys -->
+				'{table_keys.INDEX}'		=> array('{table_keys.TYPE}', array('{table_keys.COLUMN}'<!-- IF table_keys.COLUMN2 -->, 'table_keys.COLUMN2'<!-- ENDIF -->)),
+<!-- END table_keys -->
+			),
+<!-- ENDIF -->
+		));
+<!-- ENDIF -->
+
+<!-- BEGIN columns -->
+
+		$umil->table_column_add('{columns.TABLE}', '{columns.NAME}', array('{columns.TYPE}', {columns.DEFAULT}<!-- IF columns.OPTION -->, 'auto_increment'<!-- ENDIF -->));
+<!-- END columns -->
+	
+<!-- BEGIN index -->
+
+		$umil->table_index_add('{index.TABLE}', '{index.INDEX}', '{index.COLUMN}');
+<!-- END index -->
+
+<!-- BEGIN configs -->
+
+		$umil->config_add('{configs.NAME}', '{configs.VALUE}', '{configs.S_DYNAMIC}');
+<!-- END configs -->
+	
+<!-- IF .modules -->
+
+		$umif->module_add(array(
+<!-- BEGIN modules -->
+			array('{modules.CLASS}', '{modules.PARENT}', 
+				array('module_basename'	=> '{modules.BASENAME}'),
+			),
+<!-- END modules -->
+		));
+<!-- ENDIF -->
+
+		// Our final action, we purge the board cache
+		$umil->cache_purge();
+	}
+
+	// We are done
+	trigger_error('Done!');
+}
+else
+{
+	confirm_box(false, 'INSTALL_TEST_MOD');
+}
+
+// Shouldn't get here.
+redirect($phpbb_root_path . $user->page['page_name']);
+
+{PHP_END}

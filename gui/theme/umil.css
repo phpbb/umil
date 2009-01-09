@@ -1,0 +1,63 @@
+/* UMIF GUI creator for prosilver style
+-------------------------------------------------*/
+
+dd.inputfield {
+	width: 25%;
+	text-align: center;
+	line-height: 2.2em;
+	font-size: 1.2em;
+}
+
+dd.short {
+	width: 10%;
+}
+
+dd.medium {
+	width: 17%;
+}
+
+li.header dd.header {
+	font-weight:bold;
+	width: 25%;
+	text-align:center;
+}
+
+li.header dd.short {
+	width: 10%;
+}
+
+li.header dd.medium {
+	width: 17%;
+}
+
+ul.topiclist dt.inputfield {
+	width: 2%;
+	padding: .5em 5px 0 5px;
+	text-align: center;
+	line-height: 2.2em;
+	font-size: 1.2em;
+	font-weight:bold;
+}
+
+li.header dl.icon dt.header {
+	width:2%;
+	padding:0 5px;
+	text-align: center;
+}
+
+li.header dl.icon dd.left {
+	text-align:left;
+}
+
+.panel-frame {
+	border:1px solid #ccc;
+	padding:8px;
+	position:relative;
+	top:-4px;
+	border-top: none;
+}
+
+.notice {
+	padding: 5px;
+	background-color: #ccccf6;
+}
