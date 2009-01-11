@@ -1474,14 +1474,28 @@ class umil
 		}
 		$auth_admin = new auth_admin();
 
-		// in the acl_add_option function it already checks if the auth option exists already or not.
-		if ($global)
+		// We have to add a check to see if the !$global (if global, local, and if local, global) permission already exists.  If it does, acl_add_option currently has a bug which would break the ACL system, so we are having a work-around here.
+		if ($this->permission_exists($auth_option, !$global))
 		{
-			$auth_admin->acl_add_option(array('global' => array($auth_option)));
+			$sql_ary = array(
+				'is_global'	=> 1,
+				'is_local'	=> 1,
+			);
+			$sql = 'UPDATE ' . ACL_OPTIONS_TABLE . '
+				SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
+				WHERE auth_option = \'' . $db->sql_escape($auth_option) . "'";
+			$db->sql_query($sql);
 		}
 		else
 		{
-			$auth_admin->acl_add_option(array('local' => array($auth_option)));
+			if ($global)
+			{
+				$auth_admin->acl_add_option(array('global' => array($auth_option)));
+			}
+			else
+			{
+				$auth_admin->acl_add_option(array('local' => array($auth_option)));
+			}
 		}
 
 		return $this->umil_end();
@@ -1518,17 +1532,39 @@ class umil
 			return $this->umil_end('PERMISSION_NOT_EXIST', $auth_option);
 		}
 
-		$sql = 'SELECT auth_option_id FROM ' . ACL_OPTIONS_TABLE . "
-			WHERE auth_option = '" . $db->sql_escape($auth_option) . "'
-			AND is_global = " . (($global) ? '1' : '0');
-		$db->sql_query($sql);
-		$id = $db->sql_fetchfield('auth_option_id');
+		if ($global)
+		{
+			$type_sql = ' AND is_global = 1';
+		}
+		else
+		{
+			$type_sql = ' AND is_local = 1';
+		}
+		$sql = 'SELECT auth_option_id, is_global, is_local FROM ' . ACL_OPTIONS_TABLE . "
+			WHERE auth_option = '" . $db->sql_escape($auth_option) . "'" .
+			$type_sql;
+		$result = $db->sql_query($sql);
+		$row = $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
 
-		// Delete time
-		$db->sql_query('DELETE FROM ' . ACL_GROUPS_TABLE . ' WHERE auth_option_id = ' . $id);
-		$db->sql_query('DELETE FROM ' . ACL_OPTIONS_TABLE . ' WHERE auth_option_id = ' . $id);
-		$db->sql_query('DELETE FROM ' . ACL_ROLES_DATA_TABLE . ' WHERE auth_option_id = ' . $id);
-		$db->sql_query('DELETE FROM ' . ACL_USERS_TABLE . ' WHERE auth_option_id = ' . $id);
+		$id = $row['auth_option_id'];
+
+		// If it is a local and global permission, do not remove the row! :P
+		if ($row['is_global'] && $row['is_local'])
+		{
+			$sql = 'UPDATE ' . ACL_OPTIONS_TABLE . '
+				SET ' . (($global) ? 'is_global = 0' : 'is_local = 0') . '
+				WHERE auth_option_id = ' . $id;
+			$db->sql_query($sql);
+		}
+		else
+		{
+			// Delete time
+			$db->sql_query('DELETE FROM ' . ACL_GROUPS_TABLE . ' WHERE auth_option_id = ' . $id);
+			$db->sql_query('DELETE FROM ' . ACL_ROLES_DATA_TABLE . ' WHERE auth_option_id = ' . $id);
+			$db->sql_query('DELETE FROM ' . ACL_USERS_TABLE . ' WHERE auth_option_id = ' . $id);
+			$db->sql_query('DELETE FROM ' . ACL_OPTIONS_TABLE . ' WHERE auth_option_id = ' . $id);
+		}
 
 		// Purge the auth cache
 		$cache->destroy('_acl_options');
