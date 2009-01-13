@@ -1,6 +1,8 @@
 <?php
 /**
 * @package phpBB3 UMIL - Unified MOD Install File
+* @version $Id:$
+* @copyright (c) 2009 phpBB Group
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
 
@@ -95,7 +97,7 @@ $lang = array_merge($lang, array(
 	'UNINSTALL_MOD'					=> 'Uninstall %s',
 	'UNINSTALL_MOD_CONFIRM'			=> 'Are you ready to uninstall the %s?  All settings and data saved by this mod will be removed!',
 	'UNKNOWN'						=> 'Unknown',
-	'UPDATE_MOD'					=> 'Update Test Mod',
+	'UPDATE_MOD'					=> 'Update %s',
 	'UPDATE_MOD_CONFIRM'			=> 'Are you ready to update the %s?',
 	'UPDATE_UMIL'					=> 'Please download the latest UMIL (Unified MOD Install Library) from: <a href="%1$s">%1$s</a>',
 
