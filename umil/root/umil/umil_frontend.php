@@ -68,6 +68,10 @@ class umil_frontend extends umil
 
 		// Setup the template
 		$template->set_custom_template($phpbb_root_path . 'umil/style', 'umil');
+
+		// Work around for a bug in phpBB3.
+		$user->theme['template_storedb'] = false;
+
 		$template->set_filenames(array(
 			'body' => 'index_body.html',
 		));
