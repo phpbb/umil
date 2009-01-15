@@ -67,7 +67,7 @@ class umil_frontend extends umil
 		$user->add_lang('install');
 
 		// Setup the template
-		$template->set_custom_template($phpbb_root_path . 'umil/style/', 'umil');
+		$template->set_custom_template($phpbb_root_path . 'umil/style', 'umil');
 		$template->set_filenames(array(
 			'body' => 'index_body.html',
 		));
