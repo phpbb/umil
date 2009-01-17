@@ -36,10 +36,11 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 
 	<history>
 		<entry>
-			<date>2009-01-12</date>
-			<rev-version>1.0.0-RC3</rev-version>
+			<date>2009-01-16</date>
+			<rev-version>1.0.0-RC2</rev-version>
 			<changelog lang="en">
 				<change>[Fix] Incorrect language for UPDATE_MOD #40385</change>
+				<change>[Fix] set_custom_template broken when original template stored in DB #40615</change>
 			</changelog>
 		</entry>
 		<entry>
