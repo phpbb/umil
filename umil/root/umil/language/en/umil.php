@@ -1,7 +1,7 @@
 <?php
 /**
 * @package phpBB3 UMIL - Unified MOD Install File
-* @version $Id:$
+* @version $Id$
 * @copyright (c) 2009 phpBB Group
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 */
@@ -45,6 +45,7 @@ $lang = array_merge($lang, array(
 	'DISPLAY_RESULTS_EXPLAIN'		=> 'Select yes to display all of the actions and results during the requested action.',
 
 	'ERROR_NOTICE'					=> 'One or more errors occured during the requested action.  Please download <a href="%s">this file</a> with the errors listed in it and ask the mod author for assistance.',
+	'ERROR_NOTICE_NO_FILE'			=> 'One or more errors occured during the requested action.  Please make a full record of any errors and ask the mod author for assistance.',
 
 	'FAIL'							=> 'Fail',
 	'FOUNDERS_ONLY'					=> 'You must be a board founder to access this page.',

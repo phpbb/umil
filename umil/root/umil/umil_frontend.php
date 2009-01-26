@@ -237,39 +237,53 @@ class umil_frontend extends umil
 
 		if ($result != $user->lang['SUCCESS'])
 		{
-			if ($this->errors == false)
+			// Check if the umil/error_files/ is writable
+			if (!is_writable("{$phpbb_root_path}umil/error_files/"))
 			{
-				$this->errors = true;
-
-				global $phpbb_root_path;
-				// Setting up an error recording file
-				$append = 0;
-				$this->error_file = "{$phpbb_root_path}umil/error_files/" . strtolower($this->title) . '.txt';
-				while (file_exists($this->error_file))
-				{
-					$this->error_file = "{$phpbb_root_path}umil/error_files/" . strtolower($this->title) . $append . '.txt';
-					$append++;
-				}
+				phpbb_chmod("{$phpbb_root_path}umil/error_files/", CHMOD_ALL);
 			}
 
-			if (file_exists($this->error_file) && filesize($this->error_file))
+			// Hopefully it is writable now.  If not there is nothing we can do.
+			if (is_writable("{$phpbb_root_path}umil/error_files/"))
 			{
-				$fp = fopen($this->error_file, 'rb');
-				$contents = fread($fp, filesize($this->error_file));
+				if ($this->errors == false)
+				{
+					$this->errors = true;
+
+					global $phpbb_root_path;
+					// Setting up an error recording file
+					$append = 0;
+					$this->error_file = "{$phpbb_root_path}umil/error_files/" . strtolower($this->title) . '.txt';
+					while (file_exists($this->error_file))
+					{
+						$this->error_file = "{$phpbb_root_path}umil/error_files/" . strtolower($this->title) . $append . '.txt';
+						$append++;
+					}
+				}
+
+				if (file_exists($this->error_file) && filesize($this->error_file))
+				{
+					$fp = fopen($this->error_file, 'rb');
+					$contents = fread($fp, filesize($this->error_file));
+					fclose($fp);
+					phpbb_chmod($this->error_file, CHMOD_ALL);
+				}
+				else
+				{
+					$contents = ((isset($user->lang[$this->title])) ? $user->lang[$this->title] : $this->title) . "\n\n";
+				}
+
+				$contents .= "{$command}\n{$result}\n\n";
+
+				$fp = fopen($this->error_file, 'wb');
+				fwrite($fp, $contents);
 				fclose($fp);
 				phpbb_chmod($this->error_file, CHMOD_ALL);
 			}
 			else
 			{
-				$contents = ((isset($user->lang[$this->title])) ? $user->lang[$this->title] : $this->title) . "\n\n";
+				$this->errors = true;
 			}
-
-			$contents .= "{$command}\n{$result}\n\n";
-
-			$fp = fopen($this->error_file, 'wb');
-			fwrite($fp, $contents);
-			fclose($fp);
-			phpbb_chmod($this->error_file, CHMOD_ALL);
 		}
 
 		if ($result != $user->lang['SUCCESS'] || $this->force_display_results == true)// || defined('DEBUG'))
@@ -295,10 +309,10 @@ class umil_frontend extends umil
 			'U_ERROR_FILE'		=> $this->error_file,
 
 			'L_RESULTS'			=> ($this->errors) ? $user->lang['FAIL'] : $user->lang['SUCCESS'],
-			'L_ERROR_NOTICE'	=> sprintf($user->lang['ERROR_NOTICE'], $this->error_file),
+			'L_ERROR_NOTICE'	=> ($this->error_file) ? sprintf($user->lang['ERROR_NOTICE'], $this->error_file) : $user->lang['ERROR_NOTICE_NO_FILE'],
 
 			'S_RESULTS'			=> $this->results,
-			'S_SUCCESS'			=> ($this->errors) ? false : true,
+			'S_SUCCESS'			=> $this->errors,
 			'S_PERMISSIONS'		=> $this->permissions_added,
 		));
 
