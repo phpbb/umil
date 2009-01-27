@@ -151,7 +151,7 @@ class umil
 				$user->add_lang('./../../umil/language/' . $path . '/umil');
 			//}
 
-			$user->add_lang(array('acp/common', 'acp/permissions'));
+			$user->add_lang(array('ucp', 'mcp', 'acp/common', 'acp/permissions'));
 		}
 
 		// Check to see if a newer version is available.
