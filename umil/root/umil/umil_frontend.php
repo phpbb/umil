@@ -308,10 +308,10 @@ class umil_frontend extends umil
 			'U_ERROR_FILE'		=> $this->error_file,
 
 			'L_RESULTS'			=> ($this->errors) ? $user->lang['FAIL'] : $user->lang['SUCCESS'],
-			'L_ERROR_NOTICE'	=> ($this->error_file) ? sprintf($user->lang['ERROR_NOTICE'], $this->error_file) : $user->lang['ERROR_NOTICE_NO_FILE'],
+			'L_ERROR_NOTICE'	=> ($this->errors) ? (($this->error_file) ? sprintf($user->lang['ERROR_NOTICE'], $this->error_file) : $user->lang['ERROR_NOTICE_NO_FILE']) : '',
 
 			'S_RESULTS'			=> $this->results,
-			'S_SUCCESS'			=> $this->errors,
+			'S_SUCCESS'			=> ($this->errors) ? false : true,
 			'S_PERMISSIONS'		=> $this->permissions_added,
 		));
 
