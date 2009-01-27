@@ -250,7 +250,6 @@ class umil_frontend extends umil
 				{
 					$this->errors = true;
 
-					global $phpbb_root_path;
 					// Setting up an error recording file
 					$append = 0;
 					$this->error_file = "{$phpbb_root_path}umil/error_files/" . strtolower($this->title) . '.txt';
