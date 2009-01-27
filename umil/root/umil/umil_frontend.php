@@ -226,7 +226,7 @@ class umil_frontend extends umil
 	*/
 	function display_results($command = '', $result = '')
 	{
-		global $template, $user;
+		global $template, $user, $phpbb_root_path;
 
 		$command = ($command) ? $command : $this->command;
 		$command = (isset($user->lang[$command])) ? $user->lang[$command] : $command;
