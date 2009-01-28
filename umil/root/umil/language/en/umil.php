@@ -1,9 +1,14 @@
 <?php
 /**
+*
+* umil [English]
+*
+* @author Nathan Guse (EXreaction) http://lithiumstudios.org
 * @package phpBB3 UMIL - Unified MOD Install File
 * @version $Id$
 * @copyright (c) 2009 phpBB Group
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+*
 */
 
 if (!defined('IN_PHPBB'))
@@ -27,13 +32,17 @@ if (empty($lang) || !is_array($lang))
 // You do not need this where single placeholders are used, e.g. 'Message %d' is fine
 // equally where a string contains only two placeholders which are used to wrap text
 // in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
+//
+// Some characters you may want to copy&paste:
+// ’ » “ ” …
+//
 
 $lang = array_merge($lang, array(
 	'ACTION'						=> 'Action',
 	'ADVANCED'						=> 'Advanced',
 	'AUTH_CACHE_PURGE'				=> 'Purging the Auth Cache',
 
-	'CACHE_PURGE'					=> 'Purging your forum\'s cache',
+	'CACHE_PURGE'					=> 'Purging your forum’s cache',
 	'CONFIGURE'						=> 'Configure',
 	'CONFIG_ADD'					=> 'Adding new config variable: %s',
 	'CONFIG_ALREADY_EXISTS'			=> 'ERROR: Config variable %s already exists.',
@@ -56,7 +65,7 @@ $lang = array_merge($lang, array(
 	'IMAGESET_CACHE_PURGE'			=> 'Refreshing the %s imageset',
 	'INSTALL'						=> 'Install',
 	'INSTALL_MOD'					=> 'Install %s',
-	'INSTALL_MOD_CONFIRM'			=> 'Are you ready to install the %s?',
+	'INSTALL_MOD_CONFIRM'			=> 'Are you ready to install %s?',
 
 	'MODULE_ADD'					=> 'Adding %1$s module: %2$s',
 	'MODULE_NOT_EXIST'				=> 'ERROR: Module does not exist.',
@@ -96,15 +105,15 @@ $lang = array_merge($lang, array(
 
 	'UNINSTALL'						=> 'Uninstall',
 	'UNINSTALL_MOD'					=> 'Uninstall %s',
-	'UNINSTALL_MOD_CONFIRM'			=> 'Are you ready to uninstall the %s?  All settings and data saved by this mod will be removed!',
+	'UNINSTALL_MOD_CONFIRM'			=> 'Are you ready to uninstall %s?  All settings and data saved by this mod will be removed!',
 	'UNKNOWN'						=> 'Unknown',
 	'UPDATE_MOD'					=> 'Update %s',
-	'UPDATE_MOD_CONFIRM'			=> 'Are you ready to update the %s?',
+	'UPDATE_MOD_CONFIRM'			=> 'Are you ready to update %s?',
 	'UPDATE_UMIL'					=> 'Please download the latest UMIL (Unified MOD Install Library) from: <a href="%1$s">%1$s</a>',
 
 	'VERSIONS'						=> 'Mod Version: <strong>%1$s</strong><br />Currently Installed: <strong>%2$s</strong>',
 	'VERSION_SELECT'				=> 'Version Select',
-	'VERSION_SELECT_EXPLAIN'		=> 'Do not change from "Ignore" unless you know what you are doing or were told to.',
+	'VERSION_SELECT_EXPLAIN'		=> 'Do not change from “Ignore” unless you know what you are doing or were told to.',
 ));
 
 ?>
