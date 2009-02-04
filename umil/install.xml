@@ -31,7 +31,7 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 	<installation>
 		<level>easy</level>
 		<time>60</time>
-		<target-version>3.0.3</target-version>
+		<target-version>3.0.4</target-version>
 	</installation>
 
 	<history>
@@ -39,6 +39,7 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 			<date>2009-01-16</date>
 			<rev-version>1.0.0-RC2</rev-version>
 			<changelog lang="en">
+				<change>[Fix] Including the phpbb_chmod function &amp; constants if the version of phpBB used does not have them (older than 3.0.3)</change>
 				<change>[Fix] Incorrect language for UPDATE_MOD #40385</change>
 				<change>[Fix] set_custom_template broken when original template stored in DB #40615</change>
 				<change>[Fix] incorrect handling of table_prefix when the table prefix was not phpbb_ but had phpbb_ in it #40725</change>
