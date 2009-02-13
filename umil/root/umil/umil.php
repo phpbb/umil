@@ -18,7 +18,7 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-define('UMIL_VERSION', '1.0.0-RC1');
+define('UMIL_VERSION', '1.2.0-a1');
 
 /**
 * Multicall instructions
@@ -111,47 +111,26 @@ class umil
 	var $permissions_added = false;
 
 	/**
+	* Mod ID for saving log/record to phpbb_umil table.
+	*
+	* @var mixed Boolean false to completely ignore this part (no logs/records will be saved) or an integer which corresponds to the mod_id this will be stored under in the database
+	*/
+	var $mod_id = false;
+
+	/**
 	* Constructor
 	*/
-	function umil($stand_alone = false)
+	function umil($stand_alone = false, $mod_id = false)
 	{
-		$this->stand_alone = $stand_alone;
+		global $config;
 
+		$this->stand_alone = $stand_alone;
+		$this->mod_id = (is_numeric($mod_id) && $mod_id >= 1) ? (int) $mod_id : false;
+
+		// Include some language files for the non stand-alone version
 		if (!$stand_alone)
 		{
-			global $config, $user, $phpbb_root_path, $phpEx;
-
-			/* Does not have the fall back option to use en/ if the user's language file does not exist, so we will not use it...unless that is changed.
-			if (method_exists('user', 'set_custom_lang_path'))
-			{
-				$user->set_custom_lang_path($phpbb_root_path . 'umil/language/');
-				$user->add_lang('umil');
-				$user->set_custom_lang_path($phpbb_root_path . 'language/');
-			}
-			else
-			{*/
-				// Include the umil language file.  First we check if the language file for the user's language is available, if not we check if the board's default language is available, if not we use the english file.
-				if (isset($user->data['user_lang']) && file_exists("{$phpbb_root_path}umil/language/{$user->data['user_lang']}/umil.$phpEx"))
-				{
-					$path = $user->data['user_lang'];
-				}
-				else if (file_exists("{$phpbb_root_path}umil/language/" . basename($config['default_lang']) . "/umil.$phpEx"))
-				{
-					$path = basename($config['default_lang']);
-				}
-				else if (file_exists("{$phpbb_root_path}umil/language/en/umil.$phpEx"))
-				{
-					$path = 'en';
-				}
-				else
-				{
-					trigger_error('Language Files Missing.<br /><br />Please download the latest UMIL (Unified MOD Install Library) from: <a href="http://www.phpbb.com/mods/umil/">phpBB.com/mods/umil</a>', E_USER_ERROR);
-				}
-
-				$user->add_lang('./../../umil/language/' . $path . '/umil');
-			//}
-
-			$user->add_lang(array('acp/common', 'acp/permissions'));
+			$this->add_lang(array('umil', 'acp/common', 'acp/permissions'));
 		}
 
 		// Check to see if a newer version is available.
@@ -171,6 +150,42 @@ class umil
 					'L_BOARD_DISABLED'		=> (!$stand_alone) ? sprintf($user->lang['UPDATE_UMIL'], $info[1]) : sprintf('Please download the latest UMIL (Unified MOD Install Library) from: <a href="%1$s">%1$s</a>, then replace the file %2$s with the root/umil/umil.php file included in the downloaded package.', $info[1], $this_file),
 				));
 			}
+		}
+
+		// Check to make sure our phpbb_umil table exists
+		if (!$this->config_exists('umil_db_version') || version_compare($config['umil_db_version'], UMIL_VERSION, '<'))
+		{
+			$versions = array(
+				'1.2.0-a1' => array(
+					'table_add' => array(
+						array('phpbb_umil', array(
+							'COLUMNS'		=> array(
+								'mod_id'			=> array('UINT', NULL, 'auto_increment'),
+								'mod_version'		=> array('VCHAR', ''), // Currently installed version
+								'mod_versionname'	=> array('VCHAR', ''), // Will be used to check which mod is which. ($version_config_name)
+								'mod_updatecheck'	=> array('VCHAR', ''), // URL to automatically check for updates to this mod
+								'mod_lang'			=> array('VCHAR', ''), // Mod Name (not localized) ($mod_name)
+								'mod_langfile'		=> array('VCHAR', ''), // Path to Mod Language file ($language_file)
+								'mod_name'			=> array('TEXT_UNI', NULL), // Mod Name (English localized mod name, in case the language file gets deleted, lost, etc)
+								'mod_desc'			=> array('TEXT_UNI', NULL), // Mod Description (English localized, in case the language file gets deleted, lost, etc)
+								'mod_changes'		=> array('TEXT', NULL), // Record of all changes for all versions of the mod (basically serialize($versions))
+							),
+							'PRIMARY_KEY'	=> 'mod_id',
+						)),
+					),
+					'permission_add' => array(
+						'a_umil',
+					),
+					'module_add' => array(
+						// Add ACP UMIL category and module
+						array('acp', 'ACP_CAT_DOT_MODS', 'ACP_CAT_UMIL'),
+						array('acp', 'ACP_CAT_UMIL', array(
+							'module_basename'		=> 'umil',
+						)),
+					),
+				),
+			);
+			$this->run_actions('update', $versions, 'umil_db_version');
 		}
 	}
 
@@ -2225,7 +2240,7 @@ class umil
 	*
 	* @return array|bool False if there was any error, or an array (each line in the file as a value)
 	*/
-	function version_check($url, $path, $file)
+	function version_check($url, $path, $file, $timeout = 10, $port = 80)
 	{
 		if (!function_exists('get_remote_file'))
 		{
@@ -2235,7 +2250,8 @@ class umil
 		}
 
 		$errstr = $errno = '';
-		$info = get_remote_file($url, $path, $file, $errstr, $errno);
+
+		$info = get_remote_file($url, $path, $file, $errstr, $errno, $port, $timeout);
 
 		if ($info === false)
 		{
@@ -2729,6 +2745,68 @@ class umil
 
 		// Replacing phpbb_ with the $table_prefix, but, just in case we have a different table prefix with phpbb_ in it (say, like phpbb_3), we are replacing the table prefix with phpbb_ first to make sure we do not have issues.
 		$table_name = str_replace('phpbb_', $table_prefix, str_replace($table_prefix, 'phpbb_', $table_name));
+	}
+
+	/**
+	* Include a language file (helper for the fall-back options)
+	*
+	* @param mixed $file The file name or array of file names
+	* @param bool $roe (Return On Error) false to trigger an error if the language file does not exist, true to return boolean false if it does not.
+	*/
+	function add_lang($file, $roe = false)
+	{
+		global $config, $user, $phpbb_root_path, $phpEx;
+
+		// Multiple?
+		if (is_array($file))
+		{
+			foreach ($file as $f)
+			{
+				$this->add_lang($f);
+			}
+			return;
+		}
+
+		// First we check if the language file for the user's language is available, if not we check if the board's default language is available, if not we check the english file.
+		if (isset($user->data['user_lang']) && file_exists("{$phpbb_root_path}umil/language/{$user->data['user_lang']}/$file.$phpEx"))
+		{
+			$path = 'umil/language/' . $user->data['user_lang'];
+		}
+		else if (file_exists("{$phpbb_root_path}umil/language/" . basename($config['default_lang']) . "/$file.$phpEx"))
+		{
+			$path = 'umil/language/' . basename($config['default_lang']);
+		}
+		else if (file_exists("{$phpbb_root_path}umil/language/en/$file.$phpEx"))
+		{
+			$path = 'umil/language/' . 'en';
+		}
+		// Just for the hell of it...lets try the language/ folder as well...
+		else if (isset($user->data['user_lang']) && file_exists("{$phpbb_root_path}language/{$user->data['user_lang']}/$file.$phpEx"))
+		{
+			$path = 'language/' . $user->data['user_lang'];
+		}
+		else if (file_exists("{$phpbb_root_path}language/" . basename($config['default_lang']) . "/$file.$phpEx"))
+		{
+			$path = 'language/' . basename($config['default_lang']);
+		}
+		else if (file_exists("{$phpbb_root_path}language/en/$file.$phpEx"))
+		{
+			$path = 'language/en';
+		}
+		// All options have been exhausted...it doesn't exist.
+		else
+		{
+			if ($roe)
+			{
+				return false;
+			}
+			else
+			{
+				trigger_error("Language file 'umil/language/{$user->data['user_lang']}/$file.$phpEx' missing.", E_USER_ERROR);
+			}
+		}
+
+		$user->add_lang("./../../$path/$file");
 	}
 }
 

@@ -26,7 +26,7 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 		</author>
 	</author-group>
 
-	<mod-version>1.0.0-RC1</mod-version>
+	<mod-version>1.2.0-a1</mod-version>
 
 	<installation>
 		<level>easy</level>
@@ -36,21 +36,10 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 
 	<history>
 		<entry>
-			<date>2009-01-16</date>
-			<rev-version>1.0.0-RC2</rev-version>
+			<date>2009-02-13</date>
+			<rev-version>1.2.0-a1</rev-version>
 			<changelog lang="en">
-				<change>[Fix] Including the phpbb_chmod function &amp; constants if the version of phpBB used does not have them (older than 3.0.3)</change>
-				<change>[Fix] Incorrect language for UPDATE_MOD #40385</change>
-				<change>[Fix] set_custom_template broken when original template stored in DB #40615</change>
-				<change>[Fix] incorrect handling of table_prefix when the table prefix was not phpbb_ but had phpbb_ in it #40725</change>
-				<change>[Fix] When making error files, the directory is not checked first for permissions #41065</change>
-			</changelog>
-		</entry>
-		<entry>
-			<date>2009-01-01</date>
-			<rev-version>1.0.0-RC1</rev-version>
-			<changelog lang="en">
-				<change>Initial Public Preview Release</change>
+				<change>1.2.0 Development started</change>
 			</changelog>
 		</entry>
 	</history>

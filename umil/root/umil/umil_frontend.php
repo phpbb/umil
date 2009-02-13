@@ -56,9 +56,6 @@ class umil_frontend extends umil
 
 		$this->title = $title;
 
-		// Need some ACP language items.
-		$user->add_lang('acp/common');
-
 		// we must call the main constructor
 		$this->umil();
 		$this->auto_display_results = $auto_display_results;
