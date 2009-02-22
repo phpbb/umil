@@ -359,31 +359,39 @@ class umil
 				{
 					if ($method == 'custom')
 					{
-						if (function_exists($params))
+						if (!is_array($params))
 						{
-							$return = call_user_func($params, $action, $version);
-							if (is_string($return))
-							{
-								$this->umil_start($return);
-								$this->umil_end();
-							}
-							else if (is_array($return) && isset($return['command']))
-							{
-								if (is_array($return['command']))
-								{
-									call_user_func_array(array($this, 'umil_start'), $return['command']);
-								}
-								else
-								{
-									$this->umil_start($return['command']);
-								}
+							$params = array($params);
+						}
 
-								if (isset($return['result']))
+						foreach ($params as $function_name)
+						{
+							if (function_exists($function_name))
+							{
+								$return = call_user_func($function_name, $action, $version);
+								if (is_string($return))
 								{
-									$this->result($return['result']);
+									$this->umil_start($return);
+									$this->umil_end();
 								}
+								else if (is_array($return) && isset($return['command']))
+								{
+									if (is_array($return['command']))
+									{
+										call_user_func_array(array($this, 'umil_start'), $return['command']);
+									}
+									else
+									{
+										$this->umil_start($return['command']);
+									}
 
-								$this->umil_end();
+									if (isset($return['result']))
+									{
+										$this->result($return['result']);
+									}
+
+									$this->umil_end();
+								}
 							}
 						}
 					}
@@ -436,31 +444,39 @@ class umil
 				{
 					if ($method == 'custom')
 					{
-						if (function_exists($params))
+						if (!is_array($params))
 						{
-							$return = call_user_func($params, $action, $version);
-							if (is_string($return))
-							{
-								$this->umil_start($return);
-								$this->umil_end();
-							}
-							else if (is_array($return) && isset($return['command']))
-							{
-								if (is_array($return['command']))
-								{
-									call_user_func_array(array($this, 'umil_start'), $return['command']);
-								}
-								else
-								{
-									$this->umil_start($return['command']);
-								}
+							$params = array($params);
+						}
 
-								if (isset($return['result']))
+						foreach ($params as $function_name)
+						{
+							if (function_exists($function_name))
+							{
+								$return = call_user_func($function_name, $action, $version);
+								if (is_string($return))
 								{
-									$this->result($return['result']);
+									$this->umil_start($return);
+									$this->umil_end();
 								}
+								else if (is_array($return) && isset($return['command']))
+								{
+									if (is_array($return['command']))
+									{
+										call_user_func_array(array($this, 'umil_start'), $return['command']);
+									}
+									else
+									{
+										$this->umil_start($return['command']);
+									}
 
-								$this->umil_end();
+									if (isset($return['result']))
+									{
+										$this->result($return['result']);
+									}
+
+									$this->umil_end();
+								}
 							}
 						}
 					}
