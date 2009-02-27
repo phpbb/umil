@@ -1187,6 +1187,7 @@ class umil
 						'module_langname'	=> $module_info['title'],
 						'module_mode'		=> $mode,
 						'module_auth'		=> $module_info['auth'],
+						'module_display'	=> (isset($module_info['display'])) ? $module_info['display'] : true,
 					);
 
 					// Run the "manual" way with the data we've collected.
