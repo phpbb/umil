@@ -1939,14 +1939,23 @@ class umil
 		}
 
 		$db_tools = new phpbb_db_tools($db);
-		$available_dbms = get_available_dbms($dbms);
 
-		$sql_query = $this->create_table_sql($table_name, $table_data);
-		$sql_query = split_sql_file($sql_query, $available_dbms[$dbms]['DELIM']);
-
-		foreach ($sql_query as $sql)
+		if (method_exists($db_tools, 'sql_create_table'))
 		{
-			$db->sql_query($sql);
+			// Added in 3.0.5
+			$db_tools->sql_create_table($table_name, $table_data);
+		}
+		else
+		{
+			$available_dbms = get_available_dbms($dbms);
+
+			$sql_query = $this->create_table_sql($table_name, $table_data);
+			$sql_query = split_sql_file($sql_query, $available_dbms[$dbms]['DELIM']);
+
+			foreach ($sql_query as $sql)
+			{
+				$db->sql_query($sql);
+			}
 		}
 
 		return $this->umil_end();
@@ -1980,7 +1989,23 @@ class umil
 			return $this->umil_end('TABLE_NOT_EXIST', $table_name);
 		}
 
-		$db->sql_query('DROP TABLE ' . $table_name);
+		if (!class_exists('phpbb_db_tools'))
+		{
+			global $phpbb_root_path, $phpEx;
+			include($phpbb_root_path . 'includes/db/db_tools.' . $phpEx);
+		}
+
+		$db_tools = new phpbb_db_tools($db);
+
+		if (method_exists($db_tools, 'sql_table_drop'))
+		{
+			// Added in 3.0.5
+			$db_tools->sql_table_drop($table_name);
+		}
+		else
+		{
+			$db->sql_query('DROP TABLE ' . $table_name);
+		}
 
 		return $this->umil_end();
 	}
