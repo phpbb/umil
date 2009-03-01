@@ -223,7 +223,7 @@ class umil_frontend extends umil
 	*/
 	function display_results($command = '', $result = '')
 	{
-		global $template, $user, $phpbb_root_path;
+		global $db, $template, $user, $phpbb_root_path;
 
 		$command = ($command) ? $command : $this->command;
 		$command = (isset($user->lang[$command])) ? $user->lang[$command] : $command;
@@ -266,7 +266,10 @@ class umil_frontend extends umil
 				}
 				else
 				{
-					$contents = ((isset($user->lang[$this->title])) ? $user->lang[$this->title] : $this->title) . "\n\n";
+					$contents = ((isset($user->lang[$this->title])) ? $user->lang[$this->title] : $this->title) . "\n";
+					$contents .= 'PHP Version: ' . phpversion() . "\n";
+					$contents .= 'DBMS: ' . $db->sql_server_info() . "\n";
+					$contents .= 'phpBB3 Version: ' . $config['version'] . "\n\n";
 				}
 
 				$contents .= "{$command}\n{$result}\n\n";
