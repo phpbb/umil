@@ -223,7 +223,7 @@ class umil_frontend extends umil
 	*/
 	function display_results($command = '', $result = '')
 	{
-		global $db, $template, $user, $phpbb_root_path;
+		global $config, $db, $template, $user, $phpbb_root_path;
 
 		$command = ($command) ? $command : $this->command;
 		$command = (isset($user->lang[$command])) ? $user->lang[$command] : $command;
@@ -302,13 +302,16 @@ class umil_frontend extends umil
 	*/
 	function done()
 	{
-		global $template, $user;
+		global $phpbb_root_path, $phpEx, $template, $user;
+
+		$download_file = ($this->error_file) ? append_sid("{$phpbb_root_path}umil/file.$phpEx", 'file=' . basename($this->error_file, '.txt')) : '';
+		$filename = ($this->error_file) ? 'umil/error_files/' . basename($this->error_file) : '';
 
 		$template->assign_vars(array(
 			'U_ERROR_FILE'		=> $this->error_file,
 
 			'L_RESULTS'			=> ($this->errors) ? $user->lang['FAIL'] : $user->lang['SUCCESS'],
-			'L_ERROR_NOTICE'	=> ($this->errors) ? (($this->error_file) ? sprintf($user->lang['ERROR_NOTICE'], $this->error_file) : $user->lang['ERROR_NOTICE_NO_FILE']) : '',
+			'L_ERROR_NOTICE'	=> ($this->errors) ? (($this->error_file) ? sprintf($user->lang['ERROR_NOTICE'], $download_file, $filename) : $user->lang['ERROR_NOTICE_NO_FILE']) : '',
 
 			'S_RESULTS'			=> $this->results,
 			'S_SUCCESS'			=> ($this->errors) ? false : true,

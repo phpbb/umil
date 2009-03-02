@@ -53,7 +53,7 @@ $lang = array_merge($lang, array(
 	'DISPLAY_RESULTS'				=> 'Display Full Results',
 	'DISPLAY_RESULTS_EXPLAIN'		=> 'Select yes to display all of the actions and results during the requested action.',
 
-	'ERROR_NOTICE'					=> 'One or more errors occured during the requested action.  Please download <a href="%s">this file</a> with the errors listed in it and ask the mod author for assistance.',
+	'ERROR_NOTICE'					=> 'One or more errors occured during the requested action.  Please download <a href="%1$s">this file</a> with the errors listed in it and ask the mod author for assistance.<br /><br />If you have any problem downloading that file you may access it directly with an FTP browser at the following location: %2$s',
 	'ERROR_NOTICE_NO_FILE'			=> 'One or more errors occured during the requested action.  Please make a full record of any errors and ask the mod author for assistance.',
 
 	'FAIL'							=> 'Fail',
