@@ -1926,7 +1926,36 @@ class umil
 			return $this->umil_end('FAIL');
 		}
 
-		$this->sql_create_table($table_name, $table_data);
+		if (!function_exists('get_available_dbms'))
+		{
+			global $phpbb_root_path, $phpEx;
+			include("{$phpbb_root_path}includes/functions_install.$phpEx");
+		}
+		if (!class_exists('phpbb_db_tools'))
+		{
+			global $phpbb_root_path, $phpEx;
+			include($phpbb_root_path . 'includes/db/db_tools.' . $phpEx);
+		}
+
+		$db_tools = new phpbb_db_tools($db);
+
+		if (method_exists($db_tools, 'sql_create_table'))
+		{
+			// Added in 3.0.5
+			$db_tools->sql_create_table($table_name, $table_data);
+		}
+		else
+		{
+			$available_dbms = get_available_dbms($dbms);
+
+			$sql_query = $this->create_table_sql($table_name, $table_data);
+			$sql_query = split_sql_file($sql_query, $available_dbms[$dbms]['DELIM']);
+
+			foreach ($sql_query as $sql)
+			{
+				$db->sql_query($sql);
+			}
+		}
 
 		return $this->umil_end();
 	}
@@ -2277,204 +2306,350 @@ class umil
 	}
 
 	/**
-	* Create SQL Table (from phpBB 3.0.5, placed here for backwards compatibility)
+	* Create table SQL
 	*
-	* @param string	$table_name	The table name to create
-	* @param array	$table_data	Array containing table data.
+	* Create the SQL query for the specified DBMS on the fly from a create_schema_files type of table array
+	*
+	* @param string $table_name The name of the table
+	* @param array $table_data The table data (formatted in the array format used by create_schema_files)
+	* @param string $dbms The dbms this will be built for (for testing only, leave blank to use the current DBMS)
+	*
+	* @return The sql query to run for the submitted dbms to insert the table
 	*/
-	function sql_create_table($table_name, $table_data)
+	function create_table_sql($table_name, $table_data, $dbms = '')
 	{
 		global $db;
-
 		if (!class_exists('phpbb_db_tools'))
 		{
 			global $phpbb_root_path, $phpEx;
 			include($phpbb_root_path . 'includes/db/db_tools.' . $phpEx);
 		}
-
 		$db_tools = new phpbb_db_tools($db);
 
-		// Use the method from db_tools if it exists
-		if (method_exists($db_tools, 'sql_create_table'))
+		// To allow testing
+		$dbms = ($dbms) ? $dbms : $db_tools->sql_layer;
+
+		// A list of types being unsigned for better reference in some db's
+		$unsigned_types = array('UINT', 'UINT:', 'USINT', 'BOOL', 'TIMESTAMP');
+		$supported_dbms = array('firebird', 'mssql', 'mysql_40', 'mysql_41', 'oracle', 'postgres', 'sqlite');
+
+		$sql = '';
+
+		// Create Table statement
+		$generator = $textimage = false;
+
+		switch ($dbms)
 		{
-			return $db_tools->sql_create_table($table_name, $table_data);
-		}
+			case 'mysql_40':
+			case 'mysql_41':
+			case 'firebird':
+			case 'oracle':
+			case 'sqlite':
+			case 'postgres':
+				$sql .= "CREATE TABLE {$table_name} (\n";
+			break;
 
-		// holds the DDL for a column
-		$columns = $statements = array();
-
-		// Begin transaction
-		$statements[] = 'begin';
-
-		// Determine if we have created a PRIMARY KEY in the earliest
-		$primary_key_gen = false;
-
-		// Determine if the table must be created with TEXTIMAGE
-		$create_textimage = false;
-
-		// Determine if the table requires a sequence
-		$create_sequence = false;
-
-		// Begin table sql statement
-		switch ($db_tools->sql_layer)
-		{
 			case 'mssql':
-				$table_sql = 'CREATE TABLE [' . $table_name . '] (' . "\n";
-			break;
-
-			default:
-				$table_sql = 'CREATE TABLE ' . $table_name . ' (' . "\n";
+				$sql .= "CREATE TABLE [{$table_name}] (\n";
 			break;
 		}
 
-		// Iterate through the columns to create a table
+		// Table specific so we don't get overlap
+		$modded_array = array();
+
+		// Write columns one by one...
 		foreach ($table_data['COLUMNS'] as $column_name => $column_data)
 		{
-			// here lies an array, filled with information compiled on the column's data
-			$prepared_column = $db_tools->sql_prepare_column_data($table_name, $column_name, $column_data);
-
-			// here we add the definition of the new column to the list of columns
-			switch ($db_tools->sql_layer)
+			// Get type
+			if (strpos($column_data[0], ':') !== false)
 			{
+				list($orig_column_type, $column_length) = explode(':', $column_data[0]);
+				if (!is_array($db_tools->dbms_type_map[$dbms][$orig_column_type . ':']))
+				{
+					$column_type = sprintf($db_tools->dbms_type_map[$dbms][$orig_column_type . ':'], $column_length);
+				}
+				else
+				{
+					if (isset($db_tools->dbms_type_map[$dbms][$orig_column_type . ':']['rule']))
+					{
+						switch ($db_tools->dbms_type_map[$dbms][$orig_column_type . ':']['rule'][0])
+						{
+							case 'div':
+								$column_length /= $db_tools->dbms_type_map[$dbms][$orig_column_type . ':']['rule'][1];
+								$column_length = ceil($column_length);
+								$column_type = sprintf($db_tools->dbms_type_map[$dbms][$orig_column_type . ':'][0], $column_length);
+							break;
+						}
+					}
+
+					if (isset($db_tools->dbms_type_map[$dbms][$orig_column_type . ':']['limit']))
+					{
+						switch ($db_tools->dbms_type_map[$dbms][$orig_column_type . ':']['limit'][0])
+						{
+							case 'mult':
+								$column_length *= $db_tools->dbms_type_map[$dbms][$orig_column_type . ':']['limit'][1];
+								if ($column_length > $db_tools->dbms_type_map[$dbms][$orig_column_type . ':']['limit'][2])
+								{
+									$column_type = $db_tools->dbms_type_map[$dbms][$orig_column_type . ':']['limit'][3];
+									$modded_array[$column_name] = $column_type;
+								}
+								else
+								{
+									$column_type = sprintf($db_tools->dbms_type_map[$dbms][$orig_column_type . ':'][0], $column_length);
+								}
+							break;
+						}
+					}
+				}
+				$orig_column_type .= ':';
+			}
+			else
+			{
+				$orig_column_type = $column_data[0];
+				$column_type = $db_tools->dbms_type_map[$dbms][$column_data[0]];
+				if ($column_type == 'text' || $column_type == 'blob')
+				{
+					$modded_array[$column_name] = $column_type;
+				}
+			}
+
+			// Adjust default value if db-dependant specified
+			if (is_array($column_data[1]))
+			{
+				$column_data[1] = (isset($column_data[1][$dbms])) ? $column_data[1][$dbms] : $column_data[1]['default'];
+			}
+
+			switch ($dbms)
+			{
+				case 'mysql_40':
+				case 'mysql_41':
+					$sql .= "\t{$column_name} {$column_type} ";
+
+					// For hexadecimal values do not use single quotes
+					if (!is_null($column_data[1]) && substr($column_type, -4) !== 'text' && substr($column_type, -4) !== 'blob')
+					{
+						$sql .= (strpos($column_data[1], '0x') === 0) ? "DEFAULT {$column_data[1]} " : "DEFAULT '{$column_data[1]}' ";
+					}
+					$sql .= 'NOT NULL';
+
+					if (isset($column_data[2]))
+					{
+						if ($column_data[2] == 'auto_increment')
+						{
+							$sql .= ' auto_increment';
+						}
+						else if ($dbms === 'mysql_41' && $column_data[2] == 'true_sort')
+						{
+							$sql .= ' COLLATE utf8_unicode_ci';
+						}
+					}
+
+					$sql .= ",\n";
+				break;
+
+				case 'sqlite':
+					if (isset($column_data[2]) && $column_data[2] == 'auto_increment')
+					{
+						$sql .= "\t{$column_name} INTEGER PRIMARY KEY ";
+						$generator = $column_name;
+					}
+					else
+					{
+						$sql .= "\t{$column_name} {$column_type} ";
+					}
+
+					$sql .= 'NOT NULL ';
+					$sql .= (!is_null($column_data[1])) ? "DEFAULT '{$column_data[1]}'" : '';
+					$sql .= ",\n";
+				break;
+
+				case 'firebird':
+					$sql .= "\t{$column_name} {$column_type} ";
+
+					if (!is_null($column_data[1]))
+					{
+						$sql .= 'DEFAULT ' . ((is_numeric($column_data[1])) ? $column_data[1] : "'{$column_data[1]}'") . ' ';
+					}
+
+					$sql .= 'NOT NULL';
+
+					// This is a UNICODE column and thus should be given it's fair share
+					if (preg_match('/^X?STEXT_UNI|VCHAR_(CI|UNI:?)/', $column_data[0]))
+					{
+						$sql .= ' COLLATE UNICODE';
+					}
+
+					$sql .= ",\n";
+
+					if (isset($column_data[2]) && $column_data[2] == 'auto_increment')
+					{
+						$generator = $column_name;
+					}
+				break;
+
 				case 'mssql':
-					$columns[] = "\t [{$column_name}] " . $prepared_column['column_type_sql_default'];
+					if ($column_type == '[text]')
+					{
+						$textimage = true;
+					}
+
+					$sql .= "\t[{$column_name}] {$column_type} ";
+
+					if (!is_null($column_data[1]))
+					{
+						// For hexadecimal values do not use single quotes
+						if (strpos($column_data[1], '0x') === 0)
+						{
+							$sql .= 'DEFAULT (' . $column_data[1] . ') ';
+						}
+						else
+						{
+							$sql .= 'DEFAULT (' . ((is_numeric($column_data[1])) ? $column_data[1] : "'{$column_data[1]}'") . ') ';
+						}
+					}
+
+					if (isset($column_data[2]) && $column_data[2] == 'auto_increment')
+					{
+						$sql .= 'IDENTITY (1, 1) ';
+					}
+
+					$sql .= 'NOT NULL';
+					$sql .= " ,\n";
 				break;
 
-				default:
-					$columns[] = "\t {$column_name} " . $prepared_column['column_type_sql'];
+				case 'oracle':
+					$sql .= "\t{$column_name} {$column_type} ";
+					$sql .= (!is_null($column_data[1])) ? "DEFAULT '{$column_data[1]}' " : '';
+
+					// In Oracle empty strings ('') are treated as NULL.
+					// Therefore in oracle we allow NULL's for all DEFAULT '' entries
+					$sql .= ($column_data[1] === '') ? ",\n" : "NOT NULL,\n";
+
+					if (isset($column_data[2]) && $column_data[2] == 'auto_increment')
+					{
+						$generator = $column_name;
+					}
 				break;
-			}
 
-			// see if we have found a primary key set due to a column definition if we have found it, we can stop looking
-			if (!$primary_key_gen)
-			{
-				$primary_key_gen = isset($prepared_column['primary_key_set']) && $prepared_column['primary_key_set'];
-			}
+				case 'postgres':
+					$sql .= "\t{$column_name} {$column_type} ";
 
-			// create textimage DDL based off of the existance of certain column types
-			if (!$create_textimage)
-			{
-				$create_textimage = isset($prepared_column['textimage']) && $prepared_column['textimage'];
-			}
+					if (isset($column_data[2]) && $column_data[2] == 'auto_increment')
+					{
+						$sql .= "DEFAULT nextval('{$table_name}_seq'),\n";
 
-			// create sequence DDL based off of the existance of auto incrementing columns
-			if (!$create_sequence && isset($prepared_column['auto_increment']) && $prepared_column['auto_increment'])
-			{
-				$create_sequence = $column_name;
+						// Make sure the sequence will be created before creating the table
+						//$sql .= "CREATE SEQUENCE {$table_name}_seq;\n\n" . $sql;
+					}
+					else
+					{
+						$sql .= (!is_null($column_data[1])) ? "DEFAULT '{$column_data[1]}' " : '';
+						$sql .= "NOT NULL";
+
+						// Unsigned? Then add a CHECK contraint
+						if (in_array($orig_column_type, $unsigned_types))
+						{
+							$sql .= " CHECK ({$column_name} >= 0)";
+						}
+
+						$sql .= ",\n";
+					}
+				break;
 			}
 		}
 
-		// this makes up all the columns in the create table statement
-		$table_sql .= implode(",\n", $columns);
-
-		// Close the table for two DBMS and add to the statements
-		switch ($db_tools->sql_layer)
+		switch ($dbms)
 		{
 			case 'firebird':
-				$table_sql .= "\n);";
-				$statements[] = $table_sql;
+				// Remove last line delimiter...
+				$sql = substr($sql, 0, -2);
+				$sql .= "\n);;\n\n";
 			break;
 
 			case 'mssql':
-				$table_sql .= "\n) ON [PRIMARY]" . (($create_textimage) ? ' TEXTIMAGE_ON [PRIMARY]' : '');
-				$statements[] = $table_sql;
+				$sql = substr($sql, 0, -2);
+				$sql .= "\n) ON [PRIMARY]" . (($textimage) ? ' TEXTIMAGE_ON [PRIMARY]' : '') . "\n";
+				$sql .= "GO\n\n";
 			break;
 		}
 
-		// we have yet to create a primary key for this table,
-		// this means that we can add the one we really wanted instead
-		if (!$primary_key_gen)
+		// Write primary key
+		if (isset($table_data['PRIMARY_KEY']))
 		{
-			// Write primary key
-			if (isset($table_data['PRIMARY_KEY']))
+			if (!is_array($table_data['PRIMARY_KEY']))
 			{
-				if (!is_array($table_data['PRIMARY_KEY']))
-				{
-					$table_data['PRIMARY_KEY'] = array($table_data['PRIMARY_KEY']);
-				}
+				$table_data['PRIMARY_KEY'] = array($table_data['PRIMARY_KEY']);
+			}
 
-				switch ($db_tools->sql_layer)
-				{
-					case 'mysql_40':
-					case 'mysql_41':
-					case 'postgres':
-					case 'sqlite':
-						$table_sql .= ",\n\t PRIMARY KEY (" . implode(', ', $table_data['PRIMARY_KEY']) . ')';
-					break;
+			switch ($dbms)
+			{
+				case 'mysql_40':
+				case 'mysql_41':
+				case 'postgres':
+					$sql .= "\tPRIMARY KEY (" . implode(', ', $table_data['PRIMARY_KEY']) . "),\n";
+				break;
 
-					case 'firebird':
-					case 'mssql':
-						$primary_key_stmts = $db_tools->sql_create_primary_key($table_name, $table_data['PRIMARY_KEY']);
-						foreach ($primary_key_stmts as $pk_stmt)
-						{
-							$statements[] = $pk_stmt;
-						}
-					break;
+				case 'firebird':
+					$sql .= "ALTER TABLE {$table_name} ADD PRIMARY KEY (" . implode(', ', $table_data['PRIMARY_KEY']) . ");;\n\n";
+				break;
 
-					case 'oracle':
-						$table_sql .= ",\n\t CONSTRAINT pk_{$table_name} PRIMARY KEY (" . implode(', ', $table_data['PRIMARY_KEY']) . ')';
-					break;
-				}
+				case 'sqlite':
+					if ($generator === false || !in_array($generator, $table_data['PRIMARY_KEY']))
+					{
+						$sql .= "\tPRIMARY KEY (" . implode(', ', $table_data['PRIMARY_KEY']) . "),\n";
+					}
+				break;
+
+				case 'mssql':
+					$sql .= "ALTER TABLE [{$table_name}] WITH NOCHECK ADD \n";
+					$sql .= "\tCONSTRAINT [PK_{$table_name}] PRIMARY KEY  CLUSTERED \n";
+					$sql .= "\t(\n";
+					$sql .= "\t\t[" . implode("],\n\t\t[", $table_data['PRIMARY_KEY']) . "]\n";
+					$sql .= "\t)  ON [PRIMARY] \n";
+					$sql .= "GO\n\n";
+				break;
+
+				case 'oracle':
+					$sql .= "\tCONSTRAINT pk_{$table_name} PRIMARY KEY (" . implode(', ', $table_data['PRIMARY_KEY']) . "),\n";
+				break;
 			}
 		}
 
-		// close the table
-		switch ($db_tools->sql_layer)
+		switch ($dbms)
 		{
-			case 'mysql_41':
-				// make sure the table is in UTF-8 mode
-				$table_sql .= "\n) CHARACTER SET `utf8` COLLATE `utf8_bin`;";
-				$statements[] = $table_sql;
-			break;
+			case 'oracle':
+				// UNIQUE contrains to be added?
+				if (isset($table_data['KEYS']))
+				{
+					foreach ($table_data['KEYS'] as $key_name => $key_data)
+					{
+						if (!is_array($key_data[1]))
+						{
+							$key_data[1] = array($key_data[1]);
+						}
 
-			case 'mysql_40':
-			case 'sqlite':
-				$table_sql .= "\n);";
-				$statements[] = $table_sql;
+						if ($key_data[0] == 'UNIQUE')
+						{
+							$sql .= "\tCONSTRAINT u_phpbb_{$key_name} UNIQUE (" . implode(', ', $key_data[1]) . "),\n";
+						}
+					}
+				}
+
+				// Remove last line delimiter...
+				$sql = substr($sql, 0, -2);
+				$sql .= "\n)\n/\n\n";
 			break;
 
 			case 'postgres':
-				// do we need to add a sequence for auto incrementing columns?
-				if ($create_sequence)
-				{
-					$statements[] = "CREATE SEQUENCE {$table_name}_seq;";
-				}
-
-				$table_sql .= "\n);";
-				$statements[] = $table_sql;
+				// Remove last line delimiter...
+				$sql = substr($sql, 0, -2);
+				$sql .= "\n);\n\n";
 			break;
 
-			case 'oracle':
-				$table_sql .= "\n);";
-				$statements[] = $table_sql;
-
-				// do we need to add a sequence and a tigger for auto incrementing columns?
-				if ($create_sequence)
-				{
-					// create the actual sequence
-					$statements[] = "CREATE SEQUENCE {$table_name}_seq";
-
-					// the trigger is the mechanism by which we increment the counter
-					$trigger = "CREATE OR REPLACE TRIGGER t_{$table_name}\n";
-					$trigger .= "BEFORE INSERT ON {$table_name}\n";
-					$trigger .= "FOR EACH ROW WHEN (\n";
-					$trigger .= "\tnew.{$create_sequence} IS NULL OR new.{$create_sequence} = 0\n";
-					$trigger .= ")\n";
-					$trigger .= "BEGIN\n";
-					$trigger .= "\tSELECT {$table_name}_seq.nextval\n";
-					$trigger .= "\tINTO :new.{$create_sequence}\n";
-					$trigger .= "\tFROM dual\n";
-					$trigger .= "END;";
-
-					$statements[] = $trigger;
-				}
-			break;
-
-			case 'firebird':
-				if ($create_sequence)
-				{
-					$statements[] = "CREATE SEQUENCE {$table_name}_seq;";
-				}
+			case 'sqlite':
+				// Remove last line delimiter...
+				$sql = substr($sql, 0, -2);
+				$sql .= "\n);\n\n";
 			break;
 		}
 
@@ -2488,24 +2663,116 @@ class umil
 					$key_data[1] = array($key_data[1]);
 				}
 
-				$old_return_statements = $db_tools->return_statements;
-				$db_tools->return_statements = true;
-
-				$key_stmts = ($key_data[0] == 'UNIQUE') ? $db_tools->sql_create_unique_index($table_name, $key_name, $key_data[1]) : $db_tools->sql_create_index($table_name, $key_name, $key_data[1]);
-
-				foreach ($key_stmts as $key_stmt)
+				switch ($dbms)
 				{
-					$statements[] = $key_stmt;
-				}
+					case 'mysql_40':
+					case 'mysql_41':
+						$sql .= ($key_data[0] == 'INDEX') ? "\tKEY" : '';
+						$sql .= ($key_data[0] == 'UNIQUE') ? "\tUNIQUE" : '';
+						foreach ($key_data[1] as $key => $col_name)
+						{
+							if (isset($modded_array[$col_name]))
+							{
+								switch ($modded_array[$col_name])
+								{
+									case 'text':
+									case 'blob':
+										$key_data[1][$key] = $col_name . '(255)';
+									break;
+								}
+							}
+						}
+						$sql .= ' ' . $key_name . ' (' . implode(', ', $key_data[1]) . "),\n";
+					break;
 
-				$db_tools->return_statements = $old_return_statements;
+					case 'firebird':
+						$sql .= ($key_data[0] == 'INDEX') ? 'CREATE INDEX' : '';
+						$sql .= ($key_data[0] == 'UNIQUE') ? 'CREATE UNIQUE INDEX' : '';
+
+						$sql .= ' ' . $table_name . '_' . $key_name . ' ON ' . $table_name . '(' . implode(', ', $key_data[1]) . ");;\n";
+					break;
+
+					case 'mssql':
+						$sql .= ($key_data[0] == 'INDEX') ? 'CREATE  INDEX' : '';
+						$sql .= ($key_data[0] == 'UNIQUE') ? 'CREATE  UNIQUE  INDEX' : '';
+						$sql .= " [{$key_name}] ON [{$table_name}]([" . implode('], [', $key_data[1]) . "]) ON [PRIMARY]\n";
+						$sql .= "GO\n\n";
+					break;
+
+					case 'oracle':
+						if ($key_data[0] == 'UNIQUE')
+						{
+							continue;
+						}
+
+						$sql .= ($key_data[0] == 'INDEX') ? 'CREATE INDEX' : '';
+
+						$sql .= " {$table_name}_{$key_name} ON {$table_name} (" . implode(', ', $key_data[1]) . ")\n";
+						$sql .= "/\n";
+					break;
+
+					case 'sqlite':
+						$sql .= ($key_data[0] == 'INDEX') ? 'CREATE INDEX' : '';
+						$sql .= ($key_data[0] == 'UNIQUE') ? 'CREATE UNIQUE INDEX' : '';
+
+						$sql .= " {$table_name}_{$key_name} ON {$table_name} (" . implode(', ', $key_data[1]) . ");\n";
+					break;
+
+					case 'postgres':
+						$sql .= ($key_data[0] == 'INDEX') ? 'CREATE INDEX' : '';
+						$sql .= ($key_data[0] == 'UNIQUE') ? 'CREATE UNIQUE INDEX' : '';
+
+						$sql .= " {$table_name}_{$key_name} ON {$table_name} (" . implode(', ', $key_data[1]) . ");\n";
+					break;
+				}
 			}
 		}
 
-		// Commit Transaction
-		$statements[] = 'commit';
+		switch ($dbms)
+		{
+			case 'mysql_40':
+				// Remove last line delimiter...
+				$sql = substr($sql, 0, -2);
+				$sql .= "\n);\n\n";
+			break;
 
-		return $db_tools->_sql_run_sql($statements);
+			case 'mysql_41':
+				// Remove last line delimiter...
+				$sql = substr($sql, 0, -2);
+				$sql .= "\n) CHARACTER SET `utf8` COLLATE `utf8_bin`;\n\n";
+			break;
+
+			// Create Generator
+			case 'firebird':
+				if ($generator !== false)
+				{
+					$sql .= "\nCREATE GENERATOR {$table_name}_gen;;\n";
+					$sql .= 'SET GENERATOR ' . $table_name . "_gen TO 0;;\n\n";
+
+					$sql .= 'CREATE TRIGGER t_' . $table_name . ' FOR ' . $table_name . "\n";
+					$sql .= "BEFORE INSERT\nAS\nBEGIN\n";
+					$sql .= "\tNEW.{$generator} = GEN_ID({$table_name}_gen, 1);\nEND;;\n\n";
+				}
+			break;
+
+			case 'oracle':
+				if ($generator !== false)
+				{
+					$sql .= "\nCREATE SEQUENCE {$table_name}_seq\n/\n\n";
+
+					$sql .= "CREATE OR REPLACE TRIGGER t_{$table_name}\n";
+					$sql .= "BEFORE INSERT ON {$table_name}\n";
+					$sql .= "FOR EACH ROW WHEN (\n";
+					$sql .= "\tnew.{$generator} IS NULL OR new.{$generator} = 0\n";
+					$sql .= ")\nBEGIN\n";
+					$sql .= "\tSELECT {$table_name}_seq.nextval\n";
+					$sql .= "\tINTO :new.{$generator}\n";
+					$sql .= "\tFROM dual;\nEND;\n/\n\n";
+				}
+			break;
+		}
+
+		return $sql;
 	}
 
 	/**
