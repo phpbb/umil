@@ -57,6 +57,11 @@ if (isset($language_file))
 {
 	$user->add_lang($language_file);
 }
+if (!isset($user->lang[$mod_name]))
+{
+	// Prevent errors if the language key doesn't exist.
+	$user->lang[$mod_name] = $mod_name;
+}
 
 if (!$user->data['is_registered'])
 {
