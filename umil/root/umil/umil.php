@@ -2316,7 +2316,16 @@ class umil
 		$create_sequence = false;
 
 		// Begin table sql statement
-		$table_sql = 'CREATE TABLE ' . $table_name . ' (' . "\n";
+		switch ($db_tools->sql_layer)
+		{
+			case 'mssql':
+				$table_sql = 'CREATE TABLE [' . $table_name . '] (' . "\n";
+			break;
+
+			default:
+				$table_sql = 'CREATE TABLE ' . $table_name . ' (' . "\n";
+			break;
+		}
 
 		// Iterate through the columns to create a table
 		foreach ($table_data['COLUMNS'] as $column_name => $column_data)
@@ -2325,7 +2334,16 @@ class umil
 			$prepared_column = $db_tools->sql_prepare_column_data($table_name, $column_name, $column_data);
 
 			// here we add the definition of the new column to the list of columns
-			$columns[] = "\t {$column_name} " . $prepared_column['column_type_sql'];
+			switch ($db_tools->sql_layer)
+			{
+				case 'mssql':
+					$columns[] = "\t [{$column_name}] " . $prepared_column['column_type_sql_default'];
+				break;
+
+				default:
+					$columns[] = "\t {$column_name} " . $prepared_column['column_type_sql'];
+				break;
+			}
 
 			// see if we have found a primary key set due to a column definition if we have found it, we can stop looking
 			if (!$primary_key_gen)
