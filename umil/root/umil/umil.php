@@ -1170,7 +1170,7 @@ class umil
 
 			if (!class_exists($classname))
 			{
-				include($include_path . $info_file);
+				include((($include_path === false) ? $phpbb_root_path . 'includes/' : $include_path) . $info_file);
 			}
 
 			$info = new $classname;
@@ -1313,7 +1313,7 @@ class umil
 
 			if (!class_exists($classname))
 			{
-				include($include_path . $info_file);
+				include((($include_path === false) ? $phpbb_root_path . 'includes/' : $include_path) . $info_file);
 			}
 
 			$info = new $classname;
@@ -2739,7 +2739,7 @@ class umil
 			case 'mysql_41':
 				// Remove last line delimiter...
 				$sql = substr($sql, 0, -2);
-				$sql .= "\n) CHARACTER SET `utf8` COLLATE `utf8_bin`;\n\n";
+				$sql .= "\n) CHARACTER SET utf8 COLLATE utf8_bin;\n\n";
 			break;
 
 			// Create Generator
