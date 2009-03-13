@@ -1156,11 +1156,10 @@ class umil
 			$basename = (isset($data['module_basename'])) ? $data['module_basename'] : '';
 			$basename = str_replace(array('/', '\\'), '', $basename);
 			$class = str_replace(array('/', '\\'), '', $class);
-			$include_path = ($include_path === false) ? $phpbb_root_path . 'includes/' : $include_path;
 			$info_file = "$class/info/{$class}_$basename.$phpEx";
 
 			// The manual and automatic ways both failed...
-			if (!file_exists($include_path . $info_file))
+			if (!file_exists((($include_path === false) ? $phpbb_root_path . 'includes/' : $include_path) . $info_file))
 			{
 				$this->umil_start('MODULE_ADD', $class, 'UNKNOWN');
 				return $this->umil_end('FAIL');
@@ -1301,10 +1300,9 @@ class umil
 			// Automatic method
 			$basename = str_replace(array('/', '\\'), '', $module['module_basename']);
 			$class = str_replace(array('/', '\\'), '', $class);
-			$include_path = ($include_path === false) ? $phpbb_root_path . 'includes/' : $include_path;
 			$info_file = "$class/info/{$class}_$basename.$phpEx";
 
-			if (!file_exists($include_path . $info_file))
+			if (!file_exists((($include_path === false) ? $phpbb_root_path . 'includes/' : $include_path) . $info_file))
 			{
 				return;
 			}
