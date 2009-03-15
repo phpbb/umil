@@ -68,6 +68,7 @@ $lang = array_merge($lang, array(
 	'INSTALL_MOD_CONFIRM'			=> 'Are you ready to install %s?',
 
 	'MODULE_ADD'					=> 'Adding %1$s module: %2$s',
+	'MODULE_ALREADY_EXIST'			=> 'ERROR: Module already exists.',
 	'MODULE_NOT_EXIST'				=> 'ERROR: Module does not exist.',
 	'MODULE_REMOVE'					=> 'Removing %1$s module: %2$s',
 

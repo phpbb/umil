@@ -1216,7 +1216,12 @@ class umil
 				return $this->umil_end('FAIL');
 			}
 
-			$data['parent_id'] = $row['module_id'];
+			$parent = $data['parent_id'] = $row['module_id'];
+		}
+
+		if ($this->module_exists($class, $parent, $data['module_langname']))
+		{
+			return $this->umil_end('MODULE_ALREADY_EXIST');
 		}
 
 		if (!class_exists('acp_modules'))
