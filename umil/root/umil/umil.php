@@ -1141,6 +1141,13 @@ class umil
 			return;
 		}
 
+		// Prevent stupid things like trying to add a module with no name or any data on it
+		if (empty($data))
+		{
+			$this->umil_start('MODULE_ADD', $class, 'UNKNOWN');
+			return $this->umil_end('FAIL');
+		}
+
         // Allows '' to be sent
 		$parent = (!$parent) ? 0 : $parent;
 
