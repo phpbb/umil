@@ -57,6 +57,7 @@ $lang = array_merge($lang, array(
 	'ERROR_NOTICE_NO_FILE'			=> 'One or more errors occured during the requested action.  Please make a full record of any errors and ask the mod author for assistance.',
 
 	'FAIL'							=> 'Fail',
+	'FILE_COULD_NOT_READ'			=> 'ERROR: Could not open the file %s for reading.',
 	'FOUNDERS_ONLY'					=> 'You must be a board founder to access this page.',
 
 	'GROUP_NOT_EXIST'				=> 'Group does not exist',
@@ -73,7 +74,9 @@ $lang = array_merge($lang, array(
 	'MODULE_REMOVE'					=> 'Removing %1$s module: %2$s',
 
 	'NONE'							=> 'None',
+	'NO_TABLE_DATA'					=> 'ERROR: No table data was specified',
 
+	'PARENT_NOT_EXIST'				=> 'ERROR: The parent category specified for this module does not exist.',
 	'PERMISSIONS_WARNING'			=> 'New permission settings have been added.  Be sure to check your permission settings and see that they are as you would like them.',
 	'PERMISSION_ADD'				=> 'Adding new permission option: %s',
 	'PERMISSION_ALREADY_EXISTS'		=> 'ERROR: Permission option %s already exists.',

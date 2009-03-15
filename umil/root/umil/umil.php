@@ -754,7 +754,7 @@ class umil
 							{
 								if (!($fp = @fopen("{$phpbb_root_path}styles/{$template_row['template_path']}$pathfile$file", 'r')))
 								{
-									return $this->umil_end('FAIL');
+									return $this->umil_end('FILE_COULD_NOT_READ', "{$phpbb_root_path}styles/{$template_row['template_path']}$pathfile$file");
 								}
 								$template_data = fread($fp, filesize("{$phpbb_root_path}styles/{$template_row['template_path']}$pathfile$file"));
 								fclose($fp);
@@ -1220,7 +1220,7 @@ class umil
 
 			if (!$row)
 			{
-				return $this->umil_end('FAIL');
+				return $this->umil_end('PARENT_NOT_EXIST');
 			}
 
 			$parent = $data['parent_id'] = $row['module_id'];
@@ -1933,7 +1933,7 @@ class umil
 
 		if (!is_array($table_data))
 		{
-			return $this->umil_end('FAIL');
+			return $this->umil_end('NO_TABLE_DATA');
 		}
 
 		if (!function_exists('get_available_dbms'))
