@@ -1168,7 +1168,7 @@ class umil
 			// The manual and automatic ways both failed...
 			if (!file_exists((($include_path === false) ? $phpbb_root_path . 'includes/' : $include_path) . $info_file))
 			{
-				$this->umil_start('MODULE_ADD', $class, 'UNKNOWN');
+				$this->umil_start('MODULE_ADD', $class, $info_file);
 				return $this->umil_end('FAIL');
 			}
 
@@ -1306,7 +1306,8 @@ class umil
 			// Failed.
 			if (!isset($module['module_basename']))
 			{
-				return;
+				$this->umil_start('MODULE_REMOVE', $class, 'UNKNOWN');
+				return $this->umil_end('FAIL');
 			}
 
 			// Automatic method
@@ -1316,7 +1317,8 @@ class umil
 
 			if (!file_exists((($include_path === false) ? $phpbb_root_path . 'includes/' : $include_path) . $info_file))
 			{
-				return;
+				$this->umil_start('MODULE_REMOVE', $class, $info_file);
+				return $this->umil_end('FAIL');
 			}
 
 			$classname = "{$class}_{$basename}_info";
