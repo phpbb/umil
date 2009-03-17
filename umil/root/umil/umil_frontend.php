@@ -377,6 +377,7 @@ class umil_frontend extends umil
 			break;
 
 			case 'select':
+			case 'select_multiple':
 			case 'custom':
 
 				$return = '';
@@ -411,12 +412,21 @@ class umil_frontend extends umil
 				}
 				else
 				{
+					if ($tpl_type[0] == 'select_multiple')
+					{
+						$new[$config_key] = @unserialize(trim($new[$config_key]));
+					}
+
 					$args = array($default, $name);
 				}
 
 				$return = call_user_func_array($call, $args);
 
-				if ($tpl_type[0] == 'select')
+				if ($tpl_type[0] == 'select_multiple')
+				{
+					$tpl = '<select id="' . $key . '" name="' . $name . '[]" multiple="multiple">' . $return . '</select>';
+				}
+				else if ($tpl_type[0] == 'select')
 				{
 					$multiple	= ((isset($vars['multiple']) && $vars['multiple']) ? ' multiple="multiple"' : '');
 					$tpl['tpl']		= '<select id="' . $name . '" name="' . $name . (!empty($multiple) ? '[]' : '') . '"' . $multiple . '>' . $return . '</select>';
