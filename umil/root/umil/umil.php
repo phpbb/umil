@@ -144,10 +144,10 @@ class umil
 				page_header('', false);
 
 				$this_file = str_replace(array(phpbb_realpath($phpbb_root_path), '\\'), array('', '/'), __FILE__);
-				$user->lang['UPDATE_UMIL'] = (isset($user->lang['UPDATE_UMIL'])) ? $user->lang['UPDATE_UMIL'] : 'Please download the latest UMIL (Unified MOD Install Library) from: <a href="%1$s">%1$s</a>';
+				$user->lang['UPDATE_UMIL'] = (isset($user->lang['UPDATE_UMIL'])) ? $user->lang['UPDATE_UMIL'] : 'This version of UMIL is outdated.<br /><br />Please download the latest UMIL (Unified MOD Install Library) from: <a href="%1$s">%1$s</a>';
 				$template->assign_vars(array(
 					'S_BOARD_DISABLED'		=> true,
-					'L_BOARD_DISABLED'		=> (!$stand_alone) ? sprintf($user->lang['UPDATE_UMIL'], $info[1]) : sprintf('Please download the latest UMIL (Unified MOD Install Library) from: <a href="%1$s">%1$s</a>, then replace the file %2$s with the root/umil/umil.php file included in the downloaded package.', $info[1], $this_file),
+					'L_BOARD_DISABLED'		=> (!$stand_alone) ? sprintf($user->lang['UPDATE_UMIL'], $info[1]) : sprintf('This version of UMIL is outdated.<br /><br />Please download the latest UMIL (Unified MOD Install Library) from: <a href="%1$s">%1$s</a>, then replace the file %2$s with the root/umil/umil.php file included in the downloaded package.', $info[1], $this_file),
 				));
 			}
 		}
