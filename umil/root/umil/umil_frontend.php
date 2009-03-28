@@ -49,15 +49,20 @@ class umil_frontend extends umil
 
 	/**
 	* Constructor
+	*
+	* @param string $title The title to display
+	* @param bool $auto_display_results Automatically display results or not?
+	* @param bool $force_display_results Allows you to force this to automatically display all results
+	* @param object|bool $db Allows you to use your own $db object instead of the global $db
 	*/
-	function umil_frontend($title = '', $auto_display_results = false, $force_display_results = false)
+	function umil_frontend($title = '', $auto_display_results = false, $force_display_results = false, $db = false)
 	{
-		global $db, $phpbb_root_path, $phpEx, $template, $user;
+		global $phpbb_root_path, $phpEx, $template, $user;
 
 		$this->title = $title;
 
 		// we must call the main constructor
-		$this->umil();
+		$this->umil(false, $db);
 		$this->auto_display_results = $auto_display_results;
 		$this->force_display_results = $force_display_results;
 
@@ -79,7 +84,7 @@ class umil_frontend extends umil
 		page_header($title, false);
 
 		$template->assign_vars(array(
-			'SQL_LAYER'			=> $db->sql_layer,
+			'SQL_LAYER'			=> $this->db->sql_layer,
 			'UMIL_ROOT_PATH'	=> $phpbb_root_path . 'umil/',
 
 			'U_ADM_INDEX'		=> append_sid("{$phpbb_root_path}adm/index.$phpEx", false, true, $user->session_id),
@@ -223,7 +228,7 @@ class umil_frontend extends umil
 	*/
 	function display_results($command = '', $result = '')
 	{
-		global $config, $db, $template, $user, $phpbb_root_path;
+		global $config, $template, $user, $phpbb_root_path;
 
 		$command = ($command) ? $command : $this->command;
 		$command = (isset($user->lang[$command])) ? $user->lang[$command] : $command;
@@ -268,7 +273,7 @@ class umil_frontend extends umil
 				{
 					$contents = ((isset($user->lang[$this->title])) ? $user->lang[$this->title] : $this->title) . "\n";
 					$contents .= 'PHP Version: ' . phpversion() . "\n";
-					$contents .= 'DBMS: ' . $db->sql_server_info() . "\n";
+					$contents .= 'DBMS: ' . $this->db->sql_server_info() . "\n";
 					$contents .= 'phpBB3 Version: ' . $config['version'] . "\n\n";
 				}
 
