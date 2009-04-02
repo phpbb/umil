@@ -575,6 +575,7 @@ class umil
 		}
 
 		$style_id = (int) $style_id;
+		$type = (string) $type; // Prevent PHP bug.
 
 		switch ($type)
 		{
@@ -1685,6 +1686,9 @@ class umil
 		}
 
 		$current_auth = array();
+
+		$type = (string) $type; // Prevent PHP bug.
+
 		switch ($type)
 		{
 			case 'role' :
@@ -1834,6 +1838,8 @@ class umil
 		{
 			return false;
 		}
+
+		$type = (string) $type; // Prevent PHP bug.
 
 		switch ($type)
 		{
