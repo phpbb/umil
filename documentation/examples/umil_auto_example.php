@@ -57,6 +57,13 @@ $options = array(
 );
 
 /*
+* Optionally we may specify our own logo image to show in the upper corner instead of the default logo.
+* $phpbb_root_path will get prepended to the path specified
+* Image height should be 50px to prevent cut-off or stretching.
+*/
+//$logo_img = 'styles/prosilver/imageset/site_logo.gif';
+
+/*
 * The array of versions and actions within each.
 * You do not need to order it a specific way (it will be sorted automatically), however, you must enter every version, even if no actions are done for it.
 *

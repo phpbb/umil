@@ -63,6 +63,12 @@ if (!isset($user->lang[$mod_name]))
 	$user->lang[$mod_name] = $mod_name;
 }
 
+// Use the Mod's logo if one was specified
+if (isset($logo_img))
+{
+	$template->assign_var('LOGO_IMG', $phpbb_root_path . $logo_img);
+}
+
 if (!$user->data['is_registered'])
 {
 	login_box();
