@@ -98,6 +98,7 @@ $lang = array_merge($lang, array(
 	'TABLE_COLUMN_NOT_EXIST'		=> 'ERROR: The column %2$s does not exist on table %1$s.',
 	'TABLE_COLUMN_REMOVE'			=> 'Removing the column named %2$s from table %1$s',
 	'TABLE_COLUMN_UPDATE'			=> 'Updating a column named %2$s from table %1$s',
+	'TABLE_INSERT_DATA'				=> 'Inserting rows to the %s database table.',
 	'TABLE_KEY_ADD'					=> 'Adding a key named %2$s to table %1$s',
 	'TABLE_KEY_ALREADY_EXIST'		=> 'ERROR: The index %2$s already exists on table %1$s.',
 	'TABLE_KEY_NOT_EXIST'			=> 'ERROR: The index %2$s does not exist on table %1$s.',

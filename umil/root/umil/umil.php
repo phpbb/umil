@@ -388,41 +388,7 @@ class umil
 				{
 					if ($method == 'custom')
 					{
-						if (!is_array($params))
-						{
-							$params = array($params);
-						}
-
-						foreach ($params as $function_name)
-						{
-							if (function_exists($function_name))
-							{
-								$return = call_user_func($function_name, $action, $version);
-								if (is_string($return))
-								{
-									$this->umil_start($return);
-									$this->umil_end();
-								}
-								else if (is_array($return) && isset($return['command']))
-								{
-									if (is_array($return['command']))
-									{
-										call_user_func_array(array($this, 'umil_start'), $return['command']);
-									}
-									else
-									{
-										$this->umil_start($return['command']);
-									}
-
-									if (isset($return['result']))
-									{
-										$this->result($return['result']);
-									}
-
-									$this->umil_end();
-								}
-							}
-						}
+						$this->_call_custom_function($params, $action, $version);
 					}
 					else
 					{
@@ -473,41 +439,7 @@ class umil
 				{
 					if ($method == 'custom')
 					{
-						if (!is_array($params))
-						{
-							$params = array($params);
-						}
-
-						foreach ($params as $function_name)
-						{
-							if (function_exists($function_name))
-							{
-								$return = call_user_func($function_name, $action, $version);
-								if (is_string($return))
-								{
-									$this->umil_start($return);
-									$this->umil_end();
-								}
-								else if (is_array($return) && isset($return['command']))
-								{
-									if (is_array($return['command']))
-									{
-										call_user_func_array(array($this, 'umil_start'), $return['command']);
-									}
-									else
-									{
-										$this->umil_start($return['command']);
-									}
-
-									if (isset($return['result']))
-									{
-										$this->result($return['result']);
-									}
-
-									$this->umil_end();
-								}
-							}
-						}
+						$this->_call_custom_function($params, $action, $version);
 					}
 					else
 					{
@@ -519,7 +451,8 @@ class umil
 						}
 
 						// update mode (reversing an action) isn't possible for uninstallations
-						if (strpos($method, 'update'))
+						// Skip the table insert function as we can not undo that either
+						if (strpos($method, 'update') !== false || strpos($method, 'table_insert') !== false)
 						{
 							continue;
 						}
@@ -545,6 +478,58 @@ class umil
 			{
 				// Unset the version number
 				$this->config_remove($version_config_name);
+			}
+		}
+	}
+
+	/**
+	* Call custom function helper
+	*/
+	function _call_custom_function($functions, $action, $version)
+	{
+		if (!is_array($functions))
+		{
+			$functions = array($functions);
+		}
+
+		foreach ($functions as $function)
+		{
+			if (function_exists($function))
+			{
+				// Must reset before calling the function
+				$this->umil_start();
+
+				$return = call_user_func($function, $action, $version);
+				if (is_string($return))
+				{
+					$this->command = ((isset($user->lang[$return])) ? $user->lang[$return] : $return);
+				}
+				else if (is_array($return) && isset($return['command']))
+				{
+					$lang_key = array_shift($return['command']);
+
+					if (sizeof($return['command']))
+					{
+						$lang_args = array();
+						foreach ($return['command'] as $arg)
+						{
+							$lang_args[] = (isset($user->lang[$arg])) ? $user->lang[$arg] : $arg;
+						}
+
+						$this->command = @vsprintf(((isset($user->lang[$lang_key])) ? $user->lang[$lang_key] : $lang_key), $lang_args);
+					}
+					else
+					{
+						$this->command = ((isset($user->lang[$lang_key])) ? $user->lang[$lang_key] : $lang_key);
+					}
+
+					if (isset($return['result']))
+					{
+						$this->result($return['result']);
+					}
+				}
+
+				$this->umil_end();
 			}
 		}
 	}
@@ -2227,6 +2212,37 @@ class umil
 		}
 
 		$this->db_tools->sql_index_drop($table_name, $index_name);
+
+		return $this->umil_end();
+	}
+
+	/**
+	* Table Insert
+	*
+	* Insert data into a table
+	*/
+	function table_insert($table_name, $data = array())
+	{
+		// Multicall
+		if (is_array($table_name))
+		{
+			foreach ($table_name as $params)
+			{
+				call_user_func_array(array($this, 'table_insert'), $params);
+			}
+			return;
+		}
+
+		$this->get_table_name($table_name);
+
+		$this->umil_start('TABLE_INSERT_DATA', $table_name);
+
+		if (!$this->table_exists($table_name))
+		{
+			return $this->umil_end('TABLE_NOT_EXIST', $table_name);
+		}
+
+		$this->db->sql_multi_insert($table_name, $data);
 
 		return $this->umil_end();
 	}

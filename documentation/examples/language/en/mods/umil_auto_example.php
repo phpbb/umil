@@ -22,7 +22,6 @@ if (empty($lang) || !is_array($lang))
 // in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
 
 $lang = array_merge($lang, array(
-	'INSERT_TEST_ROW'				=> 'Insert test row into the phpbb_test table.',
 	'INSTALL_TEST_MOD'				=> 'Install Test Mod',
 	'INSTALL_TEST_MOD_CONFIRM'		=> 'Are you ready to install the Test Mod?',
 

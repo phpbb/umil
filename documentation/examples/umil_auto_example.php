@@ -166,8 +166,25 @@ $versions = array(
 
 	// Version 0.9.1
 	'0.9.1'	=> array(
+		// Now we need to insert some data.
+		'table_insert'	=> array(
+			array('phpbb_test', array(
+				array(
+					'test_text'		=> 'This is a test message.',
+					'test_bool'		=> 1,
+					'test_time'		=> (time() - 86400),
+				),
+				array(
+					'test_text'		=> 'This is another test message.',
+					'test_bool'		=> 0,
+					'test_time'		=> time(),
+				),
+			)),
+		),
+
 		/*
-		* Now we need to insert some data.  The easiest way to do that is through a custom function
+		* Here is an example of a custom function.  We will have it remove the data we inserted into the table just previously during the uninstallation
+		* (obviously not required since the uninstallation removes the table anyways, but just an example for the custom function)
 		* Enter 'custom' for the array key and the name of the function for the value.
 		*/
 		'custom'	=> 'umil_auto_example',
@@ -192,41 +209,23 @@ function umil_auto_example($action, $version)
 {
 	global $db, $table_prefix, $umil;
 
-	switch ($action)
+	if ($action == 'uninstall')
 	{
-		case 'install' :
-		case 'update' :
-			// Run this when installing/updating
+		// Run this when uninstalling
 
-			if ($umil->table_exists('phpbb_test'))
-			{
-				$sql_ary = array(
-					'test_text'		=> 'This is a test message.',
-					'test_bool'		=> 1,
-					'test_time'		=> time(),
-				);
-				$sql = 'INSERT INTO ' . $table_prefix . 'test ' . $db->sql_build_array('INSERT', $sql_ary);
-				$db->sql_query($sql);
+		if ($umil->table_exists('phpbb_test'))
+		{
+			$sql = 'DELETE FROM ' . $table_prefix . "test
+				WHERE (test_text = 'This is a test message.' OR test_text = 'This is another test message.')
+				AND test_bool = 1";
+			$db->sql_query($sql);
 
-				// Method 1 of displaying the command (and Success for the result)
-				return 'INSERT_TEST_ROW';
-			}
-		break;
+			// Method 1 of displaying the command (will assume Success was the result as long as there was no SQL error reported)
+			return 'REMOVE_TEST_ROW';
 
-		case 'uninstall' :
-			// Run this when uninstalling
-
-			if ($umil->table_exists('phpbb_test'))
-			{
-				$sql = 'DELETE FROM ' . $table_prefix . "test
-					WHERE test_text = 'This is a test message.'
-					AND test_bool = 1";
-				$db->sql_query($sql);
-
-				// Method 2 of displaying the command/results
-	            return array('command' => 'REMOVE_TEST_ROW', 'result' => 'SUCCESS');
-			}
-		break;
+			// Method 2 of displaying the command/results.  This way you can send your own result message.
+	        return array('command' => 'REMOVE_TEST_ROW', 'result' => 'SUCCESS');
+		}
 	}
 }
 
