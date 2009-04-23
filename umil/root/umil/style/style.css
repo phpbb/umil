@@ -132,7 +132,6 @@ a:active {
 #page-header {
 	clear: both;
 	text-align: right;
-	background: url("<!-- IF LOGO_IMG -->{LOGO_IMG}<!-- ELSE -->{ROOT_PATH}adm/images/phpbb_logo.gif<!-- ENDIF -->") top left no-repeat;
 	height: 50px;
 	font-size: 0.85em;
 	margin-bottom: 10px;
@@ -140,7 +139,6 @@ a:active {
 
 .rtl #page-header {
 	text-align: left;
-	background: url("<!-- IF LOGO_IMG -->{LOGO_IMG}<!-- ELSE -->{ROOT_PATH}adm/images/phpbb_logo.gif<!-- ENDIF -->") top right no-repeat;
 }
 
 #page-header h1 {
@@ -231,7 +229,6 @@ a:active {
 
 #tabs a {
 	float: left;
-	background:url("{ROOT_PATH}adm/images/bg_tabs1.gif") no-repeat 0% -34px;
 	margin: 0 1px 0 0;
 	padding: 0 0 0 7px;
 	text-decoration: none;
@@ -245,7 +242,6 @@ a:active {
 #tabs a span {
 	float: left;
 	display: block;
-	background: url("{ROOT_PATH}adm/images/bg_tabs2.gif") no-repeat 100% -34px;
 	padding: 7px 10px 4px 4px;
 	color: #767676;
 	white-space: nowrap;
@@ -301,7 +297,6 @@ a:active {
 }
 
 .panel {
-	background: #F3F3F3 url("{ROOT_PATH}adm/images/innerbox_bg.gif") repeat-x top;
 	padding: 0;
 }
 
@@ -315,32 +310,23 @@ span.corners-top span, span.corners-bottom span {
 }
 
 span.corners-top {
-	background-image: url("{ROOT_PATH}adm/images/corners_left.gif");
 	background-position: 0 0;
 	margin: -4px -2px 0;
 }
 
 span.corners-top span {
-	background-image: url("{ROOT_PATH}adm/images/corners_right.gif");
 	background-position: 100% 0;
 }
 
 span.corners-bottom {
-	background-image: url("{ROOT_PATH}adm/images/corners_left.gif");
 	background-position: 0 100%;
 	margin: 0 -2px -4px;
 	clear: both;
 }
 
 span.corners-bottom span {
-	background-image: url("{ROOT_PATH}adm/images/corners_right.gif");
 	background-position: 100% 100%;
 }
-
-/* WinIE tweaks \*/
-* html span.corners-top, * html span.corners-bottom { background-image: url("{ROOT_PATH}adm/images/corners_left.gif"); }
-* html span.corners-top span, * html span.corners-bottom span { background-image: url("{ROOT_PATH}adm/images/corners_right.gif"); }
-/* End tweaks */
 
 /* Sub-navigation Menu
 ---------------------------------------- */
@@ -367,11 +353,9 @@ span.corners-bottom span {
 	width: 18px;
 	height: 19px;
 	float: right;
-	background-image: url({ROOT_PATH}adm/images/toggle.gif);
 }
 
 .rtl #toggle-handle {
-	background-image: url({ROOT_PATH}adm/images/toggle.gif);
 	background-position: 100% 50%;
 }
 
@@ -437,11 +421,6 @@ span.corners-bottom span {
 	text-decoration: none;
 	font-weight: bold;
 	color: #BC2A4D;
-	background: #FFFFFF url("{ROOT_PATH}adm/images/arrow_right.gif") 1% 50% no-repeat;
-}
-
-.rtl #menu li#activemenu a:hover span, .rtl #menu li#activemenu span {
-	background: #FFFFFF url("{ROOT_PATH}adm/images/arrow_left.gif") 99% 50% no-repeat;
 }
 
 #menu li a:active, #menu li a:active span, #menu li#activemenu a:active span {
@@ -451,13 +430,11 @@ span.corners-bottom span {
 #menu li span.completed {
 	text-decoration: none;
 	padding: 3px 3px 3px 12px;
-	background: url("{ROOT_PATH}adm/images/arrow_down.gif") 1% 50% no-repeat;
 }
 
 .rtl #menu li span.completed {
 	text-decoration: none;
 	padding: 3px 12px 3px 3px;
-	background: url("{ROOT_PATH}adm/images/arrow_down.gif") 99% 50% no-repeat;
 }
 
 #menu li.header {
@@ -485,7 +462,6 @@ table {
 th {
 	padding: 3px 4px;
 	color: #FFFFFF;
-	background: #70AED3 url("{ROOT_PATH}adm/images/gradient2b.gif") bottom left repeat-x;
 	border-top: 1px solid #6DACD2;
 	border-bottom: 1px solid #327AA5;
 	text-align: left;
@@ -1020,7 +996,6 @@ a.button2, input.button2 {
 	font-family: "Lucida Grande", Verdana, Helvetica, Arial, sans-serif;
 	color: #000;
 	font-size: 0.85em;
-	background: #EFEFEF url("{ROOT_PATH}adm/images/bg_button.gif") repeat-x top;
 	cursor: pointer;
 }
 
@@ -1046,7 +1021,6 @@ a.button2, a.button2:link, a.button2:visited, a.button2:active {
 a.button1:hover, input.button1:hover,
 a.button2:hover, input.button2:hover {
 	border: 1px solid #BC2A4D;
-	background: #EFEFEF url("{ROOT_PATH}adm/images/bg_button.gif") repeat bottom;
 	color: #BC2A4D;
 }
 
@@ -1365,7 +1339,6 @@ fieldset.permissions .padding {
 
 .permissions-category a {
 	float: left;
-	background: url("{ROOT_PATH}adm/images/bg_tabs_alt1.gif") no-repeat 0% -35px;
 	margin: 0 1px 0 0;
 	padding: 0 0 0 6px;
 	text-decoration: none;
@@ -1379,7 +1352,6 @@ fieldset.permissions .padding {
 .permissions-category a span.tabbg {
 	float: left;
 	display: block;
-	background: url("{ROOT_PATH}adm/images/bg_tabs_alt2.gif") no-repeat 100% -35px;
 	padding: 7px 12px 6px 6px;
 	color: #536482;
 	white-space: nowrap;
@@ -1483,22 +1455,6 @@ fieldset.permissions .padding {
 	float: right;
 }
 
-.permissions-panel span.corners-top {
-	background-image: url("{ROOT_PATH}adm/images/corners_left2.gif");
-}
-
-.permissions-panel span.corners-top span {
-	background-image: url("{ROOT_PATH}adm/images/corners_right2.gif");
-}
-
-.permissions-panel span.corners-bottom {
-	background-image: url("{ROOT_PATH}adm/images/corners_left2.gif");
-}
-
-.permissions-panel span.corners-bottom span {
-	background-image: url("{ROOT_PATH}adm/images/corners_right2.gif");
-}
-
 .permissions-panel span.corners-top, .permissions-panel span.corners-bottom,
 .permissions-panel span.corners-top span, .permissions-panel span.corners-bottom span {
 	font-size: 1px;
@@ -1509,25 +1465,21 @@ fieldset.permissions .padding {
 }
 
 .permissions-panel span.corners-top {
-	background-image: url("{ROOT_PATH}adm/images/corners_left2.gif");
 	background-position: 0 0;
 	margin: 0 0;
 }
 
 .permissions-panel span.corners-top span {
-	background-image: url("{ROOT_PATH}adm/images/corners_right2.gif");
 	background-position: 100% 0;
 }
 
 .permissions-panel span.corners-bottom {
-	background-image: url("{ROOT_PATH}adm/images/corners_left2.gif");
 	background-position: 0 100%;
 	margin: 0 0;
 	clear: both;
 }
 
 .permissions-panel span.corners-bottom span {
-	background-image: url("{ROOT_PATH}adm/images/corners_right2.gif");
 	background-position: 100% 100%;
 }
 
