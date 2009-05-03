@@ -1903,6 +1903,12 @@ class umil
 	{
 		$this->get_table_name($table_name);
 
+		// Use sql_table_exists if available
+		if (method_exists($this->db_tools, 'sql_table_exists'))
+		{
+			return $this->db_tools->sql_table_exists($table_name);
+		}
+
 		if (!function_exists('get_tables'))
 		{
 			global $phpbb_root_path, $phpEx;
