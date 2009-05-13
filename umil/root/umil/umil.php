@@ -29,10 +29,10 @@ define('UMIL_VERSION', '1.2.0-a1');
 *
 * Example:
 * $umil->config_add(array(
-*	array('config_name', 'config_value', false),
-*	array('config_name1', 'config_value1', false),
-*	array('config_name2', 'config_value2', false),
-*	array('config_name3', 'config_value3', false),
+*	array('config_name', 'config_value'),
+*	array('config_name1', 'config_value1'),
+*	array('config_name2', 'config_value2', true),
+*	array('config_name3', 'config_value3', true),
 * );
 */
 
@@ -75,6 +75,11 @@ define('UMIL_VERSION', '1.2.0-a1');
 *	table_index_exists($table_name, $index_name)
 *	table_index_add($table_name, $index_name = '', $column = array())
 *	table_index_remove($table_name, $index_name = '')
+*
+* Table Row Functions
+*	table_row_insert($table_name, $data = array())
+*	table_row_remove($table_name, $data = array())
+*	table_row_update($table_name, $data = array(), $new_data = array())
 *
 * Version Check Function
 * 	version_check($url, $path, $file)
@@ -137,6 +142,11 @@ class umil
 		// Setup $this->db
 		if ($db !== false)
 		{
+			if (!is_object($db) || !method_exists($db, 'sql_query'))
+			{
+				trigger_error('Invalid $db Object');
+			}
+
 			$this->db = $db;
 		}
 		else
@@ -2222,26 +2232,29 @@ class umil
 		return $this->umil_end();
 	}
 
+	// Ignore, function was renamed to table_row_insert and keeping for backwards compatibility
+	function table_insert($table_name, $data = array()) { table_row_insert($table_name, $data); }
+
 	/**
 	* Table Insert
 	*
 	* Insert data into a table
 	*/
-	function table_insert($table_name, $data = array())
+	function table_row_insert($table_name, $data = array())
 	{
 		// Multicall
 		if (is_array($table_name))
 		{
 			foreach ($table_name as $params)
 			{
-				call_user_func_array(array($this, 'table_insert'), $params);
+				call_user_func_array(array($this, 'table_row_insert'), $params);
 			}
 			return;
 		}
 
 		$this->get_table_name($table_name);
 
-		$this->umil_start('TABLE_INSERT_DATA', $table_name);
+		$this->umil_start('TABLE_ROW_INSERT_DATA', $table_name);
 
 		if (!$this->table_exists($table_name))
 		{
@@ -2249,6 +2262,120 @@ class umil
 		}
 
 		$this->db->sql_multi_insert($table_name, $data);
+
+		return $this->umil_end();
+	}
+
+	/**
+	* Table Row Update
+	*
+	* Update a row in a table
+	*
+	* $data should be an array with the column names as keys and values as the items to check for each column.  Example:
+	* array('user_id' => 123, 'user_name' => 'test user') would become:
+	* WHERE user_id = 123 AND user_name = 'test user'
+	*
+	* $new_data is the new data it will be updated to (same format as you'd enter into $db->sql_build_array('UPDATE' ).
+	*/
+	function table_row_update($table_name, $data = array(), $new_data = array())
+	{
+		// Multicall
+		if (is_array($table_name))
+		{
+			foreach ($table_name as $params)
+			{
+				call_user_func_array(array($this, 'table_row_remove'), $params);
+			}
+			return;
+		}
+
+		if (!sizeof($data))
+		{
+			return $this->umil_end('FAIL');
+		}
+
+		$this->get_table_name($table_name);
+
+		$this->umil_start('TABLE_ROW_UPDATE_DATA', $table_name);
+
+		if (!$this->table_exists($table_name))
+		{
+			return $this->umil_end('TABLE_NOT_EXIST', $table_name);
+		}
+
+		$sql = '';
+		foreach ($data as $key => $value)
+		{
+			$sql .= ($sql == '') ? 'UPDATE ' . $table_name . ' SET ' . $this->db->sql_build_array('UPDATE', $new_data) . ' WHERE ' : ' AND ';
+			$sql .= $key . ' = ';
+
+			if (is_int($value))
+			{
+				$sql .= $value;
+			}
+			else
+			{
+				$sql .= "'$value'";
+			}
+		}
+
+		$this->db->sql_query($sql);
+
+		return $this->umil_end();
+	}
+
+	/**
+	* Table Row Remove
+	*
+	* Remove a row from a table
+	*
+	* $data should be an array with the column names as keys and values as the items to check for each column.  Example:
+	* array('user_id' => 123, 'user_name' => 'test user') would become:
+	* WHERE user_id = 123 AND user_name = 'test user'
+	*/
+	function table_row_remove($table_name, $data = array())
+	{
+		// Multicall
+		if (is_array($table_name))
+		{
+			foreach ($table_name as $params)
+			{
+				call_user_func_array(array($this, 'table_row_remove'), $params);
+			}
+			return;
+		}
+
+		if (!sizeof($data))
+		{
+			return $this->umil_end('FAIL');
+		}
+
+		$this->get_table_name($table_name);
+
+		$this->umil_start('TABLE_ROW_REMOVE_DATA', $table_name);
+
+		if (!$this->table_exists($table_name))
+		{
+			return $this->umil_end('TABLE_NOT_EXIST', $table_name);
+		}
+
+		$sql = '';
+		foreach ($data as $key => $value)
+		{
+			$sql .= ($sql == '') ? 'DELETE FROM ' . $table_name . ' WHERE ' : ' AND ';
+			$sql .= $key . ' = ';
+
+			if (is_int($value))
+			{
+				$sql .= $value;
+			}
+			else
+			{
+				$sql .= "'$value'";
+			}
+		}
+
+		$this->db->sql_query($sql);
 
 		return $this->umil_end();
 	}
