@@ -106,7 +106,7 @@ $lang = array_merge($lang, array(
 	'TABLE_REMOVE'					=> 'Removing database table: %s',
 	'TABLE_ROW_INSERT_DATA'			=> 'Inserting data in the %s database table.',
 	'TABLE_ROW_REMOVE_DATA'			=> 'Removing a row from the %s database table',
-	'TABLE_ROW_UPDATE_DATA'			=> 'Updating a row in the $s database table.',
+	'TABLE_ROW_UPDATE_DATA'			=> 'Updating a row in the %s database table.',
 	'TEMPLATE_CACHE_PURGE'			=> 'Refreshing the %s template',
 	'THEME_CACHE_PURGE'				=> 'Refreshing the %s theme',
 
