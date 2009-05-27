@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- MODX by the phpBB MOD Team XSL file v1.2.2 copyright 2005-2008 the phpBB MOD Team.
-	$Id: modx.prosilver.en.xsl 2702 2009-01-20 22:51:01Z paul $ -->
+	$Id: modx.prosilver.en.xsl 127 2009-05-19 19:32:40Z exreaction $ -->
 <!DOCTYPE xsl:stylesheet[
 	<!ENTITY nbsp "&#160;">
 ]>
