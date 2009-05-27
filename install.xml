@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml-stylesheet type="text/xsl" href="./modx.prosilver.en.xsl"?>
+<!-- UMIL by the phpBB.com MOD Team. Copyright 2008 the phpBB Group.
+Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI Library or for any support needed for UMIL.
+ $Id$ -->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.2.xsd">
+<header>
+	<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+	<title lang="en">UMIL - Unified Mod Install Library</title>
+	<description lang="en"></description>
+
+	<author-notes lang="en"></author-notes>
+
+	<author-group>
+		<author>
+			<username>EXreaction</username>
+			<realname>Nathan Guse</realname>
+			<homepage>http://www.lithiumstudios.org/</homepage>
+			<email>exreaction@lithiumstudios.org</email>
+		</author>
+		<author>
+			<username>Highway of Life</username>
+			<realname>David Lewis</realname>
+			<homepage>http://www.startrekguide.com/</homepage>
+			<email>highwayoflife@gmail.com</email>
+		</author>
+	</author-group>
+
+	<mod-version>1.2.0-a1</mod-version>
+
+	<installation>
+		<level>easy</level>
+		<time>60</time>
+		<target-version>3.0.4</target-version>
+	</installation>
+
+	<history>
+		<entry>
+			<date>2009-02-13</date>
+			<rev-version>1.2.0-a1</rev-version>
+			<changelog lang="en">
+				<change>1.2.0 Development started</change>
+			</changelog>
+		</entry>
+	</history>
+</header>
+
+<action-group>
+	<copy>
+		<file from="root/*.*" to="*.*" />
+	</copy>
+</action-group>
+</mod>
