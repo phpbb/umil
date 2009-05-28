@@ -4,7 +4,7 @@
 * umil [French]
 *
 * @package umil
-* @version $Id: umil.php 132 2009-05-20 22:11:24Z exreaction $
+* @version $Id$
 * @copyright (c) 2008 phpBB Group
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 * @author Nathan Guse (EXreaction) http://lithiumstudios.org
