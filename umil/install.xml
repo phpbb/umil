@@ -41,6 +41,8 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 			<changelog lang="en">
 				<change>[Change] Use sql_table_exists if available (phpBB 3.0.5+)</change>
 				<change>[Change] Renamed table_insert to table_row_insert for consistancey (table_insert function still exists and calls table_row_insert for compatibility)</change>
+				<change>[Change] version_check now returns (string) Error Message if any error occured #45885</change>
+				<change>[Change] Log Adding/Removing Modules to the admin log #41215</change>
 				<change>[Feature] Two new functions table_row_update and and table_row_remove</change>
 			</changelog>
 		</entry>

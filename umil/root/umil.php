@@ -1215,6 +1215,7 @@ class umil
 
 		// The "manual" way
 		$this->umil_start('MODULE_ADD', $class, ((isset($user->lang[$data['module_langname']])) ? $user->lang[$data['module_langname']] : $data['module_langname']));
+		add_log('admin', 'LOG_MODULE_ADD', ((isset($user->lang[$data['module_langname']])) ? $user->lang[$data['module_langname']] : $data['module_langname']));
 
 		$class = $this->db->sql_escape($class);
 
@@ -1312,8 +1313,7 @@ class umil
 			if (isset($module['module_langname']))
 			{
 				// Manual Method
-				call_user_func(array($this, 'module_remove'), $class, $parent, $module['module_langname']);
-				return;
+				return $this->module_remove($class, $parent, $module['module_langname'], $include_path);
 			}
 
 			// Failed.
@@ -1345,13 +1345,15 @@ class umil
 			$module_info = $info->module();
 			unset($info);
 
+			$result = '';
 			foreach ($module_info['modes'] as $mode => $info)
 			{
 				if (!isset($module['modes']) || in_array($mode, $module['modes']))
 				{
-					call_user_func(array($this, 'module_remove'), $class, $parent, $info['title']);
+					$result .= $this->module_remove($class, $parent, $info['title']) . '<br />';
 				}
 			}
+			return $result;
 		}
 		else
 		{
@@ -1376,7 +1378,6 @@ class umil
 					$this->db->sql_freeresult($result);
 
 					// we know it exists from the module_exists check
-
 					$parent_sql = 'AND parent_id = ' . (int) $row['module_id'];
 				}
 				else
@@ -1418,6 +1419,7 @@ class umil
 			}
 
 			$this->umil_start('MODULE_REMOVE', $class, ((isset($user->lang[$module_name])) ? $user->lang[$module_name] : $module_name));
+			add_log('admin', 'LOG_MODULE_REMOVED', ((isset($user->lang[$module_name])) ? $user->lang[$module_name] : $module_name));
 
 			if (!class_exists('acp_modules'))
 			{
@@ -2376,7 +2378,7 @@ class umil
 	* @param string $path The path to access (ex: /updatecheck)
 	* @param string $file The name of the file to access (ex: 30x.txt)
 	*
-	* @return array|bool False if there was any error, or an array (each line in the file as a value)
+	* @return array|string Error Message if there was any error, or an array (each line in the file as a value)
 	*/
 	function version_check($url, $path, $file, $timeout = 10, $port = 80)
 	{
@@ -2393,7 +2395,7 @@ class umil
 
 		if ($info === false)
 		{
-			return false;
+			return $errstr . ' [ ' . $errno . ' ]';
 		}
 
 		$info = str_replace("\r\n", "\n", $info);
