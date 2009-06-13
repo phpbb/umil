@@ -120,7 +120,7 @@ if (confirm_box(true))
 	
 <!-- IF .modules -->
 
-		$umif->module_add(array(
+		$umil->module_add(array(
 <!-- BEGIN modules -->
 			array('{modules.CLASS}', '{modules.PARENT}', 
 				array('module_basename'	=> '{modules.BASENAME}'),
