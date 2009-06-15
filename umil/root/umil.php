@@ -502,9 +502,9 @@ class umil
 				}
 				else if (is_array($return) && isset($return['command']))
 				{
-					$lang_key = array_shift($return['command']);
+					$lang_key = (is_array($return['command'])) ? array_shift($return['command']) : $return['command'];
 
-					if (sizeof($return['command']))
+					if (is_array($return['command']) && sizeof($return['command']))
 					{
 						$lang_args = array();
 						foreach ($return['command'] as $arg)
