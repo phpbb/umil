@@ -40,6 +40,7 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 			<rev-version>1.0.0-RC4</rev-version>
 			<changelog lang="en">
 				<change>[Fix] When returning an array in a custom function for the result, the value of 'command' was required to be an array (should accept a string as well).  Reported by Sajaki</change>
+				<change>[Fix] Make sure $user->setup has been called when trying to display the error about an outdated version of UMIL.</change>
 				<change>[Change] Use sql_table_exists if available (phpBB 3.0.5+)</change>
 				<change>[Change] Renamed table_insert to table_row_insert for consistancey (table_insert function still exists and calls table_row_insert for compatibility)</change>
 				<change>[Change] version_check now returns (string) Error Message if any error occured #45885</change>

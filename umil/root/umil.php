@@ -201,6 +201,12 @@ class umil
 			{
 				global $template, $user, $phpbb_root_path;
 
+				// Make sure user->setup() has been called
+				if (empty($user->lang))
+				{
+					$user->setup();
+				}
+
 				page_header('', false);
 
 				$this_file = str_replace(array(phpbb_realpath($phpbb_root_path), '\\'), array('', '/'), __FILE__);
