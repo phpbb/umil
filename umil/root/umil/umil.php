@@ -2059,6 +2059,15 @@ class umil
 			return;
 		}
 
+		/**
+		* $column_data can be empty when uninstalling a mod and table_column_remove was used, but no 3rd argument was given.
+		* In that case we'll assume that it was a column previously added by the mod (if not the author should specify a 3rd argument) and skip this to prevent an error
+		*/
+		if (empty($column_data))
+		{
+			return;
+		}
+
 		$this->get_table_name($table_name);
 
 		$this->umil_start('TABLE_COLUMN_ADD', $table_name, $column_name);
@@ -2168,6 +2177,15 @@ class umil
 			{
 				call_user_func_array(array($this, 'table_index_add'), $params);
 			}
+			return;
+		}
+
+		/**
+		* $column can be empty when uninstalling a mod and table_index_remove was used, but no 3rd argument was given.
+		* In that case we'll assume that it was an index previously added by the mod (if not the author should specify a 3rd argument) and skip this to prevent an error
+		*/
+		if (empty($column))
+		{
 			return;
 		}
 
