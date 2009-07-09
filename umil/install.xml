@@ -26,18 +26,18 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 		</author>
 	</author-group>
 
-	<mod-version>1.0.0-RC3</mod-version>
+	<mod-version>1.0.0</mod-version>
 
 	<installation>
 		<level>easy</level>
 		<time>60</time>
-		<target-version>3.0.4</target-version>
+		<target-version>3.0.5</target-version>
 	</installation>
 
 	<history>
 		<entry>
-			<date>2009-00-00</date>
-			<rev-version>1.0.0-RC4</rev-version>
+			<date>2009-07-09</date>
+			<rev-version>1.0.0</rev-version>
 			<changelog lang="en">
 				<change>[Fix] When returning an array in a custom function for the result, the value of 'command' was required to be an array (should accept a string as well).  Reported by Sajaki</change>
 				<change>[Fix] Make sure $user->setup has been called when trying to display the error about an outdated version of UMIL.</change>

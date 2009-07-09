@@ -18,7 +18,7 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-define('UMIL_VERSION', '1.0.0-RC3');
+define('UMIL_VERSION', '1.0.0');
 
 /**
 * Multicall instructions
