@@ -229,9 +229,10 @@ class umil
 		global $user;
 
 		// Set up the command.  This will get the arguments sent to the function.
-		$this->command = call_user_func_array(array($this, 'result'), func_get_args());
+		$args = func_get_args();
+		$this->command = call_user_func_array(array($this, 'get_output_text'), $args);
 
-		$this->result = $this->get_output_text('SUCCESS');
+		$this->result = $user->lang['SUCCESS'];
 		$this->db->sql_return_on_error(true);
 
 		//$this->db->sql_transaction('begin');
@@ -247,7 +248,9 @@ class umil
 		global $user;
 
 		// Set up the result.  This will get the arguments sent to the function.
-		$this->result = call_user_func_array(array($this, 'result'), func_get_args());
+		$args = func_get_args();
+		$result = call_user_func_array(array($this, 'get_output_text'), $args);
+		$this->result = ($result) ? $result : $this->result;
 
 		if ($this->db->sql_error_triggered)
 		{
@@ -819,6 +822,9 @@ class umil
 						unset($filelist);
 					}
 
+					// Purge the forum's cache as well.
+					$cache->purge();
+
 					return $this->umil_end();
 				}
 			break;
@@ -869,6 +875,11 @@ class umil
 						{
 							foreach ($matches[0] as $idx => $match)
 							{
+								if (!file_exists("{$phpbb_root_path}styles/{$theme_row['theme_path']}/theme/{$matches[1][$idx]}"))
+								{
+									continue;
+								}
+
 								$content = trim(file_get_contents("{$phpbb_root_path}styles/{$theme_row['theme_path']}/theme/{$matches[1][$idx]}"));
 								$stylesheet = str_replace($match, $content, $stylesheet);
 							}
