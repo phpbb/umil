@@ -26,7 +26,7 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 		</author>
 	</author-group>
 
-	<mod-version>1.0.0</mod-version>
+	<mod-version>1.0.1_dev</mod-version>
 
 	<installation>
 		<level>easy</level>
@@ -35,6 +35,15 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 	</installation>
 
 	<history>
+		<entry>
+			<date>2009-00-00</date>
+			<rev-version>1.0.1_dev</rev-version>
+			<changelog lang="en">
+				<change>[Fix] Error when uninstalling with table_row_ actions (was re-running the function). #48515</change>
+				<change>[Change] Cleaned up the table_row_ functions</change>
+				<change>[Change] Setup get_output_text() to remove some duplicated code (also removed the result() function and replaced the calls with this)</change>
+			</changelog>
+		</entry>
 		<entry>
 			<date>2009-07-24</date>
 			<rev-version>1.0.0</rev-version>

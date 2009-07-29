@@ -18,7 +18,7 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-define('UMIL_VERSION', '1.0.0');
+define('UMIL_VERSION', '1.0.1_dev');
 
 /**
 * Multicall instructions
@@ -76,7 +76,7 @@ define('UMIL_VERSION', '1.0.0');
 *	table_index_add($table_name, $index_name = '', $column = array())
 *	table_index_remove($table_name, $index_name = '')
 *
-* Table Row Functions
+* Table Row Functions (note that these actions are not reversed automatically during uninstallation)
 *	table_row_insert($table_name, $data = array())
 *	table_row_remove($table_name, $data = array())
 *	table_row_update($table_name, $data = array(), $new_data = array())
@@ -229,64 +229,12 @@ class umil
 		global $user;
 
 		// Set up the command.  This will get the arguments sent to the function.
-		$this->command = '';
-		$args = func_get_args();
-		if (sizeof($args))
-		{
-			$lang_key = array_shift($args);
+		$this->command = call_user_func_array(array($this, 'result'), func_get_args());
 
-			if (sizeof($args))
-			{
-				$lang_args = array();
-				foreach ($args as $arg)
-				{
-					$lang_args[] = (isset($user->lang[$arg])) ? $user->lang[$arg] : $arg;
-				}
-
-				$this->command = @vsprintf(((isset($user->lang[$lang_key])) ? $user->lang[$lang_key] : $lang_key), $lang_args);
-			}
-			else
-			{
-				$this->command = ((isset($user->lang[$lang_key])) ? $user->lang[$lang_key] : $lang_key);
-			}
-		}
-
-		$this->result('SUCCESS');
+		$this->result = $this->get_output_text('SUCCESS');
 		$this->db->sql_return_on_error(true);
 
 		//$this->db->sql_transaction('begin');
-	}
-
-	/**
-	* result function
-	*
-	* This makes it easy to manage the stand alone version.
-	*/
-	function result()
-	{
-		global $user;
-
-		// Set up the command.  This will get the arguments sent to the function.
-		$args = func_get_args();
-		if (sizeof($args))
-		{
-			$lang_key = array_shift($args);
-
-			if (sizeof($args))
-			{
-				$lang_args = array();
-				foreach ($args as $arg)
-				{
-					$lang_args[] = (isset($user->lang[$arg])) ? $user->lang[$arg] : $arg;
-				}
-
-				$this->result = @vsprintf(((isset($user->lang[$lang_key])) ? $user->lang[$lang_key] : $lang_key), $lang_args);
-			}
-			else
-			{
-				$this->result = ((isset($user->lang[$lang_key])) ? $user->lang[$lang_key] : $lang_key);
-			}
-		}
 	}
 
 	/**
@@ -299,11 +247,7 @@ class umil
 		global $user;
 
 		// Set up the result.  This will get the arguments sent to the function.
-		$args = func_get_args();
-		if (sizeof($args))
-		{
-			call_user_func_array(array($this, 'result'), $args);
-		}
+		$this->result = call_user_func_array(array($this, 'result'), func_get_args());
 
 		if ($this->db->sql_error_triggered)
 		{
@@ -332,6 +276,45 @@ class umil
 		}
 
 		return '<strong>' . $this->command . '</strong><br />' . $this->result;
+	}
+
+	/**
+	* Get text for output
+	*
+	* Takes the given arguments and prepares them for the UI
+	*
+	* First argument sent is used as the language key
+	* Further arguments (if send) are used on the language key through vsprintf()
+	*
+	* @return string Returns the prepared string for output
+	*/
+	function get_output_text()
+	{
+		global $user;
+
+		// Set up the command.  This will get the arguments sent to the function.
+		$args = func_get_args();
+		if (sizeof($args))
+		{
+			$lang_key = array_shift($args);
+
+			if (sizeof($args))
+			{
+				$lang_args = array();
+				foreach ($args as $arg)
+				{
+					$lang_args[] = (isset($user->lang[$arg])) ? $user->lang[$arg] : $arg;
+				}
+
+				return @vsprintf(((isset($user->lang[$lang_key])) ? $user->lang[$lang_key] : $lang_key), $lang_args);
+			}
+			else
+			{
+				return ((isset($user->lang[$lang_key])) ? $user->lang[$lang_key] : $lang_key);
+			}
+		}
+
+		return '';
 	}
 
 	/**
@@ -451,9 +434,8 @@ class umil
 							continue;
 						}
 
-						// update mode (reversing an action) isn't possible for uninstallations
-						// Skip the table insert function as we can not undo that either
-						if (strpos($method, 'update') !== false || strpos($method, 'table_insert') !== false)
+						// A few things are not possible for uninstallations update actions and table_row actions
+						if (strpos($method, 'update') !== false || strpos($method, 'table_insert') !== false || strpos($method, 'table_row_') !== false)
 						{
 							continue;
 						}
@@ -527,7 +509,7 @@ class umil
 
 					if (isset($return['result']))
 					{
-						$this->result($return['result']);
+						$this->result = $this->get_output_text($return['result']);
 					}
 
 					$this->umil_end();
@@ -1277,7 +1259,7 @@ class umil
 		}
 		else if (!is_array($result) && $result !== '')
 		{
-			$this->result($result);
+			$this->result = $this->get_output_text($result);
 		}
 
 		// Clear the Modules Cache
@@ -2334,22 +2316,9 @@ class umil
 			return $this->umil_end('TABLE_NOT_EXIST', $table_name);
 		}
 
-		$sql = '';
-		foreach ($data as $key => $value)
-		{
-			$sql .= ($sql == '') ? 'UPDATE ' . $table_name . ' SET ' . $this->db->sql_build_array('UPDATE', $new_data) . ' WHERE ' : ' AND ';
-			$sql .= $key . ' = ';
-
-			if (is_int($value))
-			{
-				$sql .= $value;
-			}
-			else
-			{
-				$sql .= "'$value'";
-			}
-		}
-
+		$sql = 'UPDATE ' . $table_name . '
+			SET ' . $this->db->sql_build_array('UPDATE', $new_data) . '
+			WHERE ' . $this->db->sql_build_array('SELECT', $data);
 		$this->db->sql_query($sql);
 
 		return $this->umil_end();
@@ -2390,22 +2359,7 @@ class umil
 			return $this->umil_end('TABLE_NOT_EXIST', $table_name);
 		}
 
-		$sql = '';
-		foreach ($data as $key => $value)
-		{
-			$sql .= ($sql == '') ? 'DELETE FROM ' . $table_name . ' WHERE ' : ' AND ';
-			$sql .= $key . ' = ';
-
-			if (is_int($value))
-			{
-				$sql .= $value;
-			}
-			else
-			{
-				$sql .= "'$value'";
-			}
-		}
-
+		$sql = 'DELETE FROM ' . $table_name . ' WHERE ' . $this->db->sql_build_array('SELECT', $data);
 		$this->db->sql_query($sql);
 
 		return $this->umil_end();
