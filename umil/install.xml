@@ -40,6 +40,7 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 			<rev-version>1.0.1_dev</rev-version>
 			<changelog lang="en">
 				<change>[Fix] Error when uninstalling with table_row_ actions (was re-running the function). #48515</change>
+				<change>[Fix] In some cases call_user_func_array errors when the second parameter is not an array.  Setting up a new function to handle the multicall. #48825</change>
 				<change>[Change] Cleaned up the table_row_ functions</change>
 				<change>[Change] Setup get_output_text() to remove some duplicated code (also removed the result() function and replaced the calls with this)</change>
 			</changelog>

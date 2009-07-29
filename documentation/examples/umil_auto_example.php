@@ -174,7 +174,7 @@ $versions = array(
 	// Version 0.9.1
 	'0.9.1'	=> array(
 		// Now we need to insert some data.
-		'table_insert'	=> array(
+		'table_row_insert'	=> array(
 			array('phpbb_test', array(
 				array(
 					'test_text'		=> 'This is a test message.',
@@ -187,6 +187,22 @@ $versions = array(
 					'test_time'		=> time(),
 				),
 			)),
+		),
+	),
+
+	// Version 0.9.2
+	'0.9.2' => array(
+		// Now we need to update some data.
+		'table_row_update'	=> array(
+			array('phpbb_test', array(
+					'test_text'		=> 'This is a test message.',
+					'test_bool'		=> 1,
+				),
+				array(
+					'test_text'		=> 'This is a test message. (Edited)',
+					'test_bool'		=> 0,
+				),
+			),
 		),
 
 		/*
@@ -219,20 +235,8 @@ function umil_auto_example($action, $version)
 	if ($action == 'uninstall')
 	{
 		// Run this when uninstalling
-
-		if ($umil->table_exists('phpbb_test'))
-		{
-			$sql = 'DELETE FROM ' . $table_prefix . "test
-				WHERE (test_text = 'This is a test message.' OR test_text = 'This is another test message.')
-				AND test_bool = 1";
-			$db->sql_query($sql);
-
-			// Method 1 of displaying the command (will assume Success was the result as long as there was no SQL error reported)
-			return 'REMOVE_TEST_ROW';
-
-			// Method 2 of displaying the command/results.  This way you can send your own result message.
-	        return array('command' => 'REMOVE_TEST_ROW', 'result' => 'SUCCESS');
-		}
+		$umil->table_row_remove('phpbb_test', array('test_text' => 'This is a test message. (Edited)'));
+		$umil->table_row_remove('phpbb_test', array('test_text' => 'This is another test message.'));
 	}
 }
 

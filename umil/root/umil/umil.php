@@ -519,6 +519,35 @@ class umil
 	}
 
 	/**
+	* Multicall Helper
+	*
+	* @param mixed $function Function name to call
+	* @param mixed $params The parameters array
+	*
+	* @return bool True if we have done a multicall ($params is an array), false if not ($params is not an array)
+	*/
+	function multicall($function, $params)
+	{
+		if (is_array($params) && !empty($params))
+		{
+			foreach ($params as $param)
+			{
+				if (!is_array($param))
+				{
+					call_user_func(array($this, $function), $param);
+				}
+				else
+				{
+					call_user_func_array(array($this, $function), $param);
+				}
+			}
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	* Cache Purge
 	*
 	* This function is for purging either phpBB3’s data cache, authorization cache, or the styles cache.
@@ -531,16 +560,9 @@ class umil
 		global $auth, $cache, $user, $phpbb_root_path, $phpEx;
 
 		// Multicall
-		if (is_array($type))
+		if ($this->multicall(__FUNCTION__, $type))
 		{
-			if (!empty($type)) // Allow an empty array sent for the cache purge.
-			{
-				foreach ($type as $params)
-				{
-					call_user_func_array(array($this, 'cache_purge'), $params);
-				}
-				return;
-			}
+			return;
 		}
 
 		$style_id = (int) $style_id;
@@ -942,12 +964,8 @@ class umil
 	function config_add($config_name, $config_value = '', $is_dynamic = false)
 	{
 		// Multicall
-		if (is_array($config_name))
+		if ($this->multicall(__FUNCTION__, $config_name))
 		{
-			foreach ($config_name as $params)
-			{
-				call_user_func_array(array($this, 'config_add'), $params);
-			}
 			return;
 		}
 
@@ -977,12 +995,8 @@ class umil
 	function config_update($config_name, $config_value = '', $is_dynamic = false)
 	{
 		// Multicall
-		if (is_array($config_name))
+		if ($this->multicall(__FUNCTION__, $config_name))
 		{
-			foreach ($config_name as $params)
-			{
-				call_user_func_array(array($this, 'config_update'), $params);
-			}
 			return;
 		}
 
@@ -1012,12 +1026,8 @@ class umil
 		global $cache, $config;
 
 		// Multicall
-		if (is_array($config_name))
+		if ($this->multicall(__FUNCTION__, $config_name))
 		{
-			foreach ($config_name as $params)
-			{
-				call_user_func_array(array($this, 'config_remove'), $params);
-			}
 			return;
 		}
 
@@ -1129,12 +1139,8 @@ class umil
 		global $cache, $user, $phpbb_root_path, $phpEx;
 
 		// Multicall
-		if (is_array($class))
+		if ($this->multicall(__FUNCTION__, $class))
 		{
-			foreach ($class as $params)
-			{
-				call_user_func_array(array($this, 'module_add'), $params);
-			}
 			return;
 		}
 
@@ -1283,12 +1289,8 @@ class umil
 		global $cache, $user, $phpbb_root_path, $phpEx;
 
 		// Multicall
-		if (is_array($class))
+		if ($this->multicall(__FUNCTION__, $class))
 		{
-			foreach ($class as $params)
-			{
-				call_user_func_array(array($this, 'module_remove'), $params);
-			}
 			return;
 		}
 
@@ -1490,12 +1492,8 @@ class umil
 	function permission_add($auth_option, $global = true)
 	{
 		// Multicall
-		if (is_array($auth_option))
+		if ($this->multicall(__FUNCTION__, $auth_option))
 		{
-			foreach ($auth_option as $params)
-			{
-				call_user_func_array(array($this, 'permission_add'), $params);
-			}
 			return;
 		}
 
@@ -1559,12 +1557,8 @@ class umil
 		global $auth, $cache;
 
 		// Multicall
-		if (is_array($auth_option))
+		if ($this->multicall(__FUNCTION__, $auth_option))
 		{
-			foreach ($auth_option as $params)
-			{
-				call_user_func_array(array($this, 'permission_remove'), $params);
-			}
 			return;
 		}
 
@@ -1631,12 +1625,8 @@ class umil
 		global $auth;
 
 		// Multicall
-		if (is_array($name))
+		if ($this->multicall(__FUNCTION__, $name))
 		{
-			foreach ($name as $params)
-			{
-				call_user_func_array(array($this, 'permission_set'), $params);
-			}
 			return;
 		}
 
@@ -1785,12 +1775,8 @@ class umil
 		global $auth;
 
 		// Multicall
-		if (is_array($name))
+		if ($this->multicall(__FUNCTION__, $name))
 		{
-			foreach ($name as $params)
-			{
-				call_user_func_array(array($this, 'permission_unset'), $params);
-			}
 			return;
 		}
 
@@ -1932,15 +1918,10 @@ class umil
 		global $dbms, $user;
 
 		// Multicall
-		if (is_array($table_name))
+		if ($this->multicall(__FUNCTION__, $table_name))
 		{
-			foreach ($table_name as $params)
-			{
-				call_user_func_array(array($this, 'table_add'), $params);
-			}
 			return;
 		}
-
 
 		/**
 		* $table_data can be empty when uninstalling a mod and table_remove was used, but no 2rd argument was given.
@@ -2000,12 +1981,8 @@ class umil
 	function table_remove($table_name)
 	{
 		// Multicall
-		if (is_array($table_name))
+		if ($this->multicall(__FUNCTION__, $table_name))
 		{
-			foreach ($table_name as $params)
-			{
-				call_user_func_array(array($this, 'table_remove'), $params);
-			}
 			return;
 		}
 
@@ -2051,12 +2028,8 @@ class umil
 	function table_column_add($table_name, $column_name = '', $column_data = array())
 	{
 		// Multicall
-		if (is_array($table_name))
+		if ($this->multicall(__FUNCTION__, $table_name))
 		{
-			foreach ($table_name as $params)
-			{
-				call_user_func_array(array($this, 'table_column_add'), $params);
-			}
 			return;
 		}
 
@@ -2091,12 +2064,8 @@ class umil
 	function table_column_update($table_name, $column_name = '', $column_data = array())
 	{
 		// Multicall
-		if (is_array($table_name))
+		if ($this->multicall(__FUNCTION__, $table_name))
 		{
-			foreach ($table_name as $params)
-			{
-				call_user_func_array(array($this, 'table_column_update'), $params);
-			}
 			return;
 		}
 
@@ -2122,12 +2091,8 @@ class umil
 	function table_column_remove($table_name, $column_name = '')
 	{
 		// Multicall
-		if (is_array($table_name))
+		if ($this->multicall(__FUNCTION__, $table_name))
 		{
-			foreach ($table_name as $params)
-			{
-				call_user_func_array(array($this, 'table_column_remove'), $params);
-			}
 			return;
 		}
 
@@ -2172,12 +2137,8 @@ class umil
 	function table_index_add($table_name, $index_name = '', $column = array())
 	{
 		// Multicall
-		if (is_array($table_name))
+		if ($this->multicall(__FUNCTION__, $table_name))
 		{
-			foreach ($table_name as $params)
-			{
-				call_user_func_array(array($this, 'table_index_add'), $params);
-			}
 			return;
 		}
 
@@ -2222,12 +2183,8 @@ class umil
 	function table_index_remove($table_name, $index_name = '')
 	{
 		// Multicall
-		if (is_array($table_name))
+		if ($this->multicall(__FUNCTION__, $table_name))
 		{
-			foreach ($table_name as $params)
-			{
-				call_user_func_array(array($this, 'table_index_remove'), $params);
-			}
 			return;
 		}
 
@@ -2256,12 +2213,8 @@ class umil
 	function table_row_insert($table_name, $data = array())
 	{
 		// Multicall
-		if (is_array($table_name))
+		if ($this->multicall(__FUNCTION__, $table_name))
 		{
-			foreach ($table_name as $params)
-			{
-				call_user_func_array(array($this, 'table_row_insert'), $params);
-			}
 			return;
 		}
 
@@ -2293,12 +2246,8 @@ class umil
 	function table_row_update($table_name, $data = array(), $new_data = array())
 	{
 		// Multicall
-		if (is_array($table_name))
+		if ($this->multicall(__FUNCTION__, $table_name))
 		{
-			foreach ($table_name as $params)
-			{
-				call_user_func_array(array($this, 'table_row_remove'), $params);
-			}
 			return;
 		}
 
@@ -2336,12 +2285,8 @@ class umil
 	function table_row_remove($table_name, $data = array())
 	{
 		// Multicall
-		if (is_array($table_name))
+		if ($this->multicall(__FUNCTION__, $table_name))
 		{
-			foreach ($table_name as $params)
-			{
-				call_user_func_array(array($this, 'table_row_remove'), $params);
-			}
 			return;
 		}
 
