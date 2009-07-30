@@ -1208,6 +1208,8 @@ class umil
 						'module_mode'		=> $mode,
 						'module_auth'		=> $module_info['auth'],
 						'module_display'	=> (isset($module_info['display'])) ? $module_info['display'] : true,
+						'before'			=> (isset($module_info['before'])) ? $module_info['before'] : false,
+						'after'				=> (isset($module_info['after'])) ? $module_info['after'] : false,
 					);
 
 					// Run the "manual" way with the data we've collected.
@@ -1257,26 +1259,69 @@ class umil
 		}
 		$acp_modules = new acp_modules();
 
-		$data = array_merge(array(
-			'module_enabled'	=> 1,
-			'module_display'	=> 1,
-			'module_basename'	=> '',
+		$module_data = array(
+			'module_enabled'	=> (isset($data['module_enabled'])) ? $data['module_enabled'] : 1,
+			'module_display'	=> (isset($data['module_display'])) ? $data['module_display'] : 1,
+			'module_basename'	=> (isset($data['module_basename'])) ? $data['module_basename'] : '',
 			'module_class'		=> $class,
 			'parent_id'			=> (int) $parent,
-			'module_langname'	=> '',
-			'module_mode'		=> '',
-			'module_auth'		=> '',
-		), $data);
-		$result = $acp_modules->update_module_data($data, true);
+			'module_langname'	=> (isset($data['module_langname'])) ? $data['module_langname'] : '',
+			'module_mode'		=> (isset($data['module_mode'])) ? $data['module_mode'] : '',
+			'module_auth'		=> (isset($data['module_auth'])) ? $data['module_auth'] : '',
+		);
+		$result = $acp_modules->update_module_data($module_data, true);
 
-		// update_module_data can either return a string, an empty array, or an array with a language string in...
-		if (is_array($result) && !empty($result))
+		// update_module_data can either return a string or an empty array...
+		if (is_string($result))
 		{
-			$this->result = implode('<br />', $result);
-		}
-		else if (!is_array($result) && $result !== '')
-		{
+			// Error
 			$this->result = $this->get_output_text($result);
+		}
+		else
+		{
+			// Success
+
+			// Move the module if requested above/below an existing one
+			if (isset($data['before']) && $data['before'])
+			{
+				$sql = 'SELECT left_id FROM ' . MODULES_TABLE . '
+					WHERE module_class = \'' . $class . '\'
+					AND parent_id = ' . (int) $parent . '
+					AND module_langname = \'' . $this->db->sql_escape($data['before']) . '\'';
+				$this->db->sql_query($sql);
+				$to_left = $this->db->sql_fetchfield('left_id');
+
+				$sql = 'UPDATE ' . MODULES_TABLE . " SET left_id = left_id + 2, right_id = right_id + 2
+					WHERE module_class = '$class'
+					AND left_id >= $to_left
+					AND left_id < {$module_data['left_id']}";
+				$this->db->sql_query($sql);
+
+				$sql = 'UPDATE ' . MODULES_TABLE . " SET left_id = $to_left, right_id = " . ($to_left + 1) . "
+					WHERE module_class = '$class'
+					AND module_id = {$module_data['module_id']}";
+				$this->db->sql_query($sql);
+			}
+			else if (isset($data['after']) && $data['after'])
+			{
+				$sql = 'SELECT right_id FROM ' . MODULES_TABLE . '
+					WHERE module_class = \'' . $class . '\'
+					AND parent_id = ' . (int) $parent . '
+					AND module_langname = \'' . $this->db->sql_escape($data['after']) . '\'';
+				$this->db->sql_query($sql);
+				$to_right = $this->db->sql_fetchfield('right_id');
+
+				$sql = 'UPDATE ' . MODULES_TABLE . " SET left_id = left_id + 2, right_id = right_id + 2
+					WHERE module_class = '$class'
+					AND left_id >= $to_right
+					AND left_id < {$module_data['left_id']}";
+				$this->db->sql_query($sql);
+
+				$sql = 'UPDATE ' . MODULES_TABLE . ' SET left_id = ' . ($to_right + 1) . ', right_id = ' . ($to_right + 2) . "
+					WHERE module_class = '$class'
+					AND module_id = {$module_data['module_id']}";
+				$this->db->sql_query($sql);
+			}
 		}
 
 		// Clear the Modules Cache

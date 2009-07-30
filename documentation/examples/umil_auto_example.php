@@ -166,6 +166,7 @@ $versions = array(
 					'module_langname'	=> 'ACP_AVATAR_SETTINGS',
 					'module_mode'		=> 'avatar',
 					'module_auth'		=> 'acl_a_board',
+					'after'				=> 'ACP_BOARD_SETTINGS', // Will be placed after ACP_BOARD_SETTINGS in the category it is in (the one we just added above)
 				),
 			),
 		),

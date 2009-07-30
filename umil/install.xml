@@ -44,6 +44,7 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 				<change>[Fix] In some cases call_user_func_array errors when the second parameter is not an array.  Setting up a new function to handle the multicall. #48825</change>
 				<change>[Change] Cleaned up the table_row_ functions</change>
 				<change>[Change] Setup get_output_text() to remove some duplicated code (also removed the result() function and replaced the calls with this)</change>
+				<change>[Feature] Ability to specify before|after when adding a module (with the module_langname of the module you would like to have it placed before|after) #48425</change>
 			</changelog>
 		</entry>
 		<entry>
