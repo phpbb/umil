@@ -161,7 +161,7 @@ $versions = array(
 			),
 
 			// Now we will add the avatar mode from acp_board to the ACP_CAT_TEST_MOD category using the "manual" method.
-            array('acp', 'ACP_CAT_TEST_MOD', array(
+			array('acp', 'ACP_CAT_TEST_MOD', array(
 					'module_basename'	=> 'board',
 					'module_langname'	=> 'ACP_AVATAR_SETTINGS',
 					'module_mode'		=> 'avatar',
