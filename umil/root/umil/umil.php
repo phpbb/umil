@@ -2198,13 +2198,10 @@ class umil
 			return;
 		}
 
-		/**
-		* $column can be empty when uninstalling a mod and table_index_remove was used, but no 3rd argument was given.
-		* In that case we'll assume that it was an index previously added by the mod (if not the author should specify a 3rd argument) and skip this to prevent an error
-		*/
+		// Let them skip the column field and just use the index name in that case as the column as well
 		if (empty($column))
 		{
-			return;
+			$column = array($index_name);
 		}
 
 		$this->get_table_name($table_name);
