@@ -2221,11 +2221,6 @@ class umil
 			$column = array($column);
 		}
 
-		if (empty($column))
-		{
-			$column = array($index_name);
-		}
-
 		$this->db_tools->sql_create_index($table_name, $index_name, $column);
 
 		return $this->umil_end();
