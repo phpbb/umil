@@ -69,9 +69,16 @@ if (isset($logo_img))
 	$template->assign_var('LOGO_IMG', $phpbb_root_path . $logo_img);
 }
 
+// Display a login box if they are not logged in
 if (!$user->data['is_registered'])
 {
 	login_box();
+}
+
+// Have they authenticated (again) as an admin for this session?
+if (!isset($user->data['session_admin']) || !$user->data['session_admin'])
+{
+	login_box('', $user->lang['LOGIN_ADMIN_CONFIRM'], $user->lang['LOGIN_ADMIN_SUCCESS'], true, false);
 }
 
 if (!class_exists('umil_frontend'))
