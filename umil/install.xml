@@ -42,6 +42,7 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 				<change>[Fix] Ignore missing @import files for themes. #48415</change>
 				<change>[Fix] Error when uninstalling with table_row_ actions (was re-running the function). #48515</change>
 				<change>[Fix] In some cases call_user_func_array errors when the second parameter is not an array.  Setting up a new function to handle the multicall. #48825</change>
+				<change>[Fix] Sending false for the second variable for the module_exists and module_remove function isn't possible (it should be for a feature it has). #51475, #51495</change>
 				<change>[Change] Require admin session (second login) when using UMIL Auto</change>
 				<change>[Change] Cleaned up the table_row_ functions</change>
 				<change>[Change] Setup get_output_text() to remove some duplicated code (also removed the result() function and replaced the calls with this)</change>

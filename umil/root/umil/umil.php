@@ -1072,12 +1072,12 @@ class umil
 		$class = $this->db->sql_escape($class);
 		$module = $this->db->sql_escape($module);
 
-		// Allows '' to be sent
-		$parent = (!$parent) ? 0 : $parent;
-
 		$parent_sql = '';
 		if ($parent !== false)
 		{
+			// Allows '' to be sent as 0
+			$parent = (!$parent) ? 0 : $parent;
+		
 			if (!is_numeric($parent))
 			{
 				$sql = 'SELECT module_id FROM ' . MODULES_TABLE . "
@@ -1162,7 +1162,7 @@ class umil
 			return $this->umil_end('FAIL');
 		}
 
-        // Allows '' to be sent
+        // Allows '' to be sent as 0
 		$parent = (!$parent) ? 0 : $parent;
 
 		// allow sending the name as a string in $data to create a category
@@ -1242,7 +1242,7 @@ class umil
 
 			$parent = $data['parent_id'] = $row['module_id'];
 		}
-		else if ($parent && !$this->module_exists($class, false, $parent))
+		else if (!$this->module_exists($class, false, $parent))
 		{
 			return $this->umil_end('PARENT_NOT_EXIST');
 		}
@@ -1350,9 +1350,6 @@ class umil
 			return;
 		}
 
-        // Allows '' to be sent
-		$parent = (!$parent) ? 0 : $parent;
-
 		// Imitation of module_add's "automatic" and "manual" method so the uninstaller works from the same set of instructions for umil_auto
 		if (is_array($module))
 		{
@@ -1414,6 +1411,9 @@ class umil
 			$parent_sql = '';
 			if ($parent !== false)
 			{
+				// Allows '' to be sent as 0
+				$parent = (!$parent) ? 0 : $parent;
+			
 				if (!is_numeric($parent))
 				{
 					$sql = 'SELECT module_id FROM ' . MODULES_TABLE . "
