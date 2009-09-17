@@ -1065,7 +1065,7 @@ class umil
 	*
 	* @param string $class The module class(acp|mcp|ucp)
 	* @param int|string|bool $parent The parent module_id|module_langname (0 for no parent).  Use false to ignore the parent check and check class wide.
-	* @param mixed $module The module_langname you would like to check for to see if it exists
+	* @param string $module The module_langname you would like to check for to see if it exists
 	*/
 	function module_exists($class, $parent, $module)
 	{
