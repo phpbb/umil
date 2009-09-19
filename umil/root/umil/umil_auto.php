@@ -75,12 +75,6 @@ if (!$user->data['is_registered'])
 	login_box();
 }
 
-// Have they authenticated (again) as an admin for this session?
-if (!isset($user->data['session_admin']) || !$user->data['session_admin'])
-{
-	login_box('', $user->lang['LOGIN_ADMIN_CONFIRM'], $user->lang['LOGIN_ADMIN_SUCCESS'], true, false);
-}
-
 if (!class_exists('umil_frontend'))
 {
     if (!file_exists($phpbb_root_path . 'umil/umil_frontend.' . $phpEx))
