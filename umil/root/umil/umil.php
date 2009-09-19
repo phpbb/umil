@@ -1103,7 +1103,7 @@ class umil
 		$sql = 'SELECT module_id FROM ' . MODULES_TABLE . "
 			WHERE module_class = '$class'
 			$parent_sql
-			AND " . ((is_numeric($module)) ? 'module_id = ' . (int) $module : "module _langname = '$module'");
+			AND " . ((is_numeric($module)) ? 'module_id = ' . (int) $module : "module_langname = '$module'");
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
