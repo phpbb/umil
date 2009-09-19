@@ -1065,7 +1065,7 @@ class umil
 	*
 	* @param string $class The module class(acp|mcp|ucp)
 	* @param int|string|bool $parent The parent module_id|module_langname (0 for no parent).  Use false to ignore the parent check and check class wide.
-	* @param string $module The module_langname you would like to check for to see if it exists
+	* @param int|string $module The module_id|module_langname you would like to check for to see if it exists
 	*/
 	function module_exists($class, $parent, $module)
 	{
@@ -1077,7 +1077,7 @@ class umil
 		{
 			// Allows '' to be sent as 0
 			$parent = (!$parent) ? 0 : $parent;
-		
+
 			if (!is_numeric($parent))
 			{
 				$sql = 'SELECT module_id FROM ' . MODULES_TABLE . "
@@ -1103,7 +1103,7 @@ class umil
 		$sql = 'SELECT module_id FROM ' . MODULES_TABLE . "
 			WHERE module_class = '$class'
 			$parent_sql
-			AND module_langname = '$module'";
+			AND " . ((is_numeric($module)) ? 'module_id = ' . (int) $module : "module _langname = '$module'");
 		$result = $this->db->sql_query($sql);
 		$row = $this->db->sql_fetchrow($result);
 		$this->db->sql_freeresult($result);
@@ -1413,7 +1413,7 @@ class umil
 			{
 				// Allows '' to be sent as 0
 				$parent = (!$parent) ? 0 : $parent;
-			
+
 				if (!is_numeric($parent))
 				{
 					$sql = 'SELECT module_id FROM ' . MODULES_TABLE . "
