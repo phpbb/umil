@@ -31,7 +31,7 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 	<installation>
 		<level>easy</level>
 		<time>60</time>
-		<target-version>3.0.5</target-version>
+		<target-version>3.0.6</target-version>
 	</installation>
 
 	<history>
@@ -44,6 +44,7 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 				<change>[Fix] In some cases call_user_func_array errors when the second parameter is not an array.  Setting up a new function to handle the multicall. #48825</change>
 				<change>[Fix] Sending false for the second variable for the module_exists and module_remove function isn't possible (it should be for a feature it has). #51475, #51495</change>
 				<change>[Fix] module_exists should accept a module_id to check for, as it is needed in some circumstances when adding or removing modules. #51485</change>
+				<change>[Change] No longer using the sql_create_table function in db_tools if present, it still has bugs.  May reconsider if phpBB starts using it.</change>
 				<change>[Change] Cleaned up the table_row_ functions</change>
 				<change>[Change] Setup get_output_text() to remove some duplicated code (also removed the result() function and replaced the calls with this)</change>
 				<change>[Feature] Ability to specify before|after when adding a module (with the module_langname of the module you would like to have it placed before|after) #48425</change>

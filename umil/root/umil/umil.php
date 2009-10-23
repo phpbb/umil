@@ -2008,13 +2008,15 @@ class umil
 			include("{$phpbb_root_path}includes/functions_install.$phpEx");
 		}
 
+		/*
+		* This function has had numerous problems and is currently broken, so until phpBB uses it I will not be anymore
 		if (method_exists($this->db_tools, 'sql_create_table'))
 		{
 			// Added in 3.0.5
 			$this->db_tools->sql_create_table($table_name, $table_data);
 		}
 		else
-		{
+		{*/
 			$available_dbms = get_available_dbms($dbms);
 
 			$sql_query = $this->create_table_sql($table_name, $table_data);
@@ -2024,7 +2026,7 @@ class umil
 			{
 				$this->db->sql_query($sql);
 			}
-		}
+		//}
 
 		return $this->umil_end();
 	}
