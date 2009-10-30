@@ -3,7 +3,7 @@
 <!-- UMIL by the phpBB.com MOD Team. Copyright 2008 the phpBB Group.
 Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI Library or for any support needed for UMIL.
  $Id$ -->
-<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.2.xsd">
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.3.xsd">
 <header>
 	<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
 	<title lang="en">UMIL - Unified Mod Install Library</title>
@@ -26,7 +26,7 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 		</author>
 	</author-group>
 
-	<mod-version>1.0.1-dev</mod-version>
+	<mod-version>1.0.1</mod-version>
 
 	<installation>
 		<level>easy</level>
@@ -36,8 +36,8 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 
 	<history>
 		<entry>
-			<date>2009-00-00</date>
-			<rev-version>1.0.1-dev</rev-version>
+			<date>2009-10-30</date>
+			<rev-version>1.0.1</rev-version>
 			<changelog lang="en">
 				<change>[Fix] Ignore missing @import files for themes. #48415</change>
 				<change>[Fix] Error when uninstalling with table_row_ actions (was re-running the function). #48515</change>
