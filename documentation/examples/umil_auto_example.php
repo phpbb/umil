@@ -150,8 +150,11 @@ $versions = array(
 
 		// Alright, now lets add some modules to the ACP
 		'module_add' => array(
+			// Add a main category
+			array('acp', 0, 'ACP_CAT_DOT_MODS2'),
+
 			// First, lets add a new category named ACP_CAT_TEST_MOD to ACP_CAT_DOT_MODS
-			array('acp', 'ACP_CAT_DOT_MODS', 'ACP_CAT_TEST_MOD'),
+			array('acp', 'ACP_CAT_DOT_MODS2', 'ACP_CAT_TEST_MOD'),
 
 			// Now we will add the settings and features modes from the acp_board module to the ACP_CAT_TEST_MOD category using the "automatic" method.
 			array('acp', 'ACP_CAT_TEST_MOD', array(

@@ -1069,6 +1069,12 @@ class umil
 	*/
 	function module_exists($class, $parent, $module)
 	{
+		// the main root directory should return true
+		if ($module == 0)
+		{
+			return true;
+		}
+
 		$class = $this->db->sql_escape($class);
 		$module = $this->db->sql_escape($module);
 

@@ -36,6 +36,13 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 
 	<history>
 		<entry>
+			<date>2009-00-00</date>
+			<rev-version>1.0.2-dev</rev-version>
+			<changelog lang="en">
+				<change>[Fix] Parent ID of 0 when adding modules would cause an error. #53355</change>
+			</changelog>
+		</entry>
+		<entry>
 			<date>2009-10-30</date>
 			<rev-version>1.0.1</rev-version>
 			<changelog lang="en">
