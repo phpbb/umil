@@ -1070,7 +1070,7 @@ class umil
 	function module_exists($class, $parent, $module)
 	{
 		// the main root directory should return true
-		if ($module !== false && !$module) // PHP is fail, 'a string' == 0 is true in some installations
+		if (!$module)
 		{
 			return true;
 		}
