@@ -478,6 +478,8 @@ class umil
 			$functions = array($functions);
 		}
 
+		$return = '';
+
 		foreach ($functions as $function)
 		{
 			if (function_exists($function))
@@ -485,40 +487,37 @@ class umil
 				// Must reset before calling the function
 				$this->umil_start();
 
-				$return = call_user_func($function, $action, $version);
-				if (is_string($return))
+				$returned = call_user_func($function, $action, $version);
+				if (is_string($returned))
 				{
-					$this->command = ((isset($user->lang[$return])) ? $user->lang[$return] : $return);
-					$this->umil_end();
+					$this->result = $this->get_output_text($returned);
 				}
-				else if (is_array($return) && isset($return['command']))
+				else if (is_array($returned) && isset($returned['command']))
 				{
-					$lang_key = (is_array($return['command'])) ? array_shift($return['command']) : $return['command'];
-
-					if (is_array($return['command']) && sizeof($return['command']))
+					if (is_array($returned['command']))
 					{
-						$lang_args = array();
-						foreach ($return['command'] as $arg)
-						{
-							$lang_args[] = (isset($user->lang[$arg])) ? $user->lang[$arg] : $arg;
-						}
-
-						$this->command = @vsprintf(((isset($user->lang[$lang_key])) ? $user->lang[$lang_key] : $lang_key), $lang_args);
+						$this->command = call_user_func_array(array($this, 'get_output_text'), $returned['command']);
 					}
 					else
 					{
-						$this->command = ((isset($user->lang[$lang_key])) ? $user->lang[$lang_key] : $lang_key);
+						$this->command = $this->get_output_text($returned['command']);
 					}
 
-					if (isset($return['result']))
+					if (isset($returned['result']))
 					{
-						$this->result = $this->get_output_text($return['result']);
+						$this->result = $this->get_output_text($returned['result']);
 					}
-
-					$this->umil_end();
 				}
+				else
+				{
+					$this->command = $this->get_output_text('UNKNOWN');
+				}
+
+				$return .= $this->umil_end() . '<br />';
 			}
 		}
+
+		return $return;
 	}
 
 	/**
