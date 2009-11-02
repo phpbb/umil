@@ -490,7 +490,7 @@ class umil
 				$returned = call_user_func($function, $action, $version);
 				if (is_string($returned))
 				{
-					$this->result = $this->get_output_text($returned);
+					$this->command = $this->get_output_text($returned);
 				}
 				else if (is_array($returned) && isset($returned['command']))
 				{
