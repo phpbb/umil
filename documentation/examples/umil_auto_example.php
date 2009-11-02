@@ -242,6 +242,38 @@ function umil_auto_example($action, $version)
 		$umil->table_row_remove('phpbb_test', array('test_text' => 'This is a test message. (Edited)'));
 		$umil->table_row_remove('phpbb_test', array('test_text' => 'This is another test message.'));
 	}
+
+	/**
+	* Return a string
+	* 	The string will be shown as the action performed (command).  It will show any SQL errors as a failure, otherwise success
+	*/
+	// return 'EXAMPLE_CUSTOM_FUNCTION';
+
+	/**
+	* Return an array
+	* 	With the keys command and result to specify the command and the result
+	*	Returning a result (other than SUCCESS) assumes a failure
+	*/
+	/* return array(
+		'command'	=> 'EXAMPLE_CUSTOM_FUNCTION',
+		'result'	=> 'FAIL',
+	);*/
+
+	/**
+	* Return an array
+	* 	With the keys command and result (same as above) with an array for the command.
+	*	With an array for the command it will use sprintf the first item in the array with the following items.
+	*	Returning a result (other than SUCCESS) assumes a failure
+	*/
+	/* return array(
+		'command'	=> array(
+			'EXAMPLE_CUSTOM_FUNCTION',
+			$username,
+			$number,
+			$etc,
+		),
+		'result'	=> 'FAIL',
+	);*/
 }
 
 ?>

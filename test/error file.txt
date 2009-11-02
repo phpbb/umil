@@ -1,0 +1,172 @@
+Test Mod
+PHP Version: 5.2.9-2
+DBMS: MySQL(i) 5.1.33-community-log
+phpBB3 Version: 3.0.6-RC2
+
+Refreshing the Unknown imageset
+Fail
+
+Refreshing the Unknown template
+Fail
+
+Refreshing the Unknown theme
+Fail
+
+Adding new config variable: test1
+ERROR: Config variable test1 already exists.
+
+Adding new config variable: test2
+ERROR: Config variable test2 already exists.
+
+Adding new config variable: test2
+ERROR: Config variable test2 already exists.
+
+Updating config variable: test9
+ERROR: Config variable test9 does not exist.
+
+Updating config variable: test10
+ERROR: Config variable test10 does not exist.
+
+Removing config variable: test11
+ERROR: Config variable test11 does not exist.
+
+Removing config variable: test12
+ERROR: Config variable test12 does not exist.
+
+Adding acp module: ACP_CAT_DOT_MODS2
+ERROR: Module already exists.
+
+Adding acp module: ACP_CAT_DOT_MODS3
+ERROR: Module already exists.
+
+Adding acp module: ACP_CAT_DOT_MODS4
+ERROR: Module already exists.
+
+Adding mcp module: ACP_CAT_DOT_MODS2
+ERROR: Module already exists.
+
+Adding mcp module: ACP_CAT_DOT_MODS3
+ERROR: Module already exists.
+
+Adding mcp module: ACP_CAT_DOT_MODS4
+ERROR: Module already exists.
+
+Adding mcp module: MCP_MAIN_FRONT
+ERROR: Module already exists.
+
+Adding mcp module: MCP_MAIN_FORUM_VIEW
+ERROR: Module already exists.
+
+Adding mcp module: MCP_MAIN_TOPIC_VIEW
+ERROR: Module already exists.
+
+Adding mcp module: MCP_MAIN_POST_DETAILS
+ERROR: Module already exists.
+
+Adding ucp module: ACP_CAT_DOT_MODS2
+ERROR: Module already exists.
+
+Removing acp module: ACP_CAT_DOT_MODS2
+ERROR: Module does not exist.
+
+Removing acp module: ACP_CAT_DOT_MODS3
+ERROR: Module does not exist.
+
+Removing acp module: ACP_CAT_DOT_MODS4
+ERROR: Module does not exist.
+
+Adding new permission option: a_test1
+ERROR: Permission option a_test1 already exists.
+
+Adding new permission option: a_test5
+ERROR: Permission option a_test5 already exists.
+
+Setting permissions for the Full Admin group.
+Group does not exist
+
+Setting permissions for the GUESTS role.
+Role does not exist
+
+Setting permissions for the AROLE_ADMIN_FULL role.
+Role does not exist
+
+Removing permission option: a_test1
+ERROR: Permission option a_test1 does not exist.
+
+Removing permission option: a_test1
+ERROR: Permission option a_test1 does not exist.
+
+Removing permission option: a_test5
+ERROR: Permission option a_test5 does not exist.
+
+Unsetting permissions for the Full Admin group.
+Group does not exist
+
+Unsetting permissions for the GUESTS role.
+Role does not exist
+
+Unsetting permissions for the AROLE_ADMIN_FULL role.
+Role does not exist
+
+Adding a new database table: phpbb_test1
+ERROR: Database table phpbb_test1 already exists.
+
+Removing database table: phpbb_test3
+ERROR: Database table phpbb_test3 does not exist.
+
+Adding a new column named test_time to table phpbb_test1
+ERROR: The column test_time already exists on table phpbb_test1.
+
+Adding a new column named test_bool to table phpbb_test1
+ERROR: The column test_bool already exists on table phpbb_test1.
+
+Adding a new column named test_bool to table phpbb_test2
+SQL ERROR Table 'phpbb3_mods.phpbb_test2' doesn't exist
+
+Updating a column named test_time1 from table phpbb_test1
+ERROR: The column test_time1 does not exist on table phpbb_test1.
+
+Updating a column named test_bool from table phpbb_test2
+ERROR: The column test_bool does not exist on table phpbb_test2.<br /><br />SQL ERROR Table 'phpbb3_mods.phpbb_test2' doesn't exist
+
+Removing the column named test_time1 from table phpbb_test1
+ERROR: The column test_time1 does not exist on table phpbb_test1.
+
+Removing the column named test_bool from table phpbb_test2
+ERROR: The column test_bool does not exist on table phpbb_test2.<br /><br />SQL ERROR Table 'phpbb3_mods.phpbb_test2' doesn't exist
+
+Adding a key named test_time to table phpbb_test1
+SQL ERROR Key column 'test_time' doesn't exist in table
+
+Adding a key named test_bool to table phpbb_test2
+SQL ERROR Table 'phpbb3_mods.phpbb_test2' doesn't exist
+
+Removing a key named test_time from table phpbb_test1
+ERROR: The index test_time does not exist on table phpbb_test1.
+
+Removing a key named test_bool from table phpbb_test2
+ERROR: The index test_bool does not exist on table phpbb_test2.<br /><br />SQL ERROR Table 'phpbb3_mods.phpbb_test2' doesn't exist
+
+Inserting data in the phpbb_test1 database table.
+SQL ERROR Unknown column 'test_time' in 'field list'
+
+Inserting data in the phpbb_test2 database table.
+ERROR: Database table phpbb_test2 does not exist.
+
+Updating a row in the phpbb_test1 database table.
+SQL ERROR Unknown column 'test_time' in 'where clause'
+
+Updating a row in the phpbb_test2 database table.
+ERROR: Database table phpbb_test2 does not exist.
+
+Removing a row from the phpbb_test1 database table
+SQL ERROR Unknown column 'test_time' in 'where clause'
+
+Removing a row from the phpbb_test2 database table
+ERROR: Database table phpbb_test2 does not exist.
+
+!!!Go to your inbox111
+Fail
+
+Unknown
+SQL ERROR Table 'phpbb3_mods.non_existant_table' doesn't exist
