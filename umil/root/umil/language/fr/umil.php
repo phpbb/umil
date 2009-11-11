@@ -1,20 +1,18 @@
 <?php
 /**
-*
-* umil [French]
-*
-* @package umil
-* @version $Id$
-* @copyright (c) 2008 phpBB Group
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License
-* @author Nathan Guse (EXreaction) http://lithiumstudios.org
-* @author David Lewis (Highway of Life) highwayoflife@gmail.com
-*
-*/
+ *
+ * @author Nathan Guse (EXreaction) http://lithiumstudios.org
+ * @author David Lewis (Highway of Life) highwayoflife@gmail.com
+ * @package umil [French]
+ * @version $Id$
+ * @copyright (c) 2008 phpBB Group
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ *
+ */
 
 /**
-* DO NOT CHANGE
-*/
+ * @ignore
+ */
 if (!defined('IN_PHPBB'))
 {
 	exit;
@@ -25,25 +23,11 @@ if (empty($lang) || !is_array($lang))
 	$lang = array();
 }
 
-//
 // TRANSLATION DETAILS
 //
 // Author: Maël Soucaze
-// Website: http://twitter.com/MaelSoucaze
-//
-// TRANSLATION LICENSE
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, version 2 of the License.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program. If not, see http://opensource.org/licenses/gpl-license.php.
+// E-mail: maelsoucaze@gmail.com
+// Website: http://twitter.com/maelsoucaze
 //
 // DEVELOPERS PLEASE NOTE
 //
@@ -75,7 +59,7 @@ $lang = array_merge($lang, array(
 	'CONFIG_UPDATE'					=> 'Mise à jour d’une variable de configuration : %s',
 
 	'DISPLAY_RESULTS'				=> 'Afficher tous les résultats',
-	'DISPLAY_RESULTS_EXPLAIN'		=> 'Sélectionnez “Oui” afin d’afficher toutes les actions et tous les résultats durant l’action demandée.',
+	'DISPLAY_RESULTS_EXPLAIN'		=> 'Sélectionnez “oui” afin d’afficher toutes les actions et tous les résultats durant l’action demandée.',
 
 	'ERROR_NOTICE'					=> 'Une ou plusieurs erreurs sont survenues lors de la réalisaton de l’action demandée. Veuillez télécharger <a href="%1$s">ce fichier</a> listant les erreurs et demander de l’aide à l’auteur du MOD.<br /><br />Si vous éprouvez des difficultés à télécharger ce fichier, veuillez le télécharger directement par FTP en cliquant sur le lien suivant : %2$s',
 	'ERROR_NOTICE_NO_FILE'			=> 'Une ou plusieurs erreurs sont survenues lors de la réalisaton de l’action demandée. Veuillez procéder à un enregistrement complet de toutes les erreurs et demander de l’aide à l’auteur du MOD.',
@@ -101,7 +85,7 @@ $lang = array_merge($lang, array(
 	'NO_TABLE_DATA'					=> 'ERREUR : aucune donnée n’a été spécifiée dans la table',
 
 	'PARENT_NOT_EXIST'				=> 'ERREUR : la catégorie parent spécifiée pour ce module n’existe pas.',
-	'PERMISSIONS_WARNING'			=> 'Les réglages de la nouvelle permission ont été ajoutés. Assurez-vous de vérifier les réglages de votre permission afin qu’ils soient exactement comme vous le voulez.',
+	'PERMISSIONS_WARNING'			=> 'Les réglages de la nouvelle permission ont été ajoutés. Assurez-vous de vérifier les réglages de votre permission afin qu’ils soient exactement comme vous le souhaitez.',
 	'PERMISSION_ADD'				=> 'Ajout d’une nouvelle option de permission : %s',
 	'PERMISSION_ALREADY_EXISTS'		=> 'ERREUR : l’option de permission %s existe déjà.',
 	'PERMISSION_NOT_EXIST'			=> 'ERREUR : l’option de permission %s n’existe pas.',
@@ -144,7 +128,7 @@ $lang = array_merge($lang, array(
 
 	'VERSIONS'						=> 'Version du MOD : <strong>%1$s</strong><br />Actuellement installée : <strong>%2$s</strong>',
 	'VERSION_SELECT'				=> 'Sélectionnez la version',
-	'VERSION_SELECT_EXPLAIN'		=> 'Ne modifiez pas “Ignorer” sauf si vous savez ce que vous faites.',
+	'VERSION_SELECT_EXPLAIN'		=> 'Ne modifiez pas “ignorer” sauf si vous savez ce que vous faites.',
 ));
 
 ?>
