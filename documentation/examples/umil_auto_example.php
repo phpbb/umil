@@ -30,7 +30,7 @@ $mod_name = 'TEST_MOD';
 
 /*
 * The name of the config variable which will hold the currently installed version
-* You do not need to set this yourself, UMIL will handle setting and updating the version itself.
+* UMIL will handle checking, setting, and updating the version itself.
 */
 $version_config_name = 'test_version';
 
