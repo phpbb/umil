@@ -54,7 +54,7 @@ $lang = array_merge($lang, array(
 	'CONFIG_REMOVE'					=> 'A remover configuração varável: %s',
 	'CONFIG_UPDATE'					=> 'A actualizar configuração variável: %s',
 
-	'DISPLAY_RESULTS'				=> 'Mostar os resultados completos',
+	'DISPLAY_RESULTS'				=> 'Mostrar os resultados completos',
 	'DISPLAY_RESULTS_EXPLAIN'		=> 'Seleccione Sim para mostrar todas as acções e resultados durante a acção solicitada.',
 
 	'ERROR_NOTICE'					=> 'Ocorreram um ou mais erros durante a acção solicitada.  Por favor faça o download <a href="%1$s">deste ficheiro</a> com os erros listados e peça assistência ao autor da modificação.<br /><br />Se tiver algum problema no download do ficheiro pode aceder directamentete com um navegador FTP para o seguinte endereço: %2$s',
@@ -124,7 +124,7 @@ $lang = array_merge($lang, array(
 
 	'VERSIONS'						=> 'Versão da modificação: <strong>%1$s</strong><br />Actualmente Instalada: <strong>%2$s</strong>',
 	'VERSION_SELECT'				=> 'Seleccione a versão',
-	'VERSION_SELECT_EXPLAIN'		=> 'Não seleccione “Ignorar” a menos que você saiba o que irá fazer ou que foi aconselhado a fazer.',
+	'VERSION_SELECT_EXPLAIN'		=> 'Só seleccione <strong>Ignorar</strong> se sabe o que fazer ou que foi aconselhado a fazer.',
 ));
 
 ?>
