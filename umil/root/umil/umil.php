@@ -2969,8 +2969,7 @@ class umil
 	{
 		global $table_prefix;
 
-		// Replacing phpbb_ with the $table_prefix, but, just in case we have a different table prefix with phpbb_ in it (say, like phpbb_3), we are replacing the table prefix with phpbb_ first to make sure we do not have issues.
-		$table_name = str_replace('phpbb_', $table_prefix, str_replace($table_prefix, 'phpbb_', $table_name));
+		$table_name = preg_replace('#phpbb_#i', $table_prefix, $table_name);
 	}
 }
 
