@@ -26,18 +26,18 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 		</author>
 	</author-group>
 
-	<mod-version>1.0.2-dev</mod-version>
+	<mod-version>1.0.2</mod-version>
 
 	<installation>
 		<level>easy</level>
 		<time>60</time>
-		<target-version>3.0.6</target-version>
+		<target-version>3.0.7-pl1</target-version>
 	</installation>
 
 	<history>
 		<entry>
-			<date>2010-00-00</date>
-			<rev-version>1.0.2-dev</rev-version>
+			<date>2010-04-02</date>
+			<rev-version>1.0.2</rev-version>
 			<changelog lang="en">
 				<change>[Fix] Uncomment the CREATE SEQUENCE line in create_table_sql for postgresql. #57235</change>
 				<change>[Fix] Get the proper table name with the proper table prefix (issues with partials of phpbb_ like bb_). #59045</change>
