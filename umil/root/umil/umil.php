@@ -2746,7 +2746,7 @@ class umil
 						$sql .= "DEFAULT nextval('{$table_name}_seq'),\n";
 
 						// Make sure the sequence will be created before creating the table
-						$sql .= "CREATE SEQUENCE {$table_name}_seq;\n\n" . $sql;
+						$sql = "CREATE SEQUENCE {$table_name}_seq;\n\n" . $sql;
 					}
 					else
 					{

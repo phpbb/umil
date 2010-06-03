@@ -36,6 +36,14 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 
 	<history>
 		<entry>
+			<date>2010-00-00</date>
+			<rev-version>1.0.3_dev</rev-version>
+			<changelog lang="en">
+				<change>[Fix] Correct table prefix #62118</change>
+				<change>[Fix] Fix the create_table_sql for postgresql properly #61365</change>
+			</changelog>
+		</entry>
+		<entry>
 			<date>2010-04-02</date>
 			<rev-version>1.0.2</rev-version>
 			<changelog lang="en">
