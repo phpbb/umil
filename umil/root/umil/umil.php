@@ -191,30 +191,29 @@ class umil
 			//}
 
 			$user->add_lang(array('acp/common', 'acp/permissions'));
-		}
 
-		// Check to see if a newer version is available.
-		$info = $this->version_check('www.phpbb.com', '/updatecheck', ((defined('PHPBB_QA')) ? 'umil_qa.txt' : 'umil.txt'));
-		if (is_array($info) && isset($info[0]) && isset($info[1]))
-		{
-			if (version_compare(UMIL_VERSION, $info[0], '<'))
+			// Check to see if a newer version is available.
+			$info = $this->version_check('www.phpbb.com', '/updatecheck', ((defined('PHPBB_QA')) ? 'umil_qa.txt' : 'umil.txt'));
+			if (is_array($info) && isset($info[0]) && isset($info[1]))
 			{
-				global $template, $user, $phpbb_root_path;
-
-				// Make sure user->setup() has been called
-				if (empty($user->lang))
+				if (version_compare(UMIL_VERSION, $info[0], '<'))
 				{
-					$user->setup();
+					global $template;
+
+					// Make sure user->setup() has been called
+					if (empty($user->lang))
+					{
+						$user->setup();
+					}
+
+					page_header('', false);
+
+					$user->lang['UPDATE_UMIL'] = (isset($user->lang['UPDATE_UMIL'])) ? $user->lang['UPDATE_UMIL'] : 'This version of UMIL is outdated.<br /><br />Please download the latest UMIL (Unified MOD Install Library) from: <a href="%1$s">%1$s</a>';
+					$template->assign_vars(array(
+						'S_BOARD_DISABLED'		=> true,
+						'L_BOARD_DISABLED'		=> sprintf($user->lang['UPDATE_UMIL'], $info[1]),
+					));
 				}
-
-				page_header('', false);
-
-				$this_file = str_replace(array(phpbb_realpath($phpbb_root_path), '\\'), array('', '/'), __FILE__);
-				$user->lang['UPDATE_UMIL'] = (isset($user->lang['UPDATE_UMIL'])) ? $user->lang['UPDATE_UMIL'] : 'This version of UMIL is outdated.<br /><br />Please download the latest UMIL (Unified MOD Install Library) from: <a href="%1$s">%1$s</a>';
-				$template->assign_vars(array(
-					'S_BOARD_DISABLED'		=> true,
-					'L_BOARD_DISABLED'		=> (!$stand_alone) ? sprintf($user->lang['UPDATE_UMIL'], $info[1]) : sprintf('This version of UMIL is outdated.<br /><br />Please download the latest UMIL (Unified MOD Install Library) from: <a href="%1$s">%1$s</a>, then replace the file %2$s with the root/umil/umil.php file included in the downloaded package.', $info[1], $this_file),
-				));
 			}
 		}
 	}
