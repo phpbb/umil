@@ -216,7 +216,7 @@ function umil_convert_sql($sql)
 				{
 					$column_type = $line;
 				}
-				else if (strpos($column_type, 'INT') || $column_type == 'TIMESTAMP')
+				else if (strpos($column_type, 'INT') !== false || $column_type == 'TIMESTAMP' || $column_type == 'BOOL')
 				{
 					$default = (int) $default;
 				}
@@ -227,6 +227,11 @@ function umil_convert_sql($sql)
 
 				if ($special)
 				{
+					if ($special == 'auto_increment')
+					{
+						$default = NULL;
+					}
+
 					$table_data['COLUMNS'][$column_name] = array($column_type, $default, $special);
 				}
 				else
@@ -396,7 +401,11 @@ function _umil_export($lang, &$output, $tabs = 0, $ignore_first = false)
 				$output .= '=> ';
 			}
 
-			if (is_numeric($value))
+			if (is_null($value))
+			{
+				$output .= "NULL, ";
+			}
+			else if (is_numeric($value))
 			{
 				$output .= (int) $value . ", ";
 			}
