@@ -126,6 +126,11 @@ class umil
 	var $db_tools = false;
 
 	/**
+	* Do we want a custom prefix besides the phpBB table prefix?  You *probably* should not change this...
+	*/
+	var $table_prefix = false;
+
+	/**
 	* Constructor
 	*/
 	function umil($stand_alone = false, $db = false)
@@ -2989,7 +2994,16 @@ class umil
 	*/
 	function get_table_name(&$table_name)
 	{
-		global $table_prefix;
+		// Use the global table prefix if a custom one is not specified
+		if ($this->table_prefix === false)
+		{
+			global $table_prefix;
+		}
+		else
+		{
+			$table_prefix = $this->table_prefix;
+		}
+
 		static $constants = NULL;
 
 		if (is_null($constants))
