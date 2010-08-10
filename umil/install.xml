@@ -24,6 +24,12 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 			<homepage>http://www.startrekguide.com/</homepage>
 			<email>highwayoflife@gmail.com</email>
 		</author>
+		<author>
+			<username>SyntaxError90</username>
+			<realname>Sam Thompson</realname>
+			<homepage>http://www.websyntax.net/</homepage>
+			<email>sam@websyntax.net</email>
+		</author>
 	</author-group>
 
 	<mod-version>1.0.3</mod-version>
