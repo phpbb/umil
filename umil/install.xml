@@ -48,6 +48,7 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 				<change>[Fix] Correct table prefix #62118</change>
 				<change>[Fix] Fix the create_table_sql for postgresql properly #61365</change>
 				<change>[Feature] Ability to specify a custom table prefix to be used (not recommended for use)</change>
+				<change>[Change] Remove the update check in stand-alone mode, it causes problems in some situations</change>
 			</changelog>
 		</entry>
 		<entry>
