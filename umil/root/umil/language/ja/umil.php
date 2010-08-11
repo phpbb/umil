@@ -123,7 +123,7 @@ $lang = array_merge($lang, array(
 	'UNKNOWN'						=> '未知の',
 	'UPDATE_MOD'					=> '%s のアップデート',
 	'UPDATE_MOD_CONFIRM'			=> '%s をアップデートしますか？',
-	'UPDATE_UMIL'					=> '現在の UMIL のバージョンが古くなっています。<br /><br /><a href="%1$s">%1$s</a> から最新の UMIL ( Unified MOD Install Library ) をダウンロードしてください。',
+	'UPDATE_UMIL'					=> '現在の UMIL のバージョンが古くなっています。<br /><br /><a href="%1$s" target="_blank">%1$s</a> から最新の UMIL ( Unified MOD Install Library ) をダウンロードしてください。',
 
 	'VERSIONS'						=> 'MOD のバージョン: <strong>%1$s</strong><br />現在のインストール状況: <strong>%2$s</strong>',
 	'VERSION_SELECT'				=> 'バージョンの選択',
