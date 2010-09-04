@@ -20,10 +20,9 @@
  * @author    Maël Soucaze <maelsoucaze@phpbb.fr> (Maël Soucaze) http://www.phpbb.fr/
  * @author    EXreaction <N/A> (Nathan Guse) http://lithiumstudios.org
  * @author    Highway of Life <highwayoflife@gmail.com> (David Lewis) N/A
- * @copyright 2010 phpBB.fr
- * @copyright 2008 phpBB Group
- * @license   http://opensource.org/licenses/gpl-license.php GNU General Public License
- * @version   $Id$
+ * @copyright (c) 2008 phpBB Group
+ * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License
+ * @version   $Id: umil.php 228 2010-06-29 19:43:25Z SyntaxError90 $
  */
 
 /**
@@ -71,8 +70,8 @@ $lang = array_merge($lang, array(
 	'DISPLAY_RESULTS'				=> 'Afficher tous les résultats',
 	'DISPLAY_RESULTS_EXPLAIN'		=> 'Sélectionne “oui” afin d’afficher toutes les actions et tous les résultats durant l’action demandée.',
 
-	'ERROR_NOTICE'					=> 'Une ou plusieurs erreurs sont survenues lors de la réalisaton de l’action demandée. Télécharge <a href="%1$s">ce fichier</a> listant les erreurs et demande de l’aide à l’auteur du MOD.<br /><br />Si tu éprouves des difficultés à télécharger ce fichier, télécharge-le directement par FTP en cliquant sur le lien suivant : %2$s',
-	'ERROR_NOTICE_NO_FILE'			=> 'Une ou plusieurs erreurs sont survenues lors de la réalisaton de l’action demandée. Procède à un enregistrement complet de toutes les erreurs et demande de l’aide à l’auteur du MOD.',
+	'ERROR_NOTICE'					=> 'Une ou plusieurs erreurs sont survenues lors de la réalisation de l’action demandée. Télécharge <a href="%1$s">ce fichier</a> listant les erreurs et demande de l’aide à l’auteur du MOD.<br /><br />Si tu éprouves des difficultés à télécharger ce fichier, télécharge-le directement par FTP en cliquant sur le lien suivant : %2$s',
+	'ERROR_NOTICE_NO_FILE'			=> 'Une ou plusieurs erreurs sont survenues lors de la réalisation de l’action demandée. Procède à un enregistrement complet de toutes les erreurs et demande de l’aide à l’auteur du MOD.',
 
 	'FAIL'							=> 'Échec',
 	'FILE_COULD_NOT_READ'			=> 'ERREUR : il n’a pas été possible d’ouvrir le fichier %s afin de le lire.',
@@ -109,7 +108,7 @@ $lang = array_merge($lang, array(
 	'PERMISSION_UNSET_ROLE'			=> 'Dérégler les permissions du rôle %s.',
 
 	'ROLE_ALREADY_EXISTS'			=> 'Le rôle de permission existe déjà.',
-  'ROLE_NOT_EXIST'				=> 'Le rôle n’existe pas',
+	'ROLE_NOT_EXIST'				=> 'Le rôle n’existe pas',
 
 	'SUCCESS'						=> 'Succès',
 
