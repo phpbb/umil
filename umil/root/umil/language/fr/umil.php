@@ -17,12 +17,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  * @package   umil
- * @author    Maël Soucaze <maelsoucaze@gmail.com> http://mael.soucaze.com/
+ * @author    Maël Soucaze <maelsoucaze@gmail.com> (Maël Soucaze) http://mael.soucaze.com/
  * @author    EXreaction (Nathan Guse) http://lithiumstudios.org
  * @author    Highway of Life <highwayoflife@gmail.com> (David Lewis)
  * @copyright (c) 2008 phpBB Group
- * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License
- * @version   $Id: umil.php 228 2010-06-29 19:43:25Z SyntaxError90 $
+ * @license   http://opensource.org/licenses/gpl-2.0.php GNU General Public License
+ * @version   $Id$
  */
 
 /**
