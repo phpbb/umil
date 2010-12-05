@@ -74,6 +74,7 @@ define('UMIL_VERSION', '1.0.4-dev');
 * Table Key/Index Functions
 *	table_index_exists($table_name, $index_name)
 *	table_index_add($table_name, $index_name = '', $column = array())
+*	table_index_unique_add($table_name, $index_name = '', $column = array())
 *	table_index_remove($table_name, $index_name = '')
 *
 * Table Row Functions (note that these actions are not reversed automatically during uninstallation)
@@ -2359,6 +2360,54 @@ class umil
 		}
 
 		$this->db_tools->sql_create_index($table_name, $index_name, $column);
+
+		return $this->umil_end();
+	}
+
+	/**
+	* Table Index Unique Add
+	*
+	* Add a new unique key/index to a table
+	*/
+	function table_index_unique_add($table_name, $index_name = '', $column = array())
+	{
+		global $config;
+
+		// Multicall
+		if ($this->multicall(__FUNCTION__, $table_name))
+		{
+			return;
+		}
+
+		// Let them skip the column field and just use the index name in that case as the column as well
+		if (empty($column))
+		{
+			$column = array($index_name);
+		}
+
+		$this->get_table_name($table_name);
+
+		$this->umil_start('TABLE_KEY_ADD', $table_name, $index_name);
+
+		if ($this->table_index_exists($table_name, $index_name))
+		{
+			return $this->umil_end('TABLE_KEY_ALREADY_EXIST', $table_name, $index_name);
+		}
+
+		if (!is_array($column))
+		{
+			$column = array($column);
+		}
+
+		// remove index length if we are before 3.0.8
+		// the feature (required for some types when using MySQL4)
+		// was added in that release (ticket PHPBB3-8944)
+		if (version_compare($config['version'], '3.0.7-pl1', '<='))
+		{
+			$column = preg_replace('#:.*$#', '', $column);
+		}
+
+		$this->db_tools->sql_create_unique_index($table_name, $index_name, $column);
 
 		return $this->umil_end();
 	}
