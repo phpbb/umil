@@ -46,6 +46,7 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 			<rev-version>1.0.4</rev-version>
 			<changelog lang="en">
 				<change>[Feature] Ability to specify an index length for MySQL4 (as supported by phpBB 3.0.8) #62343</change>
+				<change>[Feature] Ability to add a unique table index with table_index_unique_add</change>
 				<change>[Change] Removed support for including common.php when IN_PHPBB is not defined</change>
 			</changelog>
 		</entry>
