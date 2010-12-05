@@ -39,17 +39,11 @@ if (!defined('UMIL_AUTO'))
 }
 
 /*
-* If IN_PHPBB is already defined, lets assume they already included the common.php file and are done with setup
-*
-* NOTE: If you do not setup the common.php file YOU WILL NOT BE ABLE TO USE ANY CONSTANTS!
+* Do not include common.php, the MOD author is required to include this.
 */
 if (!defined('IN_PHPBB'))
 {
-	define('IN_PHPBB', true);
-	include($phpbb_root_path . 'common.' . $phpEx);
-	$user->session_begin();
-	$auth->acl($user->data);
-	$user->setup();
+	exit;
 }
 
 // Add the language file if one was specified
