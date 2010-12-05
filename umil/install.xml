@@ -32,15 +32,22 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 		</author>
 	</author-group>
 
-	<mod-version>1.0.3</mod-version>
+	<mod-version>1.0.4</mod-version>
 
 	<installation>
 		<level>easy</level>
 		<time>60</time>
-		<target-version>3.0.7-pl1</target-version>
+		<target-version>3.0.8</target-version>
 	</installation>
 
 	<history>
+		<entry>
+			<date>2010-11-22</date>
+			<rev-version>1.0.4</rev-version>
+			<changelog lang="en">
+				<change>[Feature] Ability to specify an index length for MySQL4 (as supported by phpBB 3.0.8)</change>
+			</changelog>
+		</entry>
 		<entry>
 			<date>2010-08-09</date>
 			<rev-version>1.0.3</rev-version>

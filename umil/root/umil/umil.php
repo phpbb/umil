@@ -2322,6 +2322,8 @@ class umil
 	*/
 	function table_index_add($table_name, $index_name = '', $column = array())
 	{
+		global $config;
+
 		// Multicall
 		if ($this->multicall(__FUNCTION__, $table_name))
 		{
@@ -2346,6 +2348,14 @@ class umil
 		if (!is_array($column))
 		{
 			$column = array($column);
+		}
+
+		// remove index length if we are before 3.0.8
+		// the feature (required for some types when using MySQL4)
+		// was added in that release (ticket PHPBB3-8944)
+		if (version_compare($config['version'], '3.0.7-pl1', '<='))
+		{
+			$column = preg_replace('#:.*$#', '', $column);
 		}
 
 		$this->db_tools->sql_create_index($table_name, $index_name, $column);
