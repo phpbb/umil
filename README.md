@@ -8,7 +8,7 @@ http://www.phpbb.com/mods/umil/
 
 ## Patches
 
-Do you have an improvement?  Did you fix a bug?  Fork our GitHub repo, make your changes in a separate branch, and send a pull request.
+Do you have an improvement?  Did you fix a bug?  Fork our GitHub repo, make your changes in a separate branch, and send a pull request to umil/develop..
 
 ## Translations
 
