@@ -7,7 +7,7 @@
  * @version $Id: umil.php 228 2010-06-29 19:43:25Z SyntaxError90 $
  * @copyright (c) 2008 phpBB Group
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
- * Translated By: casper™ from http://phpbbportugal.com/
+ * Translated By: phpBB Portugal http://phpbbportugal.com/
  */
 
 /**
