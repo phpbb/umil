@@ -32,7 +32,7 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 		</author>
 	</author-group>
 
-	<mod-version>1.0.4</mod-version>
+	<mod-version>1.0.4-dev</mod-version>
 
 	<installation>
 		<level>easy</level>
@@ -42,7 +42,7 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 
 	<history>
 		<entry>
-			<date>2010-11-22</date>
+			<date>2010-12-06</date>
 			<rev-version>1.0.4</rev-version>
 			<changelog lang="en">
 				<change>[Feature] Ability to specify an index length for MySQL4 (as supported by phpBB 3.0.8) #62343</change>
