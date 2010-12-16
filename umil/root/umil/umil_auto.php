@@ -35,7 +35,7 @@
  */
 if (!defined('UMIL_AUTO'))
 {
-//	exit;
+	exit;
 }
 
 /*
