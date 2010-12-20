@@ -43,6 +43,7 @@ if (!defined('UMIL_AUTO'))
 */
 if (!defined('IN_PHPBB'))
 {
+	trigger_error('UMIL doesn\'t support the missing IN_PHPBB anymore. Please visit <a href="http://www.phpbb.com/mods/umil/update/">http://www.phpbb.com/mods/umil/update</a> on how to update your UMIF files.', E_USER_ERROR);
 	exit;
 }
 

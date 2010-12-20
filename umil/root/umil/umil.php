@@ -110,7 +110,7 @@ class umil
 	*/
 	var $stand_alone = false;
 
-    /**
+	/**
 	* Were any new permissions added (used in umil_frontend)?
 	*/
 	var $permissions_added = false;

@@ -227,7 +227,7 @@ $versions = array(
 include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
 
 /*
-* Here is our custom function that will be called for version 0.9.1.
+* Here is our custom function that will be called for version 0.9.2.
 *
 * @param string $action The action (install|update|uninstall) will be sent through this.
 * @param string $version The version this is being run for will be sent through this.
