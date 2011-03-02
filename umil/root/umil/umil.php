@@ -3034,7 +3034,19 @@ class umil
 		*/
 		if (!preg_match('#^' . preg_quote($table_prefix, '#') . '#', $table_name) || !in_array($table_name, $constants, true))
 		{
-			$table_name = preg_replace('#^phpbb_#i', $table_prefix, $table_name);
+			if ((strpos($table_name, $table_prefix) === 0) && (strlen($table_name) > strlen($table_prefix)))
+			{
+				/**
+				* Do not replace phpbb_ with the prefix, if it is already at the beginning.
+				* Otherwise we would replace the prefix "phpbb_umil" multiple times and
+				* end up with phpbb_umilumilumil_tablename, if the constant is not defined.
+				* See Bug #62646.
+				*/
+			}
+			else
+			{
+				$table_name = preg_replace('#^phpbb_#i', $table_prefix, $table_name);
+			}
 		}
 	}
 }
