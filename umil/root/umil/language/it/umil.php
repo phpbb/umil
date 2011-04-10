@@ -7,7 +7,8 @@
  * @version $Id$
  * @copyright (c) 2008 phpBB Group
  * @copyright (c) 2010 phpBB.it - upgrade translation on 2010/08/19
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @copyright (c) 2011 portalxl.eu - upgrade translation on 2011/04/06
+ * @license http://opensource.org/licenses/gpl-2.0.php GNU Public License
  *
  */
 
@@ -94,7 +95,7 @@ $lang = array_merge($lang, array(
 	'PERMISSION_UNSET_ROLE'			=> 'Annulla permessi per il ruolo %s.',
 
 	'ROLE_ALREADY_EXISTS'			=> 'Ruolo permessi già esistenti.',
-	'ROLE_NOT_EXIST'				=> 'Ruolo non esiste',
+	'ROLE_NOT_EXIST'				=> 'Ruolo non esistente',
 
 	'SUCCESS'						=> 'Successo',
 
