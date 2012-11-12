@@ -90,6 +90,8 @@ $groups = array(
 	47077,	// Website Team
 );
 
+include($phpbb_root_path . 'includes/functions_user.php');
+
 if (!$user->data['is_registered'] || !(group_memberships($groups, $user->data['user_id'], true)))
 {
 	trigger_error('You do not have access to this area');
