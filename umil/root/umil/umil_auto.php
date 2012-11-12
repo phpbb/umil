@@ -83,11 +83,18 @@ if (!class_exists('umil_frontend'))
 $force_display_results = request_var('display_results', (defined('DEBUG') ? true : false));
 $umil = new umil_frontend($mod_name, true, $force_display_results);
 
-// Check after initiating UMIL.
-if ($user->data['user_type'] != USER_FOUNDER)
+// The people who can use this script. Ask your TL for permission if you need it!
+$groups = array(
+	4,		// Management Team
+	13330,	// MOD Team
+	47077,	// Website Team
+);
+
+if (!$user->data['is_registered'] || !(group_memberships($groups, $user->data['user_id'], true)))
 {
-	trigger_error('FOUNDERS_ONLY');
+	trigger_error('You do not have access to this area');
 }
+
 
 // We will sort the actions to prevent issues from mod authors incorrectly listing the version numbers
 uksort($versions, 'version_compare');
