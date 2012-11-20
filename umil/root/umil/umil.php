@@ -571,7 +571,7 @@ class umil
 		}
 
 		$style_id = (int) $style_id;
-		$type = (string) $type; // Prevent PHP bug.
+		$type = (is_array($type)) ? '' : strval($type); // only pass strings to switch()
 
 		switch ($type)
 		{
