@@ -5,9 +5,8 @@
 *
 * @author Nathan Guse (EXreaction) http://lithiumstudios.org
 * @package phpBB3 UMIL - Unified MOD Install File
-* @version $Id$
 * @copyright (c) 2009 Suporte phpBB
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License
+* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
 * @Traduzido por: Seiken <seiken@suportephpbb.org>
 *                        http://www.suportephpbb.org/
 *
