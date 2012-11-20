@@ -123,7 +123,7 @@ $lang = array_merge($lang, array(
 	'UNKNOWN'						=> 'Sconosciuto',
 	'UPDATE_MOD'					=> 'Aggiorna %s',
 	'UPDATE_MOD_CONFIRM'			=> 'Sei pronto per l’aggiornamento %s?',
-	'UPDATE_UMIL'					=> 'Questa versione di UMIL è obsoleta.<br /><br />Scarica l’ultima versione di UMIL (Unified MOD Install Library) da: <a href="%1$s" target="_blank">%1$s</a>',
+	'UPDATE_UMIL'					=> 'Questa versione di UMIL è obsoleta.<br /><br />Scarica l’ultima versione di UMIL (Unified MOD Install Library) da: <a href="%1$s" onclick="window.open(this.href);return false;">%1$s</a>',
 
 
 	'VERSIONS'						=> 'Versione MOD: <strong>%1$s</strong><br />Attualmente installata: <strong>%2$s</strong>',
