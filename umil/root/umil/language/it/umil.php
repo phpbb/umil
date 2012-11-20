@@ -4,11 +4,10 @@
  * @author Nathan Guse (EXreaction) http://lithiumstudios.org
  * @author David Lewis (Highway of Life) highwayoflife@gmail.com
  * @package umil
- * @version $Id$
  * @copyright (c) 2008 phpBB Group
  * @copyright (c) 2010 phpBB.it - upgrade translation on 2010/08/19
  * @copyright (c) 2011 portalxl.eu - upgrade translation on 2011/04/06
- * @license http://opensource.org/licenses/gpl-2.0.php GNU Public License
+ * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
  *
  */
 
