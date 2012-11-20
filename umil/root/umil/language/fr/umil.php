@@ -21,8 +21,7 @@
  * @author    EXreaction (Nathan Guse) http://lithiumstudios.org
  * @author    Highway of Life <highwayoflife@gmail.com> (David Lewis)
  * @copyright (c) 2008 phpBB Group
- * @license   http://opensource.org/licenses/gpl-2.0.php GNU General Public License
- * @version   $Id$
+ * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
  */
 
 /**
