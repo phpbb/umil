@@ -42,6 +42,7 @@ $lang = array_merge($lang, array(
 	'ACTION'						=> 'Action',
 	'ADVANCED'						=> 'Advanced',
 	'AUTH_CACHE_PURGE'				=> 'Purging the Auth Cache',
+	'AUTOMOD'						=> 'Automod',
 
 	'CACHE_PURGE'					=> 'Purging your forum’s cache',
 	'CONFIGURE'						=> 'Configure',
@@ -51,6 +52,7 @@ $lang = array_merge($lang, array(
 	'CONFIG_REMOVE'					=> 'Removing config variable: %s',
 	'CONFIG_UPDATE'					=> 'Updating config variable: %s',
 
+	'DISPLAY_AUTOMOD_LINK'			=> 'This is only part of the uninstall process, to completely uninstall %3$s proceed to <a href="%1$s">%2$s</a>',
 	'DISPLAY_RESULTS'				=> 'Display Full Results',
 	'DISPLAY_RESULTS_EXPLAIN'		=> 'Select yes to display all of the actions and results during the requested action.',
 
