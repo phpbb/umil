@@ -2569,7 +2569,7 @@ class umil
 
 		// A list of types being unsigned for better reference in some db's
 		$unsigned_types = array('UINT', 'UINT:', 'USINT', 'BOOL', 'TIMESTAMP');
-		$supported_dbms = array('firebird', 'mssql', 'mysql_40', 'mysql_41', 'oracle', 'postgres', 'sqlite');
+		$supported_dbms = array('firebird', 'mssql', 'mssqlnative', 'mysql_40', 'mysql_41', 'oracle', 'postgres', 'sqlite');
 
 		$sql = '';
 
@@ -2588,6 +2588,7 @@ class umil
 			break;
 
 			case 'mssql':
+			case 'mssqlnative':
 				$sql .= "CREATE TABLE [{$table_name}] (\n";
 			break;
 		}
@@ -2726,6 +2727,7 @@ class umil
 				break;
 
 				case 'mssql':
+				case 'mssqlnative':
 					if ($column_type == '[text]')
 					{
 						$textimage = true;
@@ -2805,6 +2807,7 @@ class umil
 			break;
 
 			case 'mssql':
+			case 'mssqlnative':
 				$sql = substr($sql, 0, -2);
 				$sql .= "\n) ON [PRIMARY]" . (($textimage) ? ' TEXTIMAGE_ON [PRIMARY]' : '') . "\n";
 				$sql .= "GO\n\n";
@@ -2839,6 +2842,7 @@ class umil
 				break;
 
 				case 'mssql':
+				case 'mssqlnative':
 					$sql .= "ALTER TABLE [{$table_name}] WITH NOCHECK ADD \n";
 					$sql .= "\tCONSTRAINT [PK_{$table_name}] PRIMARY KEY  CLUSTERED \n";
 					$sql .= "\t(\n";
@@ -2931,6 +2935,7 @@ class umil
 					break;
 
 					case 'mssql':
+					case 'mssqlnative':
 						$sql .= ($key_data[0] == 'INDEX') ? 'CREATE  INDEX' : '';
 						$sql .= ($key_data[0] == 'UNIQUE') ? 'CREATE  UNIQUE  INDEX' : '';
 						$sql .= " [{$key_name}] ON [{$table_name}]([" . implode('], [', $key_data[1]) . "]) ON [PRIMARY]\n";
@@ -3046,7 +3051,19 @@ class umil
 		*/
 		if (!preg_match('#^' . preg_quote($table_prefix, '#') . '#', $table_name) || !in_array($table_name, $constants, true))
 		{
-			$table_name = preg_replace('#^phpbb_#i', $table_prefix, $table_name);
+			if ((strpos($table_name, $table_prefix) === 0) && (strlen($table_name) > strlen($table_prefix)))
+			{
+				/**
+				* Do not replace phpbb_ with the prefix, if it is already at the beginning.
+				* Otherwise we would replace the prefix "phpbb_umil" multiple times and
+				* end up with phpbb_umilumilumil_tablename, if the constant is not defined.
+				* See Bug #62646.
+				*/
+			}
+			else
+			{
+				$table_name = preg_replace('#^phpbb_#i', $table_prefix, $table_name);
+			}
 		}
 	}
 }
