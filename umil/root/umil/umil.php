@@ -4,9 +4,8 @@
  * @author Nathan Guse (EXreaction) http://lithiumstudios.org
  * @author David Lewis (Highway of Life) highwayoflife@gmail.com
  * @package umil
- * @version $Id$
  * @copyright (c) 2008 phpBB Group
- * @license http://opensource.org/licenses/gpl-2.0.php GNU Public License
+ * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
  *
  */
 
@@ -18,7 +17,7 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-define('UMIL_VERSION', '1.0.5-dev');
+define('UMIL_VERSION', '1.0.5');
 
 /**
 * Multicall instructions
@@ -572,7 +571,7 @@ class umil
 		}
 
 		$style_id = (int) $style_id;
-		$type = (string) $type; // Prevent PHP bug.
+		$type = (is_array($type)) ? '' : strval($type); // only pass strings to switch()
 
 		switch ($type)
 		{
@@ -1518,6 +1517,12 @@ class umil
 	*/
 	function permission_exists($auth_option, $global = true)
 	{
+		// forum permissions shouldn't be set globally
+		if (strpos($auth_option, 'f_') === 0)
+		{
+			$global = false;
+		}
+
 		if ($global)
 		{
 			$type_sql = ' AND is_global = 1';
@@ -1563,6 +1568,12 @@ class umil
 		}
 
 		$this->umil_start('PERMISSION_ADD', $auth_option);
+
+		// forum permissions shouldn't be set globally
+		if (strpos($auth_option, 'f_') === 0)
+		{
+			$global = false;
+		}
 
 		if ($this->permission_exists($auth_option, $global))
 		{
@@ -1628,6 +1639,12 @@ class umil
 		}
 
 		$this->umil_start('PERMISSION_REMOVE', $auth_option);
+
+		// forum permissions shouldn't be set globally
+		if (strpos($auth_option, 'f_') === 0)
+		{
+			$global = false;
+		}
 
 		if (!$this->permission_exists($auth_option, $global))
 		{

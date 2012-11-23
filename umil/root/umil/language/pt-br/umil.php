@@ -4,9 +4,8 @@
  * @author Nathan Guse (EXreaction) http://lithiumstudios.org
  * @author David Lewis (Highway of Life) highwayoflife@gmail.com
  * @package umil
- * @version $Id$
  * @copyright (c) 2010 Suporte phpBB < http://www.suportephpbb.com.br >
- * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
  * Original copyright (c) 2008 phpBB Group  
  *
  */
@@ -123,7 +122,7 @@ $lang = array_merge($lang, array(
 	'UNKNOWN'						=> 'Desconhecido',
 	'UPDATE_MOD'					=> 'Atualizar %s',
 	'UPDATE_MOD_CONFIRM'			=> 'Você realmente quer atualizar %s?',
-	'UPDATE_UMIL'					=> 'Esta versão do UMIL está desatualizada.<br /><br />Por favor, faça o download da última versão do UMIL (Unified MOD Install Library) no: <a href="%1$s" target="_blank">%1$s</a>',
+	'UPDATE_UMIL'					=> 'Esta versão do UMIL está desatualizada.<br /><br />Por favor, faça o download da última versão do UMIL (Unified MOD Install Library) no: <a href="%1$s" onclick="window.open(this.href);return false;">%1$s</a>',
 
 	'VERSIONS'						=> 'Versão da MOD: <strong>%1$s</strong><br />Instalada atualmente: <strong>%2$s</strong>',
 	'VERSION_SELECT'				=> 'Selecionar versão',
