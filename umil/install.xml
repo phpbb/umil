@@ -51,6 +51,8 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 			<date>2012-11-23</date>
 			<rev-version>1.0.5</rev-version>
 			<changelog lang="en">
+				<change>[Fix] UMIL replaces table_prefix too often on some functions #62646</change>
+				<change>[Fix] Correctly detect mssql native driver #62580</change>
 				<change>[Fix] Make UMIL languages xHTML valid</change>
 				<change>[Fix] Fix incorrect file extension for phpBB logo #63203</change>
 				<change>[Fix] Default to local when global flag is set for f_ permission #63187</change>
