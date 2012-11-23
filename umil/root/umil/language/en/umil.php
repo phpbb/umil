@@ -42,7 +42,7 @@ $lang = array_merge($lang, array(
 	'ACTION'						=> 'Action',
 	'ADVANCED'						=> 'Advanced',
 	'AUTH_CACHE_PURGE'				=> 'Purging the Auth Cache',
-	'AUTOMOD'						=> 'Automod',
+	'AUTOMOD'						=> 'AutoMOD',
 
 	'CACHE_PURGE'					=> 'Purging your forum’s cache',
 	'CONFIGURE'						=> 'Configure',
