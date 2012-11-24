@@ -25,6 +25,12 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 			<email>highwayoflife@gmail.com</email>
 		</author>
 		<author>
+			<username>Marc</username>
+			<realname>Marc Alexander</realname>
+			<homepage>http://www.m-a-styles.de</homepage>
+			<email>admin@m-a-styles.de</email>
+		</author>
+		<author>
 			<username>Sam</username>
 			<realname>Sam Thompson</realname>
 			<homepage>http://www.websyntax.net/</homepage>
@@ -32,15 +38,28 @@ Please check: http://www.phpbb.com/mods/umil for the latest version of the UMI L
 		</author>
 	</author-group>
 
-	<mod-version>1.0.4</mod-version>
+	<mod-version>1.0.5</mod-version>
 
 	<installation>
 		<level>easy</level>
 		<time>60</time>
-		<target-version>3.0.8</target-version>
+		<target-version>3.0.11</target-version>
 	</installation>
 
 	<history>
+		<entry>
+			<date>2012-11-23</date>
+			<rev-version>1.0.5</rev-version>
+			<changelog lang="en">
+				<change>[Fix] UMIL replaces table_prefix too often on some functions #62646</change>
+				<change>[Fix] Correctly detect mssql native driver #62580</change>
+				<change>[Fix] Make UMIL languages xHTML valid</change>
+				<change>[Fix] Fix incorrect file extension for phpBB logo #63203</change>
+				<change>[Fix] Default to local when global flag is set for f_ permission #63187</change>
+				<change>[Fix] Only pass strings to switch() in umil::cache_purge()</change>
+				<change>[Change] State license version in file header #63246</change>
+			</changelog>
+		</entry>
 		<entry>
 			<date>2010-12-06</date>
 			<rev-version>1.0.4</rev-version>

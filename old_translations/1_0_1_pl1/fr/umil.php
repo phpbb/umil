@@ -22,8 +22,7 @@
  * @author    Highway of Life <highwayoflife@gmail.com> (David Lewis) N/A
  * @copyright 2010 phpBB.fr
  * @copyright 2008 phpBB Group
- * @license   http://www.gnu.org/licenses/gpl.txt GNU General Public License
- * @version   $Id$
+ * @license   http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
  */
 
 /**
