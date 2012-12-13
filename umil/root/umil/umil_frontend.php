@@ -306,7 +306,14 @@ class umil_frontend extends umil
 	*/
 	function done()
 	{
-		global $phpbb_root_path, $phpEx, $template, $user;
+		global $phpbb_root_path, $phpEx, $template, $user, $config;
+
+		//Are we uninstalling? Then show the link to automod
+		$uninstall_results = false;
+		if(request_var('action', '') == 'uninstall' && isset($config['automod_version']))
+		{
+			$uninstall_results = true;
+		}
 
 		$download_file = ($this->error_file) ? append_sid("{$phpbb_root_path}umil/file.$phpEx", 'file=' . basename($this->error_file, '.txt')) : '';
 		$filename = ($this->error_file) ? 'umil/error_files/' . basename($this->error_file) : '';
@@ -320,6 +327,10 @@ class umil_frontend extends umil
 			'S_RESULTS'			=> $this->results,
 			'S_SUCCESS'			=> ($this->errors) ? false : true,
 			'S_PERMISSIONS'		=> $this->permissions_added,
+			
+			'S_UNINSTALL_SUCCESS'	=> $uninstall_results,
+			'U_AUTOMOD_LINK'		=> sprintf($user->lang['DISPLAY_AUTOMOD_LINK'], append_sid("{$phpbb_root_path}adm/index.$phpEx", 'i=mods&mode=frontend', true, $user->session_id), $user->lang['AUTOMOD'], $this->title),
+
 		));
 
 		page_footer();
