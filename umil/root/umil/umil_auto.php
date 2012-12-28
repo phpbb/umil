@@ -84,8 +84,9 @@ $umil = new umil_frontend($mod_name, true, $force_display_results);
 
 // The people who can use this script. Ask your TL for permission if you need it!
 $groups = array(
-	4,		// Management Team
-	13330,	// MOD Team
+	4,		// Development Team
+	13330,	// Management Team
+	7331,	// MOD Team
 	47077,	// Website Team
 );
 
