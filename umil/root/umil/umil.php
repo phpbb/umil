@@ -56,8 +56,8 @@ define('UMIL_VERSION', '1.0.5');
 *	permission_exists($auth_option, $global = true)
 *	permission_add($auth_option, $global = true)
 *	permission_remove($auth_option, $global = true)
-*	permission_set($name, $auth_option = array(), $type = 'role', $global = true, $has_permission = true)
-*	permission_unset($name, $auth_option = array(), $type = 'role', $global = true)
+*	permission_set($name, $auth_option = array(), $type = 'role', $has_permission = true)
+*	permission_unset($name, $auth_option = array(), $type = 'role')
 *
 * Table Functions
 *	table_exists($table_name)
