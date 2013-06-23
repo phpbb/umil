@@ -16,4 +16,4 @@ Have a translation and want to be awesome?  See the "Patches".
 
 ## Bug Tracker
 
-If you find a bug, please submit it to the [MOD Team Tools](http://www.phpbb.com/bugs/modteamtools/) bug tracker on phpBB.com.
+If you find a bug, and you are unable to fix it yourself, please submit it to the [MOD Team Tools](http://www.phpbb.com/bugs/modteamtools/) bug tracker on phpBB.com.
